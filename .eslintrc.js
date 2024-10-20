@@ -9,7 +9,7 @@ module.exports = {
   parserOptions: { tsconfigRootDir: __dirname },
   settings: {
     react: {
-      "version": "16.9" // <----
+      "version": "18.3.1" // <----
     }
   }
 };
