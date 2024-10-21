@@ -1,11 +1,14 @@
-import { useState, useEffect } from "react";
-import Textarea from "@mui/joy/Textarea"
-import Select from '@mui/joy/Select';
-import Option from '@mui/joy/Option';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import InputfileUpload from './InputFileUpload'
+import { useEffect } from "react";
+import dayjs from "dayjs";
+import { useCorporation } from "../hooks/useCorporation";
+import Textarea from "@mui/joy/Textarea";
+import Select from "@mui/joy/Select";
+import Option from "@mui/joy/Option";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import InputfileUpload from "./InputFileUpload";
+import { Input } from "@mui/joy";
 /*
 참고 자료
 1. 사업자 번호 뜻: https://toss.oopy.io/12df081d-1d6b-40d3-b53d-43883f55374e
@@ -27,91 +30,107 @@ API 요청
 */
 
 const join = (url1: string, url2: string) => {
-    return url1 + '/' + url2;
-}
+    return url1 + "/" + url2;
+};
 
 export const Corporation = () => {
-    const [ bus, setBus ] = useState('')
+    const hookCorporation = useCorporation();
+    const sampleBizNum = "1078708658";
+    const SAMPLE_CORP_NUM = 1101113892240;
 
-    // 사업자번호 api key
-    const API_KEY = "euH37B5sQyQf%2BJMBs4AeDGQYBNvs2VtOSGnEf0Skr8lsLZIPGl22Ueb9IFA6Xp8k7Snn%2BM0Ta%2BD%2B%2FGVl3Ldt4g%3D%3D";
-    const API_BASE_URL = "http://api.odcloud.kr/api"
+    const handleCorpInput = (corpNum: string) => {
+        hookCorporation.setCorpNumber(corpNum);
+        hookCorporation.mutateCorp.mutate(corpNum);
+    };
 
-    const API_VALIDATE_URL = `nts-businessman/v1/validate?serviceKey=${API_KEY}`
-    const API_STATUS_URL = `nts-businessman/v1/status?serviceKey=${API_KEY}`
-    
-    const API_CORP_INFO = `http://apis.data.go.kr/1160100/service/GetCorpBasicInfoService_V2/getCorpOutline_V2`
-    // 법인번호 api key
-    const CORP_API_KEY = 'euH37B5sQyQf+JMBs4AeDGQYBNvs2VtOSGnEf0Skr8lsLZIPGl22Ueb9IFA6Xp8k7Snn+M0Ta+D+/GVl3Ldt4g=='
-    const SAMPLE_CORP_NUM = 1101113892240
-
-    const fetch_status = async (bzno: string) => {
-        const res = await fetch(join(API_BASE_URL, API_STATUS_URL), 
-                                {
-                                    method: "POST",
-                                    headers: {
-                                        "content-type": "application/json",
-                                    },
-                                    body: JSON.stringify({"b_no": [bzno]})
-                                })
-        
-        res.json().then((val) => {
-            setBus(JSON.stringify(val));
-        }).catch((reason) => {
-            setBus("errored");
-        })
-    }
-    const example = "https://apis.data.go.kr/1160100/service/GetCorpBasicInfoService_V2/getCorpOutline_V2?serviceKey=euH37B5sQyQf%2BJMBs4AeDGQYBNvs2VtOSGnEf0Skr8lsLZIPGl22Ueb9IFA6Xp8k7Snn%2BM0Ta%2BD%2B%2FGVl3Ldt4g%3D%3D&pageNo=1&numOfRows=10&resultType=json&crno=1101113892240&corpNm=%EB%A9%94%EB%A6%AC%EC%B8%A0%EC%9E%90%EC%82%B0%EC%9A%B4%EC%9A%A9"
-    const fetch_corp_info = async () => {
-        const res = await fetch(example,
-                            {
-                                method: "GET",
-                            })
-        res.json().then((val) => {
-            setBus(JSON.stringify(val));
-        }).catch((reason) => {
-            setBus("errored");
-            console.log(reason);
-        })
-    }
-    
-    useEffect(()=>{
-        fetch_corp_info();
-        fetch_status("1078708658")
-    }, [])
-    
+    useEffect(() => {}, [hookCorporation.corpInfo.bizNum]);
 
     return (
         <div>
-            <Textarea placeholder="법인 등록 번호 (수동 입력)"></Textarea>
-            <Textarea placeholder="사업자 번호 (자동 입력)"></Textarea>
-            
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    handleCorpInput(hookCorporation.corpInfo.corpNum);
+                }}
+            >
+                <Input
+                    placeholder="법인 등록 번호 (수동 입력)"
+                    onChange={(e) => {
+                        e.preventDefault();
+                        hookCorporation.setCorpNumber(e.target.value);
+                    }}
+                ></Input>
+            </form>
+            <Textarea
+                value={
+                    hookCorporation.corpInfo.bizNum
+                        ? hookCorporation.corpInfo.bizNum
+                        : "사업자 번호 (자동 입력)"
+                }
+            ></Textarea>
             <Select defaultValue="국적 (자동)">
                 <Option value="Korea">계속 사업자</Option>
                 <Option value="Japan">폐업</Option>
                 <Option value="USA">휴업자</Option>
             </Select>
 
-            <Textarea placeholder="도메인"></Textarea>
-            <Textarea placeholder="폰번호"></Textarea>
-            <Textarea placeholder="주소"></Textarea>
-            <Textarea placeholder="대표자명"></Textarea>
-
+            <Textarea
+                value={
+                    hookCorporation.corpInfo.corpDomain
+                        ? hookCorporation.corpInfo.corpDomain
+                        : "도메인"
+                }
+            ></Textarea>
+            <Textarea
+                value={
+                    hookCorporation.corpInfo.phoneNumber
+                        ? hookCorporation.corpInfo.phoneNumber
+                        : "폰번호"
+                }
+            ></Textarea>
+            <Textarea
+                value={
+                    hookCorporation.corpInfo.corpAddress
+                        ? hookCorporation.corpInfo.corpAddress
+                        : "주소"
+                }
+            ></Textarea>
+            <Textarea
+                value={
+                    hookCorporation.corpInfo.ceoName
+                        ? hookCorporation.corpInfo.ceoName
+                        : "대표자명"
+                }
+            ></Textarea>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker label="사업 시작 날짜" />
+                <DatePicker
+                    label="사업 시작 날짜"
+                    value={
+                        hookCorporation.corpInfo.bizStartedAt
+                            ? dayjs(
+                                  hookCorporation.corpInfo.bizStartedAt,
+                                  "YYYYMMDD",
+                              )
+                            : undefined
+                    }
+                />
             </LocalizationProvider>
-
-            <Select defaultValue="사업자 상태">
-                <Option value="계속 사업자">계속 사업자</Option>
-                <Option value="폐업자">폐업</Option>
-                <Option value="휴업자">휴업자</Option>
+            <Select defaultValue="" value={hookCorporation.corpInfo.status}>
+                <Option value="01">계속 사업자</Option>
+                <Option value="02">휴업자</Option>
+                <Option value="03">폐업</Option>
             </Select>
-
-            <Textarea placeholder="url (자동 또는 수동)"></Textarea>
-
-            <Textarea placeholder="사업 종류(수동 입력)"></Textarea>
-            <InputfileUpload/>
-            {bus}
+            <Textarea
+                value={
+                    hookCorporation.corpInfo.corpDomain === ""
+                        ? hookCorporation.corpInfo.corpDomain
+                        : "url (자동 또는 수동)"
+                }
+            ></Textarea>
+            <Textarea placeholder="사업 종류(수동 입력)">
+                {hookCorporation.corpInfo.bizType}
+            </Textarea>
+            <InputfileUpload />
         </div>
-    )
-}
+    );
+};
