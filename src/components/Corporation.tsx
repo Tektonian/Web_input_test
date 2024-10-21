@@ -221,7 +221,11 @@ export const Corporation = () => {
                         </Button>
                     </form>
                 )}
-                법인정보입력={({ context }) => <div>Complete</div>}
+                법인정보입력={({ context }) => (
+                    <Button onClick={() => hookCorporation.mutateBiz.mutate()}>
+                        Finish
+                    </Button>
+                )}
             />
 
             <InputfileUpload />

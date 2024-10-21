@@ -92,10 +92,7 @@ function corpInfoReducer(
                 phoneNumber: action.data.enpTlno,
                 corpAddress: action.data.enpBsadr,
                 ceoName: action.data.enpRprFnm,
-                bizStartedAt: dayjs(
-                    action.data.enpEstbDt,
-                    "YYYYMMDD",
-                ).toString(), // e.g., espEstbDt: 20080203
+                bizStartedAt: action.data.enpEstbDt, // e.g., espEstbDt: 20080203
                 corpSiteUrl: action.data.enpHmpgUrl,
             };
         }
@@ -119,7 +116,7 @@ export const useCorporation = () => {
     const initCorpInfo: corpInfoProps = { corpNum: "" };
     const [corpInfo, dispatch] = useReducer(corpInfoReducer, initCorpInfo);
     const [recvCorpList, setRecvCorpList] = useState<receviedCorpInfo[]>([]);
-    // 사업자 정보
+    // 법인 정보
     const mutateCorp = useMutation({
         mutationKey: ["corpNum"],
         mutationFn: (corpNum: string) => {
@@ -158,7 +155,7 @@ export const useCorporation = () => {
         },
     });
 
-    // 법인 정보
+    // 사업자 정보
     const mutateBiz = useMutation({
         mutationKey: ["bizNum"],
         mutationFn: (bizNum) => {
@@ -167,14 +164,26 @@ export const useCorporation = () => {
             const BIZ_API_BASE_URL = "http://api.odcloud.kr/api";
             const BIZ_API_VALIDATE_URL = `nts-businessman/v1/validate?serviceKey=${BIZ_API_KEY}`;
             const BIZ_API_STATUS_URL = `nts-businessman/v1/status?serviceKey=${BIZ_API_KEY}`;
-            const res = fetch(BIZ_API_BASE_URL + "/" + BIZ_API_STATUS_URL, {
+            const res = fetch(BIZ_API_BASE_URL + "/" + BIZ_API_VALIDATE_URL, {
                 method: "POST",
                 headers: {
                     "content-type": "application/json",
                 },
-                body: JSON.stringify({ b_no: [bizNum] }),
+                body: JSON.stringify({
+                    businesses: [
+                        {
+                            b_no: corpInfo.bizNum,
+                            p_nm: corpInfo.ceoName,
+                            p_nm2: "",
+                            b_nm: "",
+                            corp_no: "",
+                            b_sector: "",
+                            b_type: "",
+                            start_dt: corpInfo.bizStartedAt,
+                        },
+                    ],
+                }),
             });
-
             return res;
         },
         onSuccess: (data, variables, context) => {
@@ -186,7 +195,7 @@ export const useCorporation = () => {
                             Response Code: ${val.status_code}
                             `,
                         );
-
+                    console.log("Bisuness info", val);
                     dispatch({
                         type: "recvBizInfo",
                         data: val.data,
