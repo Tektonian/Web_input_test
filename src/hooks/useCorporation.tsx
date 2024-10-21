@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useReducer, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import dayjs from "dayjs";
 interface corpInfoProps {
@@ -118,6 +118,7 @@ function corpInfoReducer(
 export const useCorporation = () => {
     const initCorpInfo: corpInfoProps = { corpNum: "" };
     const [corpInfo, dispatch] = useReducer(corpInfoReducer, initCorpInfo);
+    const [recvCorpList, setRecvCorpList] = useState<receviedCorpInfo[]>([]);
     // 사업자 정보
     const mutateCorp = useMutation({
         mutationKey: ["corpNum"],
@@ -142,7 +143,7 @@ export const useCorporation = () => {
                             Response Msg: ${val.response.headers.resultMsg}
                             `,
                         );
-
+                    setRecvCorpList(val.response.body.items.item);
                     dispatch({
                         type: "recvCorpInfo",
                         data: val.response.body.items.item[0],
@@ -214,5 +215,12 @@ export const useCorporation = () => {
         });
     };
 
-    return { corpInfo, mutateBiz, mutateCorp, setCorpNumber, setNationality };
+    return {
+        corpInfo,
+        recvCorpList,
+        mutateBiz,
+        mutateCorp,
+        setCorpNumber,
+        setNationality,
+    };
 };
