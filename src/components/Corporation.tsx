@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import dayjs from "dayjs";
 import { useCorporation } from "../hooks/useCorporation";
 import Textarea from "@mui/joy/Textarea";
@@ -11,6 +10,8 @@ import InputfileUpload from "./InputFileUpload";
 import { Button, Input } from "@mui/joy";
 import { useFunnel } from "@use-funnel/react-router-dom";
 import { OverlayProvider } from "overlay-kit";
+import { InputFunnel } from "./\bfunnels/InputFunnel";
+import { SelectFunnel } from "./\bfunnels/SelectFunnel";
 /*
 참고 자료
 1. 사업자 번호 뜻: https://toss.oopy.io/12df081d-1d6b-40d3-b53d-43883f55374e
@@ -77,22 +78,23 @@ export const Corporation = () => {
     return (
         <OverlayProvider>
             <funnel.Render
-                국가입력={({ history }) => (
-                    <Select
-                        defaultValue="국적 (자동)"
-                        onChange={(e, val) => {
-                            e?.preventDefault();
-                            if (val === null) return;
-                            history
-                                .push("법인번호입력", { nationlity: val })
-                                .catch(() => 0);
-                        }}
-                    >
-                        <Option value="Korea">한국</Option>
-                        <Option value="Japan">일본</Option>
-                        <Option value="USA">미국</Option>
-                    </Select>
-                )}
+                국가입력={({ history }) => {
+                    return (
+                        <SelectFunnel
+                            options={[
+                                { value: "Korea", display: "한국" },
+                                { value: "Japan", display: "일본" },
+                            ]}
+                            onNext={(selectValue) => {
+                                history
+                                    .push("법인번호입력", {
+                                        nationlity: selectValue,
+                                    })
+                                    .catch(() => 0);
+                            }}
+                        ></SelectFunnel>
+                    );
+                }}
                 법인번호입력={({ context, history }) => (
                     <div>
                         <form
