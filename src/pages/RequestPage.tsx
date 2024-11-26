@@ -52,9 +52,7 @@ const RequestPage: React.FC<RequestPageProps> = ({ request_id }) => {
                 setLoading(true);
                 setError(null);
 
-                const response = await fetch(
-                    `http://localhost:8080/api/requests/${request_id}`,
-                );
+                const response = await fetch(`/api/requests/${request_id}`);
 
                 if (!response.ok) {
                     throw new Error(
