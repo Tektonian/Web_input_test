@@ -1,9 +1,5 @@
 import React from "react";
-import {
-    useQueryClient,
-    QueryClient,
-    QueryClientProvider,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionProvider } from "./hooks/Session";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { Button, Box } from "@mui/joy";
@@ -17,6 +13,9 @@ import "./App.css";
 import PageStudentProfile from "./pages/PageStudentProfile";
 import PageCorpProfile from "./pages/PageCorpProfile";
 import PageCorporationReview from "./pages/PageCorporationReview";
+import StudentListPage from "./pages/student/StudentListPage";
+
+import UnreadCount from "./components/UnreadCount";
 
 const queryClient = new QueryClient();
 
@@ -47,14 +46,15 @@ const NavigationBar = () => {
             <Button variant="soft" onClick={() => navigate("/requestinput")}>
                 Request Input
             </Button>
-            <Button variant="soft" onClick={() => navigate("/chat")}>
-                Chat
-            </Button>
+            <UnreadCount onClick={() => navigate("/chat")} />
             <Button
                 variant="soft"
                 onClick={() => navigate("/corporation-review")}
             >
                 CorpReview
+            </Button>
+            <Button variant="soft" onClick={() => navigate("/student/list")}>
+                StudentList
             </Button>
         </Box>
     );
@@ -102,6 +102,10 @@ function App() {
                             }
                         />
                         <Route path="/chat" element={<ChatPage />} />
+                        <Route
+                            path="/student/list"
+                            element={<StudentListPage />}
+                        />
                     </Routes>
                 </BrowserRouter>
             </QueryClientProvider>
