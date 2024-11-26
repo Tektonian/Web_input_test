@@ -11,6 +11,9 @@ import InputfileUpload from "./InputFileUpload";
 import { Button, Input } from "@mui/joy";
 import { useFunnel } from "@use-funnel/react-router-dom";
 import { OverlayProvider } from "overlay-kit";
+import { AcademicHistoryCardProps } from "./AcademicHistoryCard";
+import { LanguageCardProps } from "./LanguageCard";
+
 /*
 참고 자료
 1. 사업자 번호 뜻: https://toss.oopy.io/12df081d-1d6b-40d3-b53d-43883f55374e
@@ -38,7 +41,6 @@ export const Corporation = () => {
         국가입력: { nationality?: string };
         법인번호입력: { nationlity: string; corpNum?: string };
         법인정보선택: { nationality: string; corpNum: string; bizNum?: string };
-
         법인정보입력: {
             nationality: string;
             corpNum: string;
