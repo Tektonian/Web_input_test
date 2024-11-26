@@ -1,22 +1,21 @@
 import React from "react";
-import {
-    useQueryClient,
-    QueryClient,
-    QueryClientProvider,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { SessionProvider } from "./hooks/Session";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { Button, Box } from "@mui/joy";
-import { Corporation } from "./components/Corporation";
-import { Student } from "./components/Student";
 import { Government } from "./components/Government";
-import RequestPage from "./Page/RequestPage";
-import ProfileSetup from "./Page/ProfileSetup";
+import RequestPage from "./pages/RequestPage";
+import ProfileSetup from "./pages/ProfileSetup";
+import ChatPage from "./pages/chat/ChatPage";
 import { Consumer } from "./components/Consumer";
-import RequestInput from "./Page/RequestInput";
+import RequestInput from "./pages/RequestInput";
 import "./App.css";
-import PageStudentProfile from "./Page/PageStudentProfile";
-import PageCorpProfile from "./Page/PageCorpProfile";
-import PageCorporationReview from "./Page/PageCorporationReview";
+import PageStudentProfile from "./pages/PageStudentProfile";
+import PageCorpProfile from "./pages/PageCorpProfile";
+import PageCorporationReview from "./pages/PageCorporationReview";
+import StudentListPage from "./pages/student/StudentListPage";
+
+import UnreadCount from "./components/UnreadCount";
 
 const queryClient = new QueryClient();
 
@@ -47,11 +46,15 @@ const NavigationBar = () => {
             <Button variant="soft" onClick={() => navigate("/requestinput")}>
                 Request Input
             </Button>
+            <UnreadCount onClick={() => navigate("/chat")} />
             <Button
                 variant="soft"
                 onClick={() => navigate("/corporation-review")}
             >
                 CorpReview
+            </Button>
+            <Button variant="soft" onClick={() => navigate("/student/list")}>
+                StudentList
             </Button>
         </Box>
     );
@@ -59,41 +62,54 @@ const NavigationBar = () => {
 
 function App() {
     return (
-        <QueryClientProvider client={queryClient}>
-            <BrowserRouter>
-                {/* 네비게이션 바 */}
-                <NavigationBar />
+        <SessionProvider>
+            <QueryClientProvider client={queryClient}>
+                <BrowserRouter>
+                    {/* 네비게이션 바 */}
+                    <NavigationBar />
 
-                {/* 라우팅 설정 */}
-                <Routes>
-                    <Route
-                        path="/corporation"
-                        element={<PageCorpProfile consumerId={2} />}
-                    />
-                    <Route
-                        path="/student"
-                        element={<PageStudentProfile studentId={8} />}
-                    />
-                    <Route path="/government" element={<Government />} />
-                    <Route
-                        path="/request"
-                        element={<RequestPage request_id={"1"} />}
-                    />
-                    <Route path="/consumer" element={<Consumer />} />
-                    <Route path="/profileinput" element={<ProfileSetup />} />
-                    <Route path="/requestinput" element={<RequestInput />} />
-                    <Route
-                        path="/corporation-review"
-                        element={
-                            <PageCorporationReview
-                                student_id={9}
-                                request_id={15}
-                            />
-                        }
-                    />
-                </Routes>
-            </BrowserRouter>
-        </QueryClientProvider>
+                    {/* 라우팅 설정 */}
+                    <Routes>
+                        <Route
+                            path="/corporation"
+                            element={<PageCorpProfile consumerId={2} />}
+                        />
+                        <Route
+                            path="/student"
+                            element={<PageStudentProfile studentId={8} />}
+                        />
+                        <Route path="/government" element={<Government />} />
+                        <Route
+                            path="/request"
+                            element={<RequestPage request_id={"1"} />}
+                        />
+                        <Route path="/consumer" element={<Consumer />} />
+                        <Route
+                            path="/profileinput"
+                            element={<ProfileSetup />}
+                        />
+                        <Route
+                            path="/requestinput"
+                            element={<RequestInput />}
+                        />
+                        <Route
+                            path="/corporation-review"
+                            element={
+                                <PageCorporationReview
+                                    student_id={9}
+                                    request_id={15}
+                                />
+                            }
+                        />
+                        <Route path="/chat" element={<ChatPage />} />
+                        <Route
+                            path="/student/list"
+                            element={<StudentListPage />}
+                        />
+                    </Routes>
+                </BrowserRouter>
+            </QueryClientProvider>
+        </SessionProvider>
     );
 }
 

@@ -144,14 +144,11 @@ const ProfileSetup: React.FC = () => {
         };
         if (isStudentProfile(data)) {
             try {
-                const studentResponse = await fetch(
-                    "http://localhost:8080/api/students/",
-                    {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(data),
-                    },
-                );
+                const studentResponse = await fetch("/api/students/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data),
+                });
 
                 if (studentResponse.ok) {
                     const studentResult = studentResponse.json();
@@ -170,7 +167,7 @@ const ProfileSetup: React.FC = () => {
                 console.log(error);
             }
         } else {
-            url = "http://localhost:8080/api/consumer/";
+            url = "/api/consumer/";
         }
         try {
             const response = await fetch(url, {

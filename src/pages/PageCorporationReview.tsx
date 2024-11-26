@@ -33,16 +33,13 @@ const PageCorporationReview: React.FC<PageCorporationReviewProps> = ({
         const payload = { ...data, student_id, request_id };
 
         try {
-            const response = await fetch(
-                "http://localhost:8080/api/corporation-reviews",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(payload),
+            const response = await fetch("/api/corporation-reviews", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
                 },
-            );
+                body: JSON.stringify(payload),
+            });
 
             if (response.ok) {
                 const result = await response.json();
