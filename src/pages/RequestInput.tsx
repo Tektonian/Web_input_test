@@ -68,7 +68,7 @@ const RequestInput: React.FC = () => {
     const onSubmit = async (data: RequestProfileProps) => {
         try {
             console.log(data);
-            const response = await fetch("http://localhost:8080/api/requests", {
+            const response = await fetch("/api/requests", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
