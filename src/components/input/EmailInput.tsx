@@ -22,6 +22,24 @@ const EmailInput: React.FC<EmailInputProps> = ({
     const activeControl =
         userType === "student" ? innerControl : externalControl;
 
+    // TODO: temporary code DELETE later
+    const handleNext = () => {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        fetch("/api/verification/identity-verify", {
+            method: "post",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                // @ts-ignore
+                verifyEmail: innerControl._fields.consumer_email?._f.value,
+                type: "student",
+            }),
+        });
+        onNext();
+    };
+
     return (
         <div>
             <h3>Enter Your Email</h3>
@@ -30,7 +48,7 @@ const EmailInput: React.FC<EmailInputProps> = ({
                 name="consumer_email"
                 label="Email"
             />
-            <button type="button" onClick={onNext}>
+            <button type="button" onClick={handleNext}>
                 Next
             </button>
             <button type="button" onClick={onPrevious}>
