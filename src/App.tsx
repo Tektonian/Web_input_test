@@ -14,7 +14,7 @@ import PageStudentProfile from "./pages/PageStudentProfile";
 import PageCorpProfile from "./pages/PageCorpProfile";
 import PageCorporationReview from "./pages/PageCorporationReview";
 import StudentListPage from "./pages/student/StudentListPage";
-
+import HomePage from "./pages/home/HomePage";
 import UnreadCount from "./components/UnreadCount";
 
 const queryClient = new QueryClient();
@@ -52,6 +52,9 @@ const NavigationBar = () => {
                 onClick={() => navigate("/corporation-review")}
             >
                 CorpReview
+            </Button>
+            <Button variant="soft" onClick={() => navigate("/home")}>
+                Home
             </Button>
             <Button variant="soft" onClick={() => navigate("/student/list")}>
                 StudentList
@@ -101,6 +104,7 @@ function App() {
                                 />
                             }
                         />
+                        <Route path="/home" element={<HomePage />} />
                         <Route path="/chat" element={<ChatPage />} />
                         <Route
                             path="/student/list"
