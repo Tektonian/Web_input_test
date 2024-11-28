@@ -1,7 +1,7 @@
 import { MouseEvent, MouseEventHandler, useEffect } from "react";
 import { ChatRoom, useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";
 import { MessageHeader } from "web_component";
-import { ArrowLeftIcon, DropdownMenuIcon } from "@radix-ui/react-icons"
+import { ArrowLeftIcon, DropdownMenuIcon } from "@radix-ui/react-icons";
 import { Box, Flex, Separator, Text } from "@radix-ui/themes";
 import { Button } from "@mui/joy";
 /*
@@ -33,33 +33,46 @@ export const ChatContentHeader = () => {
 }
 */
 
-export const ChatContentHeader = ({activeRoom}: {activeRoom?: ChatRoom}) => {
+export const ChatContentHeader = ({
+    activeRoom,
+}: {
+    activeRoom?: ChatRoom;
+}) => {
     const setActiveRoom = useChatRoomStore((state) => state.setActiveRoom);
-    const handleClick= () => {
+    const handleClick = () => {
         setActiveRoom(undefined);
-    }
+    };
     const handleAlert = () => {
-        alert("df")
-    }
+        alert("df");
+    };
 
-    useEffect(()=>{
+    useEffect(() => {}, [activeRoom?.chatRoomId]);
 
-    }, [activeRoom?.chatRoomId])
-
-   // <MessageHeader key={activeRoom?.chatRoomId ?? "empty"} onClickArrow={(e: MouseEvent) =>{handleAlert()}} onClickMenu={() => handleClick()} username={activeRoom === undefined ? "" : activeRoom.consumerName}/>
-   return (
+    // <MessageHeader key={activeRoom?.chatRoomId ?? "empty"} onClickArrow={(e: MouseEvent) =>{handleAlert()}} onClickMenu={() => handleClick()} username={activeRoom === undefined ? "" : activeRoom.consumerName}/>
+    return (
         <Box pb="2">
-            <Flex direction="row" gapX="2" align="center" justify="between" pb="4">
-            
-            <Button onClick={handleClick} startDecorator={<ArrowLeftIcon />}/>
-            
-            <Text>{activeRoom?.consumerName}</Text>
-            
-            <Box flexGrow="1" />
-            
-            <Button onClick={handleAlert} startDecorator={<DropdownMenuIcon/>} />
+            <Flex
+                direction="row"
+                gapX="2"
+                align="center"
+                justify="between"
+                pb="4"
+            >
+                <Button
+                    onClick={handleClick}
+                    startDecorator={<ArrowLeftIcon />}
+                />
+
+                <Text>{activeRoom?.consumerName}</Text>
+
+                <Box flexGrow="1" />
+
+                <Button
+                    onClick={handleAlert}
+                    startDecorator={<DropdownMenuIcon />}
+                />
             </Flex>
             <Separator orientation="horizontal" size="4" />
         </Box>
-    )
-}
+    );
+};
