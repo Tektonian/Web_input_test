@@ -16,7 +16,6 @@ import LanguageCard, { LanguageCardProps } from "./LanguageCard";
 
 export interface StudentProfileProps {
     student_id: number;
-    user_id: Buffer | Uint8Array;
     name_glb: { [key: string]: string };
     nationality: string;
     age: string;
@@ -35,7 +34,6 @@ export interface StudentProfileProps {
 
 const StudentProfile: React.FC<StudentProfileProps> = ({
     student_id,
-    user_id,
     name_glb,
     nationality,
     age,

@@ -14,13 +14,8 @@ import { AcademicHistoryCardProps } from "../components/AcademicHistoryCard";
 import { LanguageCardProps } from "../components/LanguageCard";
 import { Buffer } from "buffer";
 
-const userId = Buffer.from("7515c1eaa33111efa258e4fd450795e4", "hex").toString(
-    "base64",
-);
-
 interface StudentProfileProps {
     userType: string;
-    user_id: string;
     name_glb: object;
     nationality: string;
     age: string;
@@ -38,7 +33,6 @@ interface StudentProfileProps {
 }
 interface ConsumerProfileProps {
     userType: string;
-    user_id?: string;
     corp_id?: number | null;
     orgn_id?: number | null;
     consumer_type: string;
@@ -69,7 +63,6 @@ const ProfileSetup: React.FC = () => {
 
     const [defaultValues, setDefaultValues] = useState<ProfileProps>({
         userType: "student",
-        user_id: userId,
         name_glb: {},
         nationality: "",
         age: "",
@@ -90,7 +83,6 @@ const ProfileSetup: React.FC = () => {
         if (userType === "student") {
             setDefaultValues({
                 userType: "student",
-                user_id: userId,
                 name_glb: {},
                 nationality: "",
                 age: "",
@@ -146,6 +138,7 @@ const ProfileSetup: React.FC = () => {
             try {
                 const studentResponse = await fetch("/api/students/", {
                     method: "POST",
+                    credentials: "include",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(data),
                 });

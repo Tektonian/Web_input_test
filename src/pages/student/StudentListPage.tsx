@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import PageStudentProfile from "../PageStudentProfile";
 import {
     Theme,
     Container,
@@ -11,6 +12,7 @@ import {
     Card,
     Button,
 } from "@radix-ui/themes";
+import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { StudentCard } from "web_component";
 
@@ -40,6 +42,7 @@ const useStudentList = () => {
 
 const StudentListPage = () => {
     const { onLoading, data, isSuccess } = useStudentList();
+    const navigate = useNavigate();
 
     useEffect(() => {
         onLoading();
@@ -87,8 +90,17 @@ const StudentListPage = () => {
                                             major={card.faculty}
                                             imageUrl=""
                                             languageWithLevel={[
-                                                { language: "jp", level: 2 },
+                                                {
+                                                    language: "jp",
+                                                    level: 2,
+                                                },
                                             ]}
+                                            onBookmarkClick={() => {
+                                                console.log(card);
+                                                navigate(
+                                                    `/student/${card.student_id}`,
+                                                );
+                                            }}
                                         />
                                     </Flex>
                                 ))
