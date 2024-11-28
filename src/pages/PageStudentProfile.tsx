@@ -25,25 +25,18 @@ const PageStudentProfile: React.FC = () => {
             setError(null);
 
             try {
-                const [profileResponse, reviewsResponse] = await Promise.all([
+                const [profileResponse] = await Promise.all([
                     fetch(`http://localhost:8080/api/students/${student_id}`),
-                    fetch(
-                        `http://localhost:8080/api/student-reviews/${student_id}`,
-                    ),
                 ]);
 
                 if (!profileResponse.ok) {
                     throw new Error("Failed to fetch student profile");
                 }
-                if (!reviewsResponse.ok) {
-                    throw new Error("Failed to fetch student reviews");
-                }
 
                 const studentProfileData = await profileResponse.json();
-                const reviewOfStudentData = await reviewsResponse.json();
 
-                setStudentProfile(studentProfileData || null); // Profile 데이터가 없을 경우 null 처리
-                setReviewOfStudent(reviewOfStudentData || []); // Reviews 데이터가 없을 경우 빈 배열 처리
+                setStudentProfile(studentProfileData.profile || null); // Profile 데이터가 없을 경우 null 처리
+                setReviewOfStudent(studentProfileData.review || []); // Reviews 데이터가 없을 경우 빈 배열 처리
             } catch (err) {
                 setError(
                     err instanceof Error
