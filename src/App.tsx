@@ -78,8 +78,8 @@ function App() {
                             element={<PageCorpProfile consumerId={2} />}
                         />
                         <Route
-                            path="/student"
-                            element={<PageStudentProfile studentId={8} />}
+                            path="/student/:student_id"
+                            element={<PageStudentProfile />}
                         />
                         <Route path="/government" element={<Government />} />
                         <Route

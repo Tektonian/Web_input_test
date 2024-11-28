@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import StudentProfile, {
     StudentProfileProps,
 } from "../components/StudentProfile";
@@ -7,13 +8,7 @@ import ReviewOfStudent, {
 } from "../components/ReviewOfStudent";
 import { Theme, Grid, Box, Flex, Text, Separator } from "@radix-ui/themes";
 
-export interface PageStudentProfileProps {
-    studentId: number;
-}
-
-const PageStudentProfile: React.FC<PageStudentProfileProps> = ({
-    studentId,
-}) => {
+const PageStudentProfile: React.FC = () => {
     const [studentProfile, setStudentProfile] =
         useState<StudentProfileProps | null>(null);
     const [reviewOfStudent, setReviewOfStudent] = useState<
@@ -22,6 +17,8 @@ const PageStudentProfile: React.FC<PageStudentProfileProps> = ({
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
+    const { student_id } = useParams();
+
     useEffect(() => {
         const fetchStudentData = async () => {
             setLoading(true);
@@ -29,9 +26,9 @@ const PageStudentProfile: React.FC<PageStudentProfileProps> = ({
 
             try {
                 const [profileResponse, reviewsResponse] = await Promise.all([
-                    fetch(`http://localhost:8080/api/students/${studentId}`),
+                    fetch(`http://localhost:8080/api/students/${student_id}`),
                     fetch(
-                        `http://localhost:8080/api/student-reviews/${studentId}`,
+                        `http://localhost:8080/api/student-reviews/${student_id}`,
                     ),
                 ]);
 
@@ -59,7 +56,7 @@ const PageStudentProfile: React.FC<PageStudentProfileProps> = ({
         };
 
         fetchStudentData(); // eslint-disable-line
-    }, [studentId]);
+    }, []);
 
     if (loading) {
         return (
