@@ -1,10 +1,10 @@
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import RatingInput from "../components/input/RatingInput";
-import ShortTextInput from "../components/input/ShortTextInput";
+import { RatingInput } from "web_component";
+import { ShortTextInput } from "web_component";
 import Button from "@mui/material/Button";
 
-export interface StudentReviewProps {
+export interface ReviewProps {
     was_late: number;
     was_proactive: number;
     was_diligent: number;
@@ -16,16 +16,16 @@ export interface StudentReviewProps {
     need_improve?: string;
 }
 
-interface PageStudentReviewProps {
+interface StudentReviewInputProps {
     consumer_id: number;
     request_id: number;
 }
 
-const PageStudentReview: React.FC<PageStudentReviewProps> = ({
+const StudentReviewInput: React.FC<StudentReviewInputProps> = ({
     consumer_id,
     request_id,
 }) => {
-    const { control, handleSubmit } = useForm<StudentReviewProps>({
+    const { control, handleSubmit } = useForm<ReviewProps>({
         defaultValues: {
             was_late: 10,
             was_proactive: 10,
@@ -39,7 +39,7 @@ const PageStudentReview: React.FC<PageStudentReviewProps> = ({
         },
     });
 
-    const onSubmit: SubmitHandler<StudentReviewProps> = async (data) => {
+    const onSubmit: SubmitHandler<ReviewProps> = async (data) => {
         const payload = { ...data, consumer_id, request_id };
 
         try {
@@ -136,4 +136,4 @@ const PageStudentReview: React.FC<PageStudentReviewProps> = ({
     );
 };
 
-export default PageStudentReview;
+export default StudentReviewInput;

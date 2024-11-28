@@ -1,13 +1,13 @@
 import React from "react";
-import ShortTextInput from "./ShortTextInput";
+import { ShortTextInput } from "web_component";
 
-interface TokenPageProps {
+export interface TokenInputProps {
     control: any;
     onSubmit: () => void;
     onPrevious: () => void;
 }
 
-const TokenPage: React.FC<TokenPageProps> = ({
+const TokenInput: React.FC<TokenInputProps> = ({
     control,
     onSubmit,
     onPrevious,
@@ -26,4 +26,4 @@ const TokenPage: React.FC<TokenPageProps> = ({
     );
 };
 
-export default TokenPage;
+export default TokenInput;

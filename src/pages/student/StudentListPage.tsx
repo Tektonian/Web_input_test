@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import PageStudentProfile from "../PageStudentProfile";
+import PageStudentProfile from "./PageStudentProfile";
 import {
     Theme,
     Container,

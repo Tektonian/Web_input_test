@@ -1,5 +1,5 @@
 import React from "react";
-import ShortTextInput from "./ShortTextInput";
+import { ShortTextInput } from "web_component";
 import { Container, Typography, Button, Grid2 as Grid } from "@mui/material";
 
 interface ExamInputProps {

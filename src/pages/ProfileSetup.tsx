@@ -2,17 +2,32 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useFunnel } from "../hooks/useFunnel";
 import UserTypeInput from "../components/input/UserTypeInput";
-import EmailInput from "../components/input/EmailInput";
+import { EmailInput } from "web_component";
 import TokenInput from "../components/input/TokenInput";
-import BasicInfoInput from "../components/input/BasicInfoInput";
-import AcademicHistoryInput from "../components/input/AcademicHistoryInput";
-import LanguageHistoryInput from "../components/input/LanguageHistoryInput";
-import ProfileImageInput from "../components/input/ProfileImageInput";
-import BusinessNumberInput from "../components/input/BusinessNumberInput";
-import BusinessInfoInput from "../components/input/BusinessInfoInput";
-import { AcademicHistoryCardProps } from "../components/AcademicHistoryCard";
-import { LanguageCardProps } from "../components/LanguageCard";
+import BasicInfoInput from "./student/components/BasicInfoInput";
+import AcademicHistoryInput from "./student/components/AcademicHistoryInput";
+import LanguageHistoryInput from "./student/components/LanguageHistoryInput";
+import { ProfileImageInput } from "web_component";
+import BusinessNumberInput from "./Corporation/components/BusinessNumberInput";
+import BusinessInfoInput from "./Corporation/components/BusinessInfoInput";
 import { Buffer } from "buffer";
+
+interface AcademicHistoryCardProps {
+    degree: string;
+    faculty: string;
+    school_name: string;
+    start_date: string;
+    end_date: string;
+    status: "Graduated" | "In Progress" | "Withdrawn";
+    logo?: string;
+}
+
+export interface LanguageCardProps {
+    level: number;
+    exam_result: string;
+    exam_name: string;
+    language: string;
+}
 
 interface StudentProfileProps {
     userType: string;

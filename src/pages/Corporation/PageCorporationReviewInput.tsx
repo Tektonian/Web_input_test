@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import RatingInput from "../components/input/RatingInput";
-import ShortTextInput from "../components/input/ShortTextInput";
+import { RatingInput } from "web_component";
+import { ShortTextInput } from "web_component";
 import Button from "@mui/material/Button";
 
 interface CorporationReviewProps {
@@ -11,12 +11,12 @@ interface CorporationReviewProps {
     sense_of_achive?: number;
 }
 
-interface PageCorporationReviewProps {
+interface PageCorporationReviewInputProps {
     student_id: number;
     request_id: number;
 }
 
-const PageCorporationReview: React.FC<PageCorporationReviewProps> = ({
+const PageCorporationReviewInput: React.FC<PageCorporationReviewInputProps> = ({
     student_id,
     request_id,
 }) => {
@@ -92,4 +92,4 @@ const PageCorporationReview: React.FC<PageCorporationReviewProps> = ({
     );
 };
 
-export default PageCorporationReview;
+export default PageCorporationReviewInput;

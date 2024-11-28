@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
-import ShortTextInput from "./ShortTextInput";
-import YearMonthInput from "./YearMonthInput";
+import { ShortTextInput } from "web_component";
+import { YearMonthInput } from "web_component";
 import {
     Container,
     Typography,
@@ -10,7 +10,7 @@ import {
     TextField,
     MenuItem,
 } from "@mui/material";
-import SelectInput from "./SelectInput";
+import { SelectInput } from "web_component";
 
 interface SchoolInputProps {
     control: any;

@@ -1,49 +1,46 @@
 import React, { useEffect, useState } from "react";
-import CorpProfile, { CorpProfileProps } from "../components/CorpProfile";
-import ReviewOfCorp, { ReviewOfCorpProps } from "../components/ReviewOfCorp";
+import { useParams } from "react-router-dom";
+import { StudentProfile } from "web_component";
+import { ReviewOfStudent } from "web_component";
 import { Theme, Grid, Box, Flex, Text, Separator } from "@radix-ui/themes";
 
-export interface PageCorpProfileProps {
-    consumerId: number; // Consumer ID를 부모 컴포넌트로부터 전달받음
-}
-
-const PageCorpProfile: React.FC<PageCorpProfileProps> = ({ consumerId }) => {
-    const [corpProfile, setCorpProfile] = useState<CorpProfileProps | null>(
-        null,
-    );
-    const [reviewOfCorp, setReviewOfCorp] = useState<
-        ReviewOfCorpProps[] | null
+const PageStudentProfile: React.FC = () => {
+    const [studentProfile, setStudentProfile] = useState<React.ComponentProps<
+        typeof StudentProfile
+    > | null>(null);
+    const [reviewOfStudent, setReviewOfStudent] = useState<
+        React.ComponentProps<typeof ReviewOfStudent>[] | null
     >(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
+    const { student_id } = useParams();
+
     useEffect(() => {
-        const fetchCorpData = async () => {
+        const fetchStudentData = async () => {
             setLoading(true);
             setError(null);
 
             try {
                 const [profileResponse, reviewsResponse] = await Promise.all([
+                    fetch(`http://localhost:8080/api/students/${student_id}`),
                     fetch(
-                        `http://localhost:8080/api/corporations/${consumerId}`,
-                    ),
-                    fetch(
-                        `http://localhost:8080/api/corporation-reviews/${consumerId}`,
+                        `http://localhost:8080/api/student-reviews/${student_id}`,
                     ),
                 ]);
 
                 if (!profileResponse.ok) {
-                    throw new Error("Failed to fetch corporation profile");
+                    throw new Error("Failed to fetch student profile");
                 }
                 if (!reviewsResponse.ok) {
-                    throw new Error("Failed to fetch corporation reviews");
+                    throw new Error("Failed to fetch student reviews");
                 }
 
-                const corpProfileData = await profileResponse.json();
-                const reviewOfCorpData = await reviewsResponse.json();
+                const studentProfileData = await profileResponse.json();
+                const reviewOfStudentData = await reviewsResponse.json();
 
-                setCorpProfile(corpProfileData || null); // Profile 데이터가 없을 경우 null 처리
-                setReviewOfCorp(reviewOfCorpData || []); // Reviews 데이터가 없을 경우 빈 배열 처리
+                setStudentProfile(studentProfileData || null); // Profile 데이터가 없을 경우 null 처리
+                setReviewOfStudent(reviewOfStudentData || []); // Reviews 데이터가 없을 경우 빈 배열 처리
             } catch (err) {
                 setError(
                     err instanceof Error
@@ -55,8 +52,8 @@ const PageCorpProfile: React.FC<PageCorpProfileProps> = ({ consumerId }) => {
             }
         };
 
-        fetchCorpData(); //eslint-disable-line
-    }, [consumerId]);
+        fetchStudentData(); // eslint-disable-line
+    }, []);
 
     if (loading) {
         return (
@@ -78,11 +75,11 @@ const PageCorpProfile: React.FC<PageCorpProfileProps> = ({ consumerId }) => {
         );
     }
 
-    if (!corpProfile) {
+    if (!studentProfile) {
         return (
             <Flex justify="center" align="center" style={{ height: "100vh" }}>
                 <Text size="6" color="red" weight="bold">
-                    Corporation profile not found.
+                    Student profile not found.
                 </Text>
             </Flex>
         );
@@ -95,11 +92,11 @@ const PageCorpProfile: React.FC<PageCorpProfileProps> = ({ consumerId }) => {
                     width={{ xs: "520px", sm: "768px", md: "1024px" }}
                     minWidth="300px"
                 >
-                    {/* Corporation Profile Section */}
-                    <CorpProfile {...corpProfile} />
+                    {/* Student Profile Section */}
+                    <StudentProfile {...studentProfile} />
 
                     {/* Reviews Section */}
-                    {reviewOfCorp && reviewOfCorp.length > 0 ? (
+                    {reviewOfStudent && reviewOfStudent.length > 0 ? (
                         <>
                             <Separator my="3" size="4" />
                             <Grid gapY="5">
@@ -110,7 +107,7 @@ const PageCorpProfile: React.FC<PageCorpProfileProps> = ({ consumerId }) => {
                                     columns={{ initial: "1", md: "2" }}
                                     gap="3"
                                 >
-                                    {reviewOfCorp.map((review, index) => (
+                                    {reviewOfStudent.map((review, index) => (
                                         <Flex
                                             key={index}
                                             justify="center"
@@ -120,7 +117,7 @@ const PageCorpProfile: React.FC<PageCorpProfileProps> = ({ consumerId }) => {
                                                 height: "100%",
                                             }}
                                         >
-                                            <ReviewOfCorp {...review} />
+                                            <ReviewOfStudent {...review} />
                                         </Flex>
                                     ))}
                                 </Grid>
@@ -137,4 +134,4 @@ const PageCorpProfile: React.FC<PageCorpProfileProps> = ({ consumerId }) => {
     );
 };
 
-export default PageCorpProfile;
+export default PageStudentProfile;

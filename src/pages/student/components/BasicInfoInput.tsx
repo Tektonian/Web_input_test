@@ -1,6 +1,6 @@
 import React from "react";
 import GlobalNameInput from "./GlobalNameInput";
-import ShortTextInput from "./ShortTextInput";
+import { ShortTextInput } from "web_component";
 
 interface BasicInfoInputProps {
     control: any;
