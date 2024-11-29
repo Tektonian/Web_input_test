@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useFunnel } from "../hooks/useFunnel";
 import UserTypeInput from "../components/input/UserTypeInput";
-import { EmailInput } from "web_component";
+import EmailInput from "../components/input/EmailInput";
 import TokenInput from "../components/input/TokenInput";
 import BasicInfoInput from "./student/components/BasicInfoInput";
 import AcademicHistoryInput from "./student/components/AcademicHistoryInput";
@@ -211,8 +211,6 @@ const ProfileSetup: React.FC = () => {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <h2>Enter Profile Information</h2>
-
             <Funnel>
                 {/* 공통 Step 1: User Type 선택 */}
                 <Step name="userType">

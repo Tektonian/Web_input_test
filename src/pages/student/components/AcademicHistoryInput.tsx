@@ -1,6 +1,8 @@
 import React from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray } from "react-hook-form";
 import SchoolInput from "./SchoolInput";
+import { Container, Typography, Box, Button } from "@mui/material";
+import { NavigationButton } from "web_component";
 
 interface AcademicHistoryInputProps {
     control: any;
@@ -17,42 +19,51 @@ const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
         control,
         name: "academicHistory",
     });
-    const { watch } = useForm();
-    console.log(watch("academicHistory"));
 
     return (
-        <div>
-            <h3>Academic History</h3>
-            {fields.map((field, index) => (
-                <SchoolInput
-                    key={field.id}
-                    control={control}
-                    index={index}
-                    onRemove={() => remove(index)}
-                />
-            ))}
-            <button
-                type="button"
-                onClick={() =>
-                    append({
-                        degree: "",
-                        faculty: "",
-                        school_id: 1,
-                        start_date: "",
-                        end_date: "",
-                        status: "In Progress",
-                    })
-                }
-            >
-                Add Academic History
-            </button>
-            <button type="button" onClick={onNext}>
-                Next
-            </button>
-            <button type="button" onClick={onPrevious}>
-                Previous
-            </button>
-        </div>
+        <Container>
+            {/* 제목 */}
+            <Typography variant="h4" gutterBottom>
+                Academic History
+            </Typography>
+
+            {/* 학력 입력 필드 */}
+            <Box>
+                {fields.map((field, index) => (
+                    <SchoolInput
+                        key={field.id}
+                        control={control}
+                        index={index}
+                        onRemove={() => remove(index)}
+                    />
+                ))}
+            </Box>
+
+            {/* 학력 추가 버튼 */}
+            <Box textAlign="center" mb={2}>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() =>
+                        append({
+                            degree: "",
+                            faculty: "",
+                            school_id: 1,
+                            start_date: "",
+                            end_date: "",
+                            status: "In Progress",
+                        })
+                    }
+                >
+                    Add Academic History
+                </Button>
+            </Box>
+
+            <Box display="flex" justifyContent="space-between" mt={3}>
+                    <NavigationButton label="previous" onClick={onPrevious}/>
+                    <NavigationButton label="next" onClick={onNext}/>
+            </Box>
+        </Container>
     );
 };
 

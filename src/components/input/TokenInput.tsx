@@ -1,5 +1,6 @@
 import React from "react";
-import { ShortTextInput } from "web_component";
+import { ShortTextInput, NavigationButton } from "web_component";
+import { Box } from "@mui/material";
 
 export interface TokenInputProps {
     control: any;
@@ -16,12 +17,9 @@ const TokenInput: React.FC<TokenInputProps> = ({
         <div>
             <h3>Enter Verification Token</h3>
             <ShortTextInput control={control} name="token" label="Token" />
-            <button type="submit" onClick={onSubmit}>
-                Submit
-            </button>
-            <button type="submit" onClick={onPrevious}>
-                Previous
-            </button>
+            <Box display="flex" justifyContent="space-between" mt={3}>
+                    <NavigationButton label="previous" onClick={onPrevious}/>
+            </Box>
         </div>
     );
 };

@@ -1,6 +1,8 @@
 import React from "react";
 import { useFieldArray } from "react-hook-form";
-import TestInput from "./ExamInput";
+import ExamInput from "./ExamInput";
+import { Container, Typography, Box, Button } from "@mui/material";
+import { NavigationButton } from "web_component";
 
 interface LanguageHistoryInputProps {
     control: any;
@@ -20,36 +22,44 @@ const LanguageHistoryInput: React.FC<LanguageHistoryInputProps> = ({
     });
 
     return (
-        <div>
-            <h3>Language History</h3>
-            {fields.map((field, index) => (
-                <TestInput
-                    key={field.id}
-                    control={control}
-                    index={index}
-                    onRemove={() => remove(index)}
-                />
-            ))}
-            <button
-                type="button"
-                onClick={() =>
-                    append({
-                        language: "",
-                        exam_name: "",
-                        exam_result: "",
-                        level: 0,
-                    })
-                }
-            >
-                Add Language History
-            </button>
-            <button type="button" onClick={onNext}>
-                Next
-            </button>
-            <button type="button" onClick={onPrevious}>
-                Previous
-            </button>
-        </div>
+        <Container>
+            <Typography variant="h4" gutterBottom>
+                Language History
+            </Typography>
+
+            <Box>
+                {fields.map((field, index) => (
+                    <ExamInput
+                        key={field.id}
+                        control={control}
+                        index={index}
+                        onRemove={() => remove(index)}
+                    />
+                ))}
+            </Box>
+
+            <Box textAlign="center" mb={2}>
+                <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() =>
+                        append({
+                            language: "",
+                            exam_name: "",
+                            exam_result: "",
+                            level: 0,
+                        })
+                    }
+                >
+                    Add Language History
+                </Button>
+            </Box>
+
+            <Box display="flex" justifyContent="space-between" mt={3}>
+                    <NavigationButton label="previous" onClick={onPrevious}/>
+                    <NavigationButton label="next" onClick={onNext}/>
+            </Box>
+        </Container>
     );
 };
 
