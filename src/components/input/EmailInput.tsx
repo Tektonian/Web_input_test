@@ -1,8 +1,9 @@
 import React from "react";
-import ShortTextInput from "./ShortTextInput";
-import { useForm, Controller } from "react-hook-form";
+import { ShortTextInput, NavigationButton } from "web_component";
+import { useForm } from "react-hook-form";
+import { Box } from "@mui/material";
 
-interface EmailInputProps {
+export interface EmailInputProps {
     control: any; // 부모 컴포넌트에서 전달받는 control
     onNext: () => void;
     onPrevious: () => void;
@@ -48,12 +49,10 @@ const EmailInput: React.FC<EmailInputProps> = ({
                 name="consumer_email"
                 label="Email"
             />
-            <button type="button" onClick={handleNext}>
-                Next
-            </button>
-            <button type="button" onClick={onPrevious}>
-                Previous
-            </button>
+            <Box display="flex" justifyContent="space-between" mt={3}>
+                    <NavigationButton label="previous" onClick={onPrevious}/>
+                    <NavigationButton label="next" onClick={onNext}/>
+            </Box>
         </div>
     );
 };

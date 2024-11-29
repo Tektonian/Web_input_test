@@ -1,5 +1,5 @@
 import React from "react";
-import ShortTextInput from "./ShortTextInput";
+import { ShortTextInput } from "web_component";
 
 interface BusinessNumberInputProps {
     control: any;

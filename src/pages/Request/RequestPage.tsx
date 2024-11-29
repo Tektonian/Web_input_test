@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useEffect, useState } from "react";
-import RequestProfile from "../components/RequestProfile";
-import StickyButton, { StickyButtonProps } from "../components/StickyButton";
+import { RequestProfile } from "web_component";
+import { StickyButton } from "web_component";
 import { Flex, Box, Separator, Container } from "@radix-ui/themes";
 
 interface RequestProfileProps {
@@ -39,7 +39,9 @@ export interface RequestPageProps {
 
 const RequestPage: React.FC<RequestPageProps> = ({ request_id }) => {
     const [request, setRequest] = useState<RequestProfileProps | null>(null);
-    const [sticky, setSticky] = useState<StickyButtonProps>({
+    const [sticky, setSticky] = useState<
+        React.ComponentProps<typeof StickyButton>
+    >({
         viewerType: 1,
         innerText: "신청하기",
     });

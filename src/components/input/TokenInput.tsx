@@ -1,13 +1,14 @@
 import React from "react";
-import ShortTextInput from "./ShortTextInput";
+import { ShortTextInput, NavigationButton } from "web_component";
+import { Box } from "@mui/material";
 
-interface TokenPageProps {
+export interface TokenInputProps {
     control: any;
     onSubmit: () => void;
     onPrevious: () => void;
 }
 
-const TokenPage: React.FC<TokenPageProps> = ({
+const TokenInput: React.FC<TokenInputProps> = ({
     control,
     onSubmit,
     onPrevious,
@@ -16,14 +17,11 @@ const TokenPage: React.FC<TokenPageProps> = ({
         <div>
             <h3>Enter Verification Token</h3>
             <ShortTextInput control={control} name="token" label="Token" />
-            <button type="submit" onClick={onSubmit}>
-                Submit
-            </button>
-            <button type="submit" onClick={onPrevious}>
-                Previous
-            </button>
+            <Box display="flex" justifyContent="space-between" mt={3}>
+                    <NavigationButton label="previous" onClick={onPrevious}/>
+            </Box>
         </div>
     );
 };
 
-export default TokenPage;
+export default TokenInput;

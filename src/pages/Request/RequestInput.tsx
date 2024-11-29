@@ -3,12 +3,12 @@ import { Flex, Box, Grid } from "@radix-ui/themes";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { useForm } from "react-hook-form";
-import ShortTextInput from "../components/input/ShortTextInput";
-import LongTextInput from "../components/input/LongTextInput";
-import DateInput from "../components/input/DateInput";
-import TimeInput from "../components/input/TimeInput";
-import SelectInput from "../components/input/SelectInput";
-import AddressInput from "../components/input/AddressInput";
+import { ShortTextInput } from "web_component";
+import { LongTextInput } from "web_component";
+import { DateInput } from "web_component";
+import { TimeInput } from "web_component";
+import { SelectInput } from "web_component";
+import AddressInput from "./components/AddressInput";
 
 export interface RequestProfileProps {
     consumer_id: number;
