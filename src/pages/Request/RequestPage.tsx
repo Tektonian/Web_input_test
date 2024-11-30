@@ -1,8 +1,9 @@
 /* eslint-disable */
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // useNavigate 가져오기
 import { RequestProfile } from "web_component";
 import { StickyButton } from "web_component";
-import { Flex, Box, Separator, Container } from "@radix-ui/themes";
+import { Flex, Box, Separator, Container, Button } from "@radix-ui/themes"; // Button 컴포넌트 추가
 
 interface RequestProfileProps {
     request_id: number;
@@ -47,6 +48,7 @@ const RequestPage: React.FC<RequestPageProps> = ({ request_id }) => {
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchRequestData = async () => {
@@ -94,17 +96,14 @@ const RequestPage: React.FC<RequestPageProps> = ({ request_id }) => {
                 });
 
                 setSticky({
-                    viewerType: stickybutton_type === "register" ? 1 : 0, // Example mapping
+                    viewerType: stickybutton_type === "register" ? 1 : 0,
                     innerText:
                         stickybutton_type === "register"
                             ? "신청하기"
-                            : "보기만 하기", // Example text
+                            : "수정하기",
                 });
             } catch (error) {
                 console.error("Error fetching request data:", error);
-                setError(
-                    "데이터를 불러오는 데 실패했습니다. 잠시 후 다시 시도해주세요.",
-                );
             } finally {
                 setLoading(false);
             }
@@ -171,6 +170,10 @@ const RequestPage: React.FC<RequestPageProps> = ({ request_id }) => {
         );
     }
 
+    const goToCorporationProfile = () => {
+        navigate(`/corporation/${request.corp_id}`);
+    };
+
     return (
         <Container
             width={{
@@ -208,7 +211,10 @@ const RequestPage: React.FC<RequestPageProps> = ({ request_id }) => {
                     nationality={request.nationality}
                     corp_num={request.corp_num}
                 />
-                <Box width="1024px">
+                <Box width="1024px" my="3">
+                    <Button onClick={goToCorporationProfile}>
+                        Corporation Profile
+                    </Button>
                     <Separator my="3" size="4" />
                 </Box>
             </Flex>

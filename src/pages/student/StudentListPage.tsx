@@ -12,7 +12,7 @@ import {
     Card,
     Button,
 } from "@radix-ui/themes";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { StudentCard } from "web_component";
 
@@ -33,20 +33,24 @@ const useStudentList = () => {
         },
     });
 
-    const onLoading = () => {
-        mutate(2);
+    const onLoading = (request_id: number) => {
+        mutate(request_id);
     };
 
     return { onLoading, data, isSuccess };
 };
 
 const StudentListPage = () => {
+    const { request_id } = useParams<{ request_id: string }>();
     const { onLoading, data, isSuccess } = useStudentList();
     const navigate = useNavigate();
+    console.log("request_id", request_id);
 
     useEffect(() => {
-        onLoading();
-    }, []);
+        if (request_id) {
+            onLoading(Number(request_id));
+        }
+    }, [request_id]);
 
     return (
         <Theme>
