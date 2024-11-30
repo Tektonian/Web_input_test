@@ -62,40 +62,43 @@ const RequestPage: React.FC<RequestPageProps> = ({ request_id }) => {
                     );
                 }
 
-                const data = await response.json();
+                const { body, stickybutton_type } = await response.json();
 
                 setRequest({
-                    request_id: data.request_id,
-                    consumer_id: data.consumer_id,
-                    title: data.title,
-                    subtitle: data.subtitle,
-                    head_count: data.head_count,
-                    reward_price: data.reward_price,
-                    currency: data.currency,
-                    content: data.content,
-                    are_needed: data.are_needed,
-                    are_required: data.are_required,
-                    request_status: data.request_status,
-                    start_time: new Date(data.start_time).toISOString(),
-                    end_time: new Date(data.end_time).toISOString(),
-                    address: data.address,
-                    address_coordinate: data.address_coordinate,
-                    provide_food: data.provide_food,
-                    provide_trans_exp: data.provide_trans_exp,
-                    prep_material: data.prep_material,
-                    created_at: new Date(data.created_at),
-                    updated_at: new Date(data.updated_at),
-                    start_date: new Date(data.start_date),
-                    end_date: new Date(data.end_date),
-                    corp_id: data.corp_id, // 추가
-                    corp_name: data.corp_name, // 추가
-                    nationality: data.nationality, // 추가
-                    corp_num: data.corp_num, // 추가
+                    request_id: body.request_id,
+                    consumer_id: body.consumer_id,
+                    title: body.title,
+                    subtitle: body.subtitle,
+                    head_count: body.head_count,
+                    reward_price: body.reward_price,
+                    currency: body.currency,
+                    content: body.content,
+                    are_needed: body.are_needed,
+                    are_required: body.are_required,
+                    request_status: body.request_status,
+                    start_time: new Date(body.start_time).toISOString(),
+                    end_time: new Date(body.end_time).toISOString(),
+                    address: body.address,
+                    address_coordinate: body.address_coordinate,
+                    provide_food: body.provide_food,
+                    provide_trans_exp: body.provide_trans_exp,
+                    prep_material: body.prep_material,
+                    created_at: new Date(body.created_at),
+                    updated_at: new Date(body.updated_at),
+                    start_date: new Date(body.start_date),
+                    end_date: new Date(body.end_date),
+                    corp_id: body.corp_id,
+                    corp_name: body.corp_name,
+                    nationality: body.nationality,
+                    corp_num: body.corp_num,
                 });
 
                 setSticky({
-                    viewerType: 1,
-                    innerText: "신청하기",
+                    viewerType: stickybutton_type === "register" ? 1 : 0, // Example mapping
+                    innerText:
+                        stickybutton_type === "register"
+                            ? "신청하기"
+                            : "보기만 하기", // Example text
                 });
             } catch (error) {
                 console.error("Error fetching request data:", error);
