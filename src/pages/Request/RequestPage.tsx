@@ -1,9 +1,10 @@
 /* eslint-disable */
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // useNavigate 가져오기
+import { useNavigate } from "react-router-dom";
 import { RequestProfile } from "web_component";
 import { StickyButton } from "web_component";
-import { Flex, Box, Separator, Container, Button } from "@radix-ui/themes"; // Button 컴포넌트 추가
+import { Flex, Box, Separator, Container, Button } from "@radix-ui/themes";
+import { useSession } from "../../hooks/Session";
 
 interface RequestProfileProps {
     request_id: number;
@@ -49,6 +50,10 @@ const RequestPage: React.FC<RequestPageProps> = ({ request_id }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
+    const { data: session, status } = useSession();
+    const roles = session?.user?.roles;
+
+    console.log(roles);
 
     useEffect(() => {
         const fetchRequestData = async () => {
@@ -64,7 +69,7 @@ const RequestPage: React.FC<RequestPageProps> = ({ request_id }) => {
                     );
                 }
 
-                const { body, stickybutton_type } = await response.json();
+                const body = await response.json();
 
                 setRequest({
                     request_id: body.request_id,
@@ -96,11 +101,10 @@ const RequestPage: React.FC<RequestPageProps> = ({ request_id }) => {
                 });
 
                 setSticky({
-                    viewerType: stickybutton_type === "register" ? 1 : 0,
-                    innerText:
-                        stickybutton_type === "register"
-                            ? "신청하기"
-                            : "수정하기",
+                    viewerType: roles?.includes("student") ? 1 : 2,
+                    innerText: roles?.includes("student")
+                        ? "신청하기"
+                        : "추천학생",
                 });
             } catch (error) {
                 console.error("Error fetching request data:", error);
