@@ -16,7 +16,7 @@ import { TimeInput } from "web_component";
 import { SelectInput } from "web_component";
 import AddressInput from "./components/AddressInput";
 import { useNavigate } from "react-router-dom";
-
+import { useSession } from "../../hooks/Session";
 export interface RequestProfileProps {
     consumer_id: number;
     title: string;
@@ -38,15 +38,19 @@ export interface RequestProfileProps {
     provide_trans_exp: boolean;
     prep_material: string;
     status: number;
-    start_time: Date | null;
-    end_time: Date | null;
+    start_time: Date | string | null;
+    end_time: Date | string | null;
     created_at: Date;
     updated_at?: Date;
     corp_id: number;
     orgn_id: number;
 }
 
-const RequestInput: React.FC = () => {
+const RequestInput = ({
+    role = "corp",
+}: {
+    role?: "corp" | "orgn" | "normal";
+}) => {
     const { control, setValue, handleSubmit } = useForm<RequestProfileProps>({
         defaultValues: {
             consumer_id: 2,
@@ -58,8 +62,8 @@ const RequestInput: React.FC = () => {
             content: "",
             are_needed: "",
             are_required: "",
-            start_date: new Date("2024-11-21"),
-            end_date: new Date("2024-11-21"),
+            start_date: new Date(),
+            end_date: new Date(),
             start_time: null,
             end_time: null,
             address: "",
@@ -72,19 +76,29 @@ const RequestInput: React.FC = () => {
         },
     });
 
+    const session = useSession();
+
     const navigate = useNavigate();
 
     const onSubmit = async (data: RequestProfileProps) => {
+        data.start_time = new Date(data.start_time ?? "").toLocaleTimeString(
+            "it-IT",
+        );
+        data.end_time = new Date(data.end_time ?? "").toLocaleTimeString(
+            "it-IT",
+        );
         try {
             const response = await fetch("/api/requests", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
+                credentials: "include",
+                // TODO: change later of role
+                body: JSON.stringify({ data: data, role: role }),
             });
 
             if (response.ok) {
                 const result = await response.json();
-                const requestId = result.request.id;
+                const requestId = result.request_id;
                 console.log("Request ID:", requestId);
 
                 navigate(`/student/list/${requestId}`);
