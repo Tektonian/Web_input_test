@@ -1,5 +1,11 @@
 import React from "react";
-import { Flex, Box, Grid } from "@radix-ui/themes";
+import {
+    Box,
+    Button,
+    Container,
+    Typography,
+    Grid2 as Grid,
+} from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { useForm } from "react-hook-form";
@@ -9,6 +15,7 @@ import { DateInput } from "web_component";
 import { TimeInput } from "web_component";
 import { SelectInput } from "web_component";
 import AddressInput from "./components/AddressInput";
+import { useNavigate } from "react-router-dom";
 
 export interface RequestProfileProps {
     consumer_id: number;
@@ -65,20 +72,24 @@ const RequestInput: React.FC = () => {
         },
     });
 
+    const navigate = useNavigate();
+
     const onSubmit = async (data: RequestProfileProps) => {
         try {
-            console.log(data);
             const response = await fetch("/api/requests", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
             });
-            console.log(data);
+
             if (response.ok) {
                 const result = await response.json();
-                console.log("Data successfully submitted:", result);
+                const requestId = result.request.id;
+                console.log("Request ID:", requestId);
+
+                navigate(`/student/list/${requestId}`);
             } else {
-                console.error("Failed to submit data:", response.status);
+                console.error("Failed to create request:", response.status);
             }
         } catch (error) {
             console.error("Error submitting data:", error);
@@ -86,100 +97,119 @@ const RequestInput: React.FC = () => {
     };
 
     return (
-        <form
-            onSubmit={handleSubmit(onSubmit)}
-            style={{ width: "512px", height: "1200px" }}
-        >
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <Flex
-                    direction="column"
-                    align="stretch"
-                    justify="center"
-                    gap="10"
-                >
-                    <Grid rows="12" gap="5">
-                        <Box width="100%">
+        <Container>
+            <Typography variant="h4" gutterBottom>
+                Request Form
+            </Typography>
+
+            <Box
+                component="form"
+                noValidate
+                autoComplete="off"
+                onSubmit={handleSubmit(onSubmit)}
+            >
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <Grid container spacing={2}>
+                        <Grid size={12}>
                             <ShortTextInput
                                 control={control}
                                 name="title"
                                 label="Title"
                             />
-                        </Box>
+                        </Grid>
 
-                        <Box width="100%">
+                        <Grid size={12}>
                             <ShortTextInput
                                 control={control}
                                 name="subtitle"
                                 label="Subtitle"
                             />
-                        </Box>
+                        </Grid>
 
-                        <Box width="100%">
+                        <Grid size={4}>
                             <ShortTextInput
                                 control={control}
                                 name="head_count"
                                 label="Head Count"
                             />
-                        </Box>
+                        </Grid>
 
-                        <Box width="100%">
+                        <Grid size={4}>
                             <ShortTextInput
                                 control={control}
                                 name="reward_price"
                                 label="Reward Price"
                             />
+                        </Grid>
+                        <Grid size={4}>
                             <SelectInput
                                 control={control}
                                 name="currency"
                                 label="Currency"
                                 options={["JPY", "KRW", "USD"]}
                             />
-                        </Box>
+                        </Grid>
 
-                        <Box width="100%">
+                        <Grid size={6}>
                             <DateInput
                                 control={control}
                                 name="start_date"
-                                label="Date"
+                                label="Start Date"
                             />
-                        </Box>
+                        </Grid>
 
-                        <Box width="100%">
+                        <Grid size={6}>
+                            <DateInput
+                                control={control}
+                                name="end_date"
+                                label="End Date"
+                            />
+                        </Grid>
+
+                        <Grid size={6}>
                             <TimeInput
                                 control={control}
                                 name="start_time"
                                 label="Start Time"
                             />
-                        </Box>
+                        </Grid>
 
-                        <Box width="100%">
+                        <Grid size={6}>
                             <TimeInput
                                 control={control}
                                 name="end_time"
                                 label="End Time"
                             />
-                        </Box>
+                        </Grid>
 
-                        <Box width="100%">
+                        <Grid size={12}>
                             <LongTextInput
                                 control={control}
                                 name="content"
                                 label="Content"
                             />
-                        </Box>
-                        <Box width="100%">
+                        </Grid>
+
+                        <Grid size={12}>
                             <AddressInput
                                 control={control}
                                 setValue={setValue}
                             />
-                        </Box>
-                        <Box width="100%">
-                            <button type="submit">Submit</button>
-                        </Box>
+                        </Grid>
+
+                        <Grid size={12} display="flex" justifyContent="center">
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                type="submit"
+                            >
+                                Submit
+                            </Button>
+                        </Grid>
                     </Grid>
-                </Flex>
-            </LocalizationProvider>
-        </form>
+                </LocalizationProvider>
+            </Box>
+        </Container>
     );
 };
 

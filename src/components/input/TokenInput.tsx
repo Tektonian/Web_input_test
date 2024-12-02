@@ -18,7 +18,8 @@ const TokenInput: React.FC<TokenInputProps> = ({
             <h3>Enter Verification Token</h3>
             <ShortTextInput control={control} name="token" label="Token" />
             <Box display="flex" justifyContent="space-between" mt={3}>
-                    <NavigationButton label="previous" onClick={onPrevious}/>
+                <NavigationButton label="previous" onClick={onPrevious} />
+                <NavigationButton label="next" onClick={onSubmit} />
             </Box>
         </div>
     );

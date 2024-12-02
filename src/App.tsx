@@ -107,7 +107,7 @@ function App() {
                         <Route path="/home" element={<HomePage />} />
                         <Route path="/chat" element={<ChatPage />} />
                         <Route
-                            path="/student/list"
+                            path="/student/list/:request_id"
                             element={<StudentListPage />}
                         />
                     </Routes>
