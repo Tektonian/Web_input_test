@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
-import PageStudentProfile from "./PageStudentProfile";
 import {
     Theme,
     Container,
     Separator,
-    Avatar,
     Text,
     Box,
     Flex,
     Grid,
-    Card,
     Button,
 } from "@radix-ui/themes";
 import { useNavigate, useParams } from "react-router-dom";
@@ -25,11 +22,8 @@ const useStudentList = () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ request_id: request_id }),
             });
-            // @ts-ignore
             const json = await res.json();
-            console.log(json.hits);
-            // @ts-ignore
-            return json.hits;
+            return json.hits; // Assume `hits` contains the student list
         },
     });
 
@@ -43,14 +37,46 @@ const useStudentList = () => {
 const StudentListPage = () => {
     const { request_id } = useParams<{ request_id: string }>();
     const { onLoading, data, isSuccess } = useStudentList();
+    const [bookmarkedIds, setBookmarkedIds] = useState<number[]>([]);
     const navigate = useNavigate();
-    console.log("request_id", request_id);
 
     useEffect(() => {
         if (request_id) {
             onLoading(Number(request_id));
         }
     }, [request_id]);
+
+    const handleBookmarkToggle = (id: number, isBookmarked: boolean) => {
+        setBookmarkedIds((prev) => {
+            if (isBookmarked) {
+                return [...prev, id];
+            } else {
+                return prev.filter((bookmarkedId) => bookmarkedId !== id);
+            }
+        });
+    };
+
+    const sendAlarm = async () => {
+        if (bookmarkedIds.length === 0) {
+            return;
+        }
+
+        try {
+            const response = await fetch("/api/send-alarm", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ selectedStudentIds: bookmarkedIds }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to send alarm");
+            }
+        } catch (error) {
+            console.error("Error sending alarm:", error);
+        }
+    };
 
     return (
         <Theme>
@@ -78,7 +104,6 @@ const StudentListPage = () => {
                             width="auto"
                         >
                             {isSuccess === true ? (
-                                // @ts-ignore
                                 data.map((card: any, idx: number) => (
                                     <Flex
                                         key={idx}
@@ -88,23 +113,28 @@ const StudentListPage = () => {
                                         height="100%"
                                     >
                                         <StudentCard
+                                            student_id={card.student_id}
                                             name={card.name_glb}
                                             nationality={card.nationality}
                                             school={card.school_name}
                                             major={card.faculty}
                                             imageUrl=""
+                                            link={`http://localhost:3000/student/${card.student_id}`}
                                             languageWithLevel={[
                                                 {
                                                     language: "jp",
                                                     level: 2,
                                                 },
                                             ]}
-                                            onBookmarkClick={() => {
-                                                console.log(card);
-                                                navigate(
-                                                    `/student/${card.student_id}`,
-                                                );
-                                            }}
+                                            isBookmarked={bookmarkedIds.includes(
+                                                card.student_id,
+                                            )}
+                                            onBookmarkClick={(newState) =>
+                                                handleBookmarkToggle(
+                                                    card.student_id,
+                                                    newState,
+                                                )
+                                            }
                                         />
                                     </Flex>
                                 ))
@@ -112,6 +142,15 @@ const StudentListPage = () => {
                                 <>로딩 실패</>
                             )}
                         </Grid>
+                        <Flex justify="center" mt="4">
+                            <Button
+                                variant="solid"
+                                color="blue"
+                                onClick={sendAlarm}
+                            >
+                                Submit
+                            </Button>
+                        </Flex>
                     </Container>
                 </Flex>
             </Box>
