@@ -1,20 +1,31 @@
 import React from "react";
-import { ShortTextInput } from "web_component";
+import { Controller } from "react-hook-form";
 import {
+    TextField,
     Button,
-    Container,
-    Typography,
-    Box,
     Grid2 as Grid,
+    Typography,
+    Container,
+    Box,
 } from "@mui/material";
 
-interface BusinessNumberInputProps {
+export interface ConsumerAttributes {
+    user_id?: any;
+    corp_id?: number; //서버에서 받도록
+    orgn_id?: number;
+    consumer_type: string;
+    consumer_email: string;
+    consumer_verified?: Date;
+    phone_number: string;
+}
+
+interface ConsumerInfoInputProps {
     control: any;
     onNext: () => void;
     onPrevious: () => void;
 }
 
-const BusinessNumberInput: React.FC<BusinessNumberInputProps> = ({
+const ConsumerInfoInput: React.FC<ConsumerInfoInputProps> = ({
     control,
     onNext,
     onPrevious,
@@ -22,7 +33,7 @@ const BusinessNumberInput: React.FC<BusinessNumberInputProps> = ({
     return (
         <Container>
             <Typography variant="h4" gutterBottom>
-                Enter Business Number
+                Phone Number
             </Typography>
 
             <Box
@@ -34,10 +45,18 @@ const BusinessNumberInput: React.FC<BusinessNumberInputProps> = ({
             >
                 <Grid container spacing={3}>
                     <Grid size={12}>
-                        <ShortTextInput
+                        <Controller
+                            name="phone_number"
                             control={control}
-                            name="businessNumber"
-                            label="Business Number"
+                            defaultValue=""
+                            render={({ field }) => (
+                                <TextField
+                                    {...field}
+                                    label="Phone Number"
+                                    fullWidth
+                                    variant="outlined"
+                                />
+                            )}
                         />
                     </Grid>
 
@@ -67,4 +86,4 @@ const BusinessNumberInput: React.FC<BusinessNumberInputProps> = ({
     );
 };
 
-export default BusinessNumberInput;
+export default ConsumerInfoInput;
