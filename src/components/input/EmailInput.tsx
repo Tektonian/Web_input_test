@@ -1,16 +1,16 @@
 import React from "react";
 import { ShortTextInput, NavigationButton } from "web_component";
 import { useForm } from "react-hook-form";
-import { Box } from "@mui/material";
+import { Box, Typography, Container, Grid2 as Grid } from "@mui/material";
 
-export interface EmailInputProps {
+export interface StudentEmailInputProps {
     control: any; // 부모 컴포넌트에서 전달받는 control
     onNext: () => void;
     onPrevious: () => void;
-    userType: "student" | "corporation" | "government";
+    userType: "student" | "corp" | "orgn";
 }
 
-const EmailInput: React.FC<EmailInputProps> = ({
+const EmailInput: React.FC<StudentEmailInputProps> = ({
     control: externalControl,
     onNext,
     onPrevious,
@@ -34,26 +34,36 @@ const EmailInput: React.FC<EmailInputProps> = ({
             },
             body: JSON.stringify({
                 // @ts-ignore
-                verifyEmail: innerControl._fields.consumer_email?._f.value,
-                type: "student",
+                verifyEmail: activeControl._fields.consumer_email?._f.value,
+                type: userType,
             }),
         });
         onNext();
     };
 
     return (
-        <div>
-            <h3>Enter Your Email</h3>
-            <ShortTextInput
-                control={activeControl} // 유효한 control 전달
-                name="consumer_email"
-                label="Email"
-            />
-            <Box display="flex" justifyContent="space-between" mt={3}>
-                    <NavigationButton label="previous" onClick={onPrevious}/>
-                    <NavigationButton label="next" onClick={onNext}/>
+        <Container>
+            <Typography variant="h4" gutterBottom>
+                Enter Your Email
+            </Typography>
+
+            <Box component="form" noValidate sx={{ mt: 3 }}>
+                <Grid container spacing={3}>
+                    <Grid size={12}>
+                        <ShortTextInput
+                            control={activeControl}
+                            name="consumer_email"
+                            label="Email"
+                        />
+                    </Grid>
+                </Grid>
+
+                <Box display="flex" justifyContent="space-between" mt={3}>
+                    <NavigationButton label="previous" onClick={onPrevious} />
+                    <NavigationButton label="next" onClick={handleNext} />
+                </Box>
             </Box>
-        </div>
+        </Container>
     );
 };
 
