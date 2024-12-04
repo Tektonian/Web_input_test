@@ -11,6 +11,8 @@ import { ProfileImageInput } from "web_component";
 import BusinessNumberInput from "./Corporation/components/BusinessNumberInput";
 import BusinessInfoInput from "./Corporation/components/BusinessInfoInput";
 import { Buffer } from "buffer";
+import ConsumerInfoInput from "./Corporation/components/ConsumerInfoInput";
+import KrBusinessNumberInput from "./Corporation/components/KrBusinessNumberInput";
 
 interface AcademicHistoryCardProps {
     degree: string;
@@ -41,8 +43,6 @@ interface StudentProfileProps {
     image: string;
     has_car?: boolean;
     keyword_list?: object;
-    created_at?: Date;
-    updated_at?: Date;
     academicHistory: AcademicHistoryCardProps[];
     examHistory: LanguageCardProps[];
 }
@@ -52,10 +52,8 @@ interface ConsumerProfileProps {
     orgn_id?: number | null;
     consumer_type: string;
     consumer_email: string;
-    consumer_verified?: Date;
+    token: string;
     phone_number: string;
-    created_at?: Date;
-    updated_at?: Date;
 }
 
 type ProfileProps = StudentProfileProps | ConsumerProfileProps;
@@ -72,6 +70,17 @@ const ProfileSetup: React.FC = () => {
             examHistory: [],
         },
     });
+    const [corpId, setcorpId] = useState<number | null>(null);
+    const [orgnId, setorgnId] = useState<number | null>(null);
+
+    const handleCorpIdReceived = (id: number) => {
+        setcorpId(id);
+        console.log("Received corp_id from child:", id);
+    };
+    const handleorgnIdReceived = (id: number) => {
+        setorgnId(id);
+        console.log("Received orgn_id from child:", id);
+    };
 
     const { Funnel, Step, setStep } = useFunnel("userType");
     const userType = watch("userType");
@@ -88,57 +97,54 @@ const ProfileSetup: React.FC = () => {
         image: "",
         has_car: false,
         keyword_list: {},
-        created_at: new Date(),
-        updated_at: new Date(),
         academicHistory: [],
         examHistory: [],
     });
 
     useEffect(() => {
-        if (userType === "student") {
-            setDefaultValues({
-                userType: "student",
-                name_glb: {},
-                nationality: "",
-                age: "",
-                phone_number: "",
-                emergency_contact: "",
-                email_verified: new Date(),
-                gender: "",
-                image: "",
-                has_car: false,
-                keyword_list: {},
-                created_at: new Date(),
-                updated_at: new Date(),
-                academicHistory: [],
-                examHistory: [],
-            });
-        } else if (userType === "company") {
-            setDefaultValues({
-                userType: "company",
-                corp_id: 2,
-                orgn_id: null,
-                consumer_type: "corp",
-                consumer_email: "",
-                consumer_verified: new Date(),
-                phone_number: "",
-                created_at: new Date(),
-                updated_at: new Date(),
-            });
-        } else if (userType === "government") {
-            setDefaultValues({
-                userType: "government",
-                corp_id: null,
-                orgn_id: 3,
-                consumer_type: "orgn",
-                consumer_email: "",
-                consumer_verified: new Date(),
-                phone_number: "",
-                created_at: new Date(),
-                updated_at: new Date(),
-            });
-        }
-        reset(defaultValues);
+        const getDefaultValues = (): ProfileProps => {
+            if (userType === "student") {
+                return {
+                    userType: "student",
+                    name_glb: {},
+                    nationality: "",
+                    age: "",
+                    phone_number: "",
+                    emergency_contact: "",
+                    email_verified: new Date(),
+                    gender: "",
+                    image: "",
+                    has_car: false,
+                    keyword_list: {},
+                    academicHistory: [],
+                    examHistory: [],
+                };
+            } else if (userType === "company") {
+                return {
+                    userType: "company",
+                    corp_id: 2,
+                    orgn_id: null,
+                    consumer_type: "corp",
+                    consumer_email: "",
+                    token: "",
+                    phone_number: "",
+                };
+            } else if (userType === "government") {
+                return {
+                    userType: "government",
+                    corp_id: null,
+                    orgn_id: 3,
+                    consumer_type: "orgn",
+                    consumer_email: "",
+                    token: "",
+                    phone_number: "",
+                };
+            } else {
+                return defaultValues;
+            }
+        };
+
+        reset(getDefaultValues());
     }, [userType, reset]);
 
     const onSubmit = async (data: ProfileProps) => {
@@ -175,13 +181,23 @@ const ProfileSetup: React.FC = () => {
                 console.log(error);
             }
         } else {
-            url = "/api/consumer/";
+            url = "/api/consumers/";
         }
         try {
+            const submissionData = corpId
+                ? {
+                      ...data,
+                      corp_id: corpId,
+                  }
+                : {
+                      ...data,
+                      orgn_id: orgnId,
+                  };
+            console.log("data:", submissionData);
             const response = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
+                body: JSON.stringify(submissionData),
             });
 
             if (response.ok) {
@@ -274,15 +290,15 @@ const ProfileSetup: React.FC = () => {
 
                 {/* 기업 Step 2: Business Number 입력 */}
                 <Step name="businessNumber">
-                    <BusinessNumberInput
-                        control={control}
-                        onNext={() => setStep("businessInfo")}
+                    <KrBusinessNumberInput
+                        onCorpIdReceived={handleCorpIdReceived}
+                        onNext={() => setStep("consumerInfo")}
                         onPrevious={() => setStep("userType")}
                     />
                 </Step>
-
-                <Step name="businessInfo">
-                    <BusinessInfoInput
+                {/* 기업 Step 3: Phone Number 입력 */}
+                <Step name="consumerInfo">
+                    <ConsumerInfoInput
                         control={control}
                         onNext={() => setStep("businessEmail")}
                         onPrevious={() => setStep("businessNumber")}
@@ -295,7 +311,7 @@ const ProfileSetup: React.FC = () => {
                         control={control}
                         onNext={() => setStep("businessToken")}
                         onPrevious={() => setStep("businessInfo")}
-                        userType="corporation"
+                        userType="corp"
                     />
                 </Step>
 
@@ -331,7 +347,7 @@ const ProfileSetup: React.FC = () => {
                         control={control}
                         onNext={() => setStep("governmentToken")}
                         onPrevious={() => setStep("governmentInfo")}
-                        userType="government"
+                        userType="orgn"
                     />
                 </Step>
 
