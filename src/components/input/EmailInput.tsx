@@ -11,18 +11,11 @@ export interface StudentEmailInputProps {
 }
 
 const EmailInput: React.FC<StudentEmailInputProps> = ({
-    control: externalControl,
+    control,
     onNext,
     onPrevious,
     userType,
 }) => {
-    // 독립적인 내부 컨트롤러 생성
-    const { control: innerControl } = useForm();
-
-    // 선택적으로 외부 또는 내부 control 사용
-    const activeControl =
-        userType === "student" ? innerControl : externalControl;
-
     // TODO: temporary code DELETE later
     const handleNext = () => {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -34,7 +27,7 @@ const EmailInput: React.FC<StudentEmailInputProps> = ({
             },
             body: JSON.stringify({
                 // @ts-ignore
-                verifyEmail: activeControl._fields.consumer_email?._f.value,
+                verifyEmail: control._fields.consumer_email?._f.value,
                 type: userType,
             }),
         });
@@ -51,7 +44,7 @@ const EmailInput: React.FC<StudentEmailInputProps> = ({
                 <Grid container spacing={3}>
                     <Grid size={12}>
                         <ShortTextInput
-                            control={activeControl}
+                            control={control}
                             name="consumer_email"
                             label="Email"
                         />

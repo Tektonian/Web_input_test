@@ -29,11 +29,13 @@ export interface CorporationAttributes {
 interface KrBusinessNumberInputProps {
     onNext: () => void;
     onPrevious: () => void;
+    onCorpIdReceived: (id: number) => void;
 }
 
 const KrBusinessNumberInput: React.FC<KrBusinessNumberInputProps> = ({
     onNext,
     onPrevious,
+    onCorpIdReceived,
 }) => {
     const { control, setValue, getValues } = useForm<CorporationAttributes>({
         defaultValues: {
@@ -79,6 +81,8 @@ const KrBusinessNumberInput: React.FC<KrBusinessNumberInputProps> = ({
                     console.log(
                         "Corporate profile exists, moving to next step.",
                     );
+                    onCorpIdReceived(result.profile.corp_id);
+
                     onNext();
                 } else if (result.status === "not exist") {
                     const profile = result.profile;
@@ -116,7 +120,15 @@ const KrBusinessNumberInput: React.FC<KrBusinessNumberInputProps> = ({
             });
 
             if (response.ok) {
-                console.log("Corporation profile saved successfully.");
+                const result = await response.json();
+                console.log("Corporation profile saved successfully.", result);
+
+                const { success, review } = result;
+                if (success) {
+                    console.log("Created review:", review);
+                    onCorpIdReceived(review.corp_id);
+                }
+
                 onNext();
             } else {
                 console.error("Failed to save corporation profile.");

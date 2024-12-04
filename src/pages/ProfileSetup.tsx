@@ -70,6 +70,17 @@ const ProfileSetup: React.FC = () => {
             examHistory: [],
         },
     });
+    const [corpId, setcorpId] = useState<number | null>(null);
+    const [orgnId, setorgnId] = useState<number | null>(null);
+
+    const handleCorpIdReceived = (id: number) => {
+        setcorpId(id);
+        console.log("Received corp_id from child:", id);
+    };
+    const handleorgnIdReceived = (id: number) => {
+        setorgnId(id);
+        console.log("Received orgn_id from child:", id);
+    };
 
     const { Funnel, Step, setStep } = useFunnel("userType");
     const userType = watch("userType");
@@ -170,13 +181,23 @@ const ProfileSetup: React.FC = () => {
                 console.log(error);
             }
         } else {
-            url = "/api/consumer/";
+            url = "/api/consumers/";
         }
         try {
+            const submissionData = corpId
+                ? {
+                      ...data,
+                      corp_id: corpId,
+                  }
+                : {
+                      ...data,
+                      orgn_id: orgnId,
+                  };
+            console.log("data:", submissionData);
             const response = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
+                body: JSON.stringify(submissionData),
             });
 
             if (response.ok) {
@@ -270,6 +291,7 @@ const ProfileSetup: React.FC = () => {
                 {/* 기업 Step 2: Business Number 입력 */}
                 <Step name="businessNumber">
                     <KrBusinessNumberInput
+                        onCorpIdReceived={handleCorpIdReceived}
                         onNext={() => setStep("consumerInfo")}
                         onPrevious={() => setStep("userType")}
                     />
