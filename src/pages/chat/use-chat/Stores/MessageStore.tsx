@@ -73,7 +73,9 @@ const UpdateUnread = (
     lastReadSeqList: number[],
     oldMessages: MessageContentType[],
 ) => {
-    const minSeq = Math.min(...lastReadSeqList);
+    // Sequence of -1 means that user never participated in a chatroom and read messages;
+    // So if minSeq is -1 we should set it as 0
+    const minSeq = Math.max(Math.min(...lastReadSeqList), 0);
     const maxSeq = Math.max(...lastReadSeqList);
     const SentMessageStorage = new TypedStorage<IMessageStorage>(
         `sentMessages-${chatRoomId}`,
@@ -81,26 +83,27 @@ const UpdateUnread = (
 
     // We will not directly modify oldMessages unread count
     // Because there could be contraint that one of the lastReadSeqList could be bigger than length of oldMessages;
-    const newSeqList = [];
+    const newUnreadList = [];
     for (let i = minSeq; i < maxSeq; i++) {
-        let seq = 0;
+        let unread = 0;
         for (const j of lastReadSeqList) {
-            if (i < j) seq += 1;
+            if (i > j) unread += 1;
         }
-        newSeqList.push(seq);
+        newUnreadList.push(unread);
     }
-    console.log("old before", oldMessages);
+
+    console.log("old before", JSON.parse(JSON.stringify(oldMessages)));
     oldMessages.map((message) => (message.unreadCount = 0));
 
-    newSeqList.reverse();
-    console.log("seq", newSeqList);
-    for (let i = 0; i < newSeqList.length; i++) {
+    newUnreadList.reverse();
+    console.log("seq", newUnreadList);
+    for (let i = 0; i < newUnreadList.length; i++) {
         if (oldMessages.at(-1 * (i + 1)) !== undefined) {
             // @ts-expect-error
-            oldMessages.at(-1 * (i + 1)).unreadCount = newSeqList[i];
+            oldMessages.at(-1 * (i + 1)).unreadCount = newUnreadList[i];
         }
     }
-    console.log("old after", oldMessages);
+    console.log("old after", JSON.parse(JSON.stringify(oldMessages)));
     SentMessageStorage.set({ messages: oldMessages });
     return oldMessages;
 };
@@ -131,7 +134,11 @@ export const useSentMessages = create<sentMessages>((set, get) => ({
         ),
     updateUnread: (chatRoomId, lastReadSeqList) =>
         set((state) => ({
-            messages: UpdateUnread(chatRoomId, lastReadSeqList, state.messages),
+            messages: [
+                // return new array to force redering
+                // See: https://zustand.docs.pmnd.rs/apis/create#i%E2%80%99ve-updated-the-state,-but-the-screen-doesn%E2%80%99t-update
+                ...UpdateUnread(chatRoomId, lastReadSeqList, state.messages),
+            ],
         })),
     setMessages: (chatRoomId, newMessages) =>
         set(() => ({ messages: newMessages })),

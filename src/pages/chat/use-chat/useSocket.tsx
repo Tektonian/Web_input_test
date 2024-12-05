@@ -132,17 +132,7 @@ export const useSocket = () => {
         socket.on("userJoined", (res, callback) => {
             console.log("Joined to room", res);
             const { messages, lastReadSequences } = JSON.parse(res);
-            console.log("Joined", messages, lastReadSequences);
-            // @ts-ignore
-            messages.forEach(
-                // @ts-ignore
-                (m) =>
-                    (m.direction =
-                        // @ts-ignore
-                        session.data?.user.name === m.senderName
-                            ? "outgoing"
-                            : "inbound"),
-            );
+            console.log("Joined", messages, lastReadSequences, session);
             setSentMessageByIdx(
                 chatRoomId,
                 messages,
@@ -159,15 +149,14 @@ export const useSocket = () => {
         });
         socket.on("someoneSent", (res, callback) => {
             const data = JSON.parse(res);
-            // @ts-ignore
-            data.direction =
-                // @ts-ignore
-                session.data.user.name === data.senderName
-                    ? "outgoing"
-                    : "inbound";
-            console.log("Someone sent message: ", data);
             pushToSent(chatRoomId, data);
             updateChatRoom(data);
+            console.log(
+                "Someone sent message: ",
+                data,
+                " - ",
+                getSentMessageLength(chatRoomId),
+            );
             callback({
                 id: tempId,
                 lastReadSeq: getSentMessageLength(chatRoomId),
