@@ -20,7 +20,7 @@ export interface CorporationAttributes {
     biz_num: number;
     corp_num?: number;
     biz_started_at?: string;
-    corp_status?: string;
+    corp_status?: number;
     biz_type?: string;
     logo_image?: string;
     site_url?: string;
@@ -48,7 +48,7 @@ const KrBusinessNumberInput: React.FC<KrBusinessNumberInputProps> = ({
             biz_num: 0,
             corp_num: undefined,
             biz_started_at: "",
-            corp_status: "",
+            corp_status: 0,
             biz_type: "",
             logo_image: "",
             site_url: "",

@@ -2,20 +2,29 @@ import React, { useEffect, useState } from "react";
 import { CorpProfile } from "web_component";
 import { ReviewOfCorp } from "web_component";
 import { Theme, Grid, Box, Flex, Text, Separator } from "@radix-ui/themes";
+import { useParams } from "react-router-dom";
 
-export interface PageCorpProfileProps {
-    consumerId: number; // Consumer ID를 부모 컴포넌트로부터 전달받음
-}
+const PageCorpProfile = () => {
+    const [corpData, setCorpData] = useState<{
+        profile: React.ComponentProps<typeof CorpProfile>;
+        reviews: Array<
+            React.ComponentProps<typeof ReviewOfCorp> & {
+                requestCard: {
+                    title: string;
+                    subtitle?: string;
+                    reward_price: number;
+                    currency: string;
+                    address: string;
+                    start_date: string;
+                    end_date: string;
+                };
+            }
+        >;
+    } | null>(null);
 
-const PageCorpProfile: React.FC<PageCorpProfileProps> = ({ consumerId }) => {
-    const [corpProfile, setCorpProfile] = useState<React.ComponentProps<
-        typeof CorpProfile
-    > | null>(null);
-    const [reviewOfCorp, setReviewOfCorp] = useState<
-        React.ComponentProps<typeof ReviewOfCorp>[] | null
-    >(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const { corp_id } = useParams<{ corp_id: string }>();
 
     useEffect(() => {
         const fetchCorpData = async () => {
@@ -23,27 +32,46 @@ const PageCorpProfile: React.FC<PageCorpProfileProps> = ({ consumerId }) => {
             setError(null);
 
             try {
-                const [profileResponse, reviewsResponse] = await Promise.all([
-                    fetch(
-                        `http://localhost:8080/api/corporations/${consumerId}`,
-                    ),
-                    fetch(
-                        `http://localhost:8080/api/corporation-reviews/${consumerId}`,
-                    ),
-                ]);
+                const response = await fetch(
+                    `/api/corporation-reviews/${corp_id}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    },
+                );
 
-                if (!profileResponse.ok) {
-                    throw new Error("Failed to fetch corporation profile");
-                }
-                if (!reviewsResponse.ok) {
-                    throw new Error("Failed to fetch corporation reviews");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch corporation data");
                 }
 
-                const corpProfileData = await profileResponse.json();
-                const reviewOfCorpData = await reviewsResponse.json();
+                const data = await response.json();
 
-                setCorpProfile(corpProfileData || null); // Profile 데이터가 없을 경우 null 처리
-                setReviewOfCorp(reviewOfCorpData || []); // Reviews 데이터가 없을 경우 빈 배열 처리
+                const { requests, reviews, ...profile } = data;
+
+                // reviews와 requests를 1대1로 매핑
+                const mappedReviews = reviews.map(
+                    (review: any, index: number) => {
+                        const request = requests[index] || {};
+                        return {
+                            ...review,
+                            request_card: {
+                                title: request.title || "No Title",
+                                subtitle: request.subtitle || "No Subtitle",
+                                reward_price: request.reward_price || 0,
+                                currency: request.currency || "N/A",
+                                address: request.address || "No Address",
+                                start_date:
+                                    request.start_date || "No Start Date",
+                                end_date: request.end_date || "No End Date",
+                                link: `/request/${request.request_id}`,
+                            },
+                        };
+                    },
+                );
+
+                setCorpData({ profile, reviews: mappedReviews });
             } catch (err) {
                 setError(
                     err instanceof Error
@@ -56,7 +84,7 @@ const PageCorpProfile: React.FC<PageCorpProfileProps> = ({ consumerId }) => {
         };
 
         fetchCorpData(); //eslint-disable-line
-    }, [consumerId]);
+    }, [corp_id]);
 
     if (loading) {
         return (
@@ -78,15 +106,17 @@ const PageCorpProfile: React.FC<PageCorpProfileProps> = ({ consumerId }) => {
         );
     }
 
-    if (!corpProfile) {
+    if (!corpData) {
         return (
             <Flex justify="center" align="center" style={{ height: "100vh" }}>
                 <Text size="6" color="red" weight="bold">
-                    Corporation profile not found.
+                    Corporation data not found.
                 </Text>
             </Flex>
         );
     }
+
+    const { profile, reviews } = corpData;
 
     return (
         <Theme>
@@ -95,11 +125,9 @@ const PageCorpProfile: React.FC<PageCorpProfileProps> = ({ consumerId }) => {
                     width={{ xs: "520px", sm: "768px", md: "1024px" }}
                     minWidth="300px"
                 >
-                    {/* Corporation Profile Section */}
-                    <CorpProfile {...corpProfile} />
+                    <CorpProfile {...profile} />
 
-                    {/* Reviews Section */}
-                    {reviewOfCorp && reviewOfCorp.length > 0 ? (
+                    {reviews && reviews.length > 0 ? (
                         <>
                             <Separator my="3" size="4" />
                             <Grid gapY="5">
@@ -110,7 +138,7 @@ const PageCorpProfile: React.FC<PageCorpProfileProps> = ({ consumerId }) => {
                                     columns={{ initial: "1", md: "2" }}
                                     gap="3"
                                 >
-                                    {reviewOfCorp.map((review, index) => (
+                                    {reviews.map((review, index) => (
                                         <Flex
                                             key={index}
                                             justify="center"

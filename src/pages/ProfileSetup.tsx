@@ -86,7 +86,7 @@ const ProfileSetup: React.FC = () => {
     const userType = watch("userType");
 
     const [defaultValues, setDefaultValues] = useState<ProfileProps>({
-        userType: "student",
+        userType: "",
         name_glb: {},
         nationality: "",
         age: "",
@@ -119,21 +119,17 @@ const ProfileSetup: React.FC = () => {
                     academicHistory: [],
                     examHistory: [],
                 };
-            } else if (userType === "company") {
+            } else if (userType === "corp") {
                 return {
-                    userType: "company",
-                    corp_id: 2,
-                    orgn_id: null,
+                    userType: "corp",
                     consumer_type: "corp",
                     consumer_email: "",
                     token: "",
                     phone_number: "",
                 };
-            } else if (userType === "government") {
+            } else if (userType === "orgn") {
                 return {
-                    userType: "government",
-                    corp_id: null,
-                    orgn_id: 3,
+                    userType: "orgn",
                     consumer_type: "orgn",
                     consumer_email: "",
                     token: "",
@@ -181,47 +177,51 @@ const ProfileSetup: React.FC = () => {
                 console.log(error);
             }
         } else {
-            url = "/api/consumers/";
-        }
-        try {
-            const submissionData = corpId
-                ? {
-                      ...data,
-                      corp_id: corpId,
-                  }
-                : {
-                      ...data,
-                      orgn_id: orgnId,
-                  };
-            console.log("data:", submissionData);
-            const response = await fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(submissionData),
-            });
+            url = "/api/verification/callback/identity-verify";
 
-            if (response.ok) {
-                const result = await response.json();
-                console.log("Data successfully submitted:", result);
-            } else {
-                console.error(
-                    "Failed to submit data:",
-                    response.status,
-                    await response.text(),
-                );
+            try {
+                const submissionData = corpId
+                    ? {
+                          type: data.userType,
+                          verifyEmail: data.consumer_email,
+                          token: data.token,
+                          phoneNumber: data.phone_number,
+                          profileId: corpId,
+                      }
+                    : {
+                          ...data,
+                          orgn_id: orgnId,
+                      };
+                console.log("data:", submissionData);
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(submissionData),
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log("Data successfully submitted:", result);
+                } else {
+                    console.error(
+                        "Failed to submit data:",
+                        response.status,
+                        await response.text(),
+                    );
+                }
+            } catch (error) {
+                console.error("Error submitting data:", error);
             }
-        } catch (error) {
-            console.error("Error submitting data:", error);
         }
     };
 
     const onNextStep = () => {
         if (userType === "student") {
             setStep("basicInfo");
-        } else if (userType === "company") {
+        } else if (userType === "corp") {
             setStep("businessNumber");
-        } else if (userType === "government") {
-            setStep("governmentNumber");
+        } else if (userType === "orgn") {
+            setStep("orgnNumber");
         }
     };
 
@@ -324,39 +324,39 @@ const ProfileSetup: React.FC = () => {
                     />
                 </Step>
 
-                {/* 기관 Step 2: Government Number 입력 */}
-                <Step name="governmentNumber">
+                {/* 기관 Step 2: orgn Number 입력 */}
+                <Step name="orgnNumber">
                     <BusinessNumberInput
                         control={control}
-                        onNext={() => setStep("governmentInfo")}
+                        onNext={() => setStep("orgnInfo")}
                         onPrevious={() => setStep("userType")}
                     />
                 </Step>
 
-                <Step name="governmentInfo">
+                <Step name="orgnInfo">
                     <BusinessInfoInput
                         control={control}
-                        onNext={() => setStep("governmentEmail")}
-                        onPrevious={() => setStep("governmentNumber")}
+                        onNext={() => setStep("orgnEmail")}
+                        onPrevious={() => setStep("orgnNumber")}
                     />
                 </Step>
 
                 {/* 기관 Step 3: Email 입력 */}
-                <Step name="governmentEmail">
+                <Step name="orgnEmail">
                     <EmailInput
                         control={control}
-                        onNext={() => setStep("governmentToken")}
-                        onPrevious={() => setStep("governmentInfo")}
+                        onNext={() => setStep("orgnToken")}
+                        onPrevious={() => setStep("orgnInfo")}
                         userType="orgn"
                     />
                 </Step>
 
                 {/* 기관 4: Token 입력 */}
-                <Step name="governmentToken">
+                <Step name="orgnToken">
                     <TokenInput
                         control={control}
                         onSubmit={handleSubmit(onSubmit)}
-                        onPrevious={() => setStep("governmentEmail")}
+                        onPrevious={() => setStep("orgnEmail")}
                     />
                 </Step>
             </Funnel>
