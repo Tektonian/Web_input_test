@@ -17,8 +17,8 @@ export interface CorporationAttributes {
     ceo_name?: string;
     corp_address?: string;
     phone_number?: string;
-    biz_num: number;
-    corp_num?: number;
+    biz_num: string;
+    corp_num?: string;
     biz_started_at?: string;
     corp_status?: number;
     biz_type?: string;
@@ -45,8 +45,8 @@ const KrBusinessNumberInput: React.FC<KrBusinessNumberInputProps> = ({
             ceo_name: "",
             corp_address: "",
             phone_number: "",
-            biz_num: 0,
-            corp_num: undefined,
+            biz_num: "",
+            corp_num: "",
             biz_started_at: "",
             corp_status: 0,
             biz_type: "",
@@ -57,45 +57,42 @@ const KrBusinessNumberInput: React.FC<KrBusinessNumberInputProps> = ({
 
     const [showCorpProfile, setShowCorpProfile] = useState(false);
 
-    const handleBusinessNumberSubmit = async () => {
-        const corp_num = getValues("corp_num");
-        if (!corp_num) {
-            console.error("Business number is required");
+    const handleCorporationNumberSubmit = async () => {
+        const corpNum = getValues("corp_num");
+        if (!corpNum) {
+            console.error("Corporation number is required");
             return;
         }
 
         try {
             const response = await fetch(
-                `/api/corporations/corpProfile?corpNum=${corp_num}`,
+                `/api/corporations/corpProfile?corpNum=${corpNum}`,
                 {
                     method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
                 },
             );
 
             if (response.ok) {
                 const result = await response.json();
                 if (result.status === "exist") {
-                    console.log(
-                        "Corporate profile exists, moving to next step.",
-                    );
                     onCorpIdReceived(result.profile.corp_id);
-
                     onNext();
                 } else if (result.status === "not exist") {
                     const profile = result.profile;
-
-                    setValue("corp_name", profile.corp_name || "");
-                    setValue("nationality", profile.nationality || "");
-                    setValue("ceo_name", profile.ceo_name || "");
-                    setValue("corp_address", profile.corp_address || "");
-                    setValue("phone_number", profile.phone_number || "");
-                    setValue("biz_num", profile.biz_num || "");
-                    setValue("corp_num", profile.corp_num || "");
-                    setValue("biz_started_at", profile.biz_started_at || "");
-                    setValue("site_url", profile.site_url || "");
+                    console.log("Profile data received:", profile);
+                    setValue("corp_name", profile.corp_name ?? "");
+                    setValue("nationality", profile.nationality ?? "kr");
+                    setValue("corp_domain", profile.corp_domain ?? "");
+                    setValue("ceo_name", profile.ceo_name ?? "");
+                    setValue("corp_address", profile.corp_address ?? "");
+                    setValue("phone_number", profile.phone_number ?? "");
+                    setValue("biz_num", profile.biz_num ?? "");
+                    setValue("corp_num", profile.corp_num ?? "");
+                    setValue("biz_started_at", profile.biz_started_at ?? "");
+                    setValue("corp_status", profile.corp_status ?? 0);
+                    setValue("biz_type", profile.biz_type ?? "");
+                    setValue("logo_image", profile.logo_image ?? "");
+                    setValue("site_url", profile.site_url ?? "");
                     setShowCorpProfile(true);
                 } else {
                     console.error("Unexpected response:", result);
@@ -121,15 +118,24 @@ const KrBusinessNumberInput: React.FC<KrBusinessNumberInputProps> = ({
 
             if (response.ok) {
                 const result = await response.json();
-                console.log("Corporation profile saved successfully.", result);
+                const corpNum = result.corp_num;
 
-                const { success, review } = result;
-                if (success) {
-                    console.log("Created review:", review);
-                    onCorpIdReceived(review.corp_id);
+                try {
+                    const response = await fetch(
+                        `/api/corporations/corpProfile?corpNum=${corpNum}`,
+                        {
+                            method: "GET",
+                        },
+                    );
+
+                    const result = await response.json();
+                    const corpId = result.corp_id;
+
+                    onCorpIdReceived(result.corp_id);
+                    onNext();
+                } catch (error) {
+                    console.error("Error getting corporation info:", error);
                 }
-
-                onNext();
             } else {
                 console.error("Failed to save corporation profile.");
             }
@@ -143,7 +149,7 @@ const KrBusinessNumberInput: React.FC<KrBusinessNumberInputProps> = ({
             <Typography variant="h4" gutterBottom>
                 {showCorpProfile
                     ? "Corporate Profile"
-                    : "Enter Business Number"}
+                    : "Enter Corporation Number"}
             </Typography>
 
             <Box component="form" noValidate sx={{ mt: 3 }}>
@@ -175,7 +181,7 @@ const KrBusinessNumberInput: React.FC<KrBusinessNumberInputProps> = ({
                                     type="button"
                                     variant="contained"
                                     color="primary"
-                                    onClick={handleBusinessNumberSubmit}
+                                    onClick={handleCorporationNumberSubmit}
                                 >
                                     Next
                                 </Button>
@@ -195,6 +201,13 @@ const KrBusinessNumberInput: React.FC<KrBusinessNumberInputProps> = ({
                                     control={control}
                                     name="nationality"
                                     label="Nationality"
+                                />
+                            </Grid>
+                            <Grid size={12}>
+                                <ShortTextInput
+                                    control={control}
+                                    name="corp_domain"
+                                    label="Corporate Domain"
                                 />
                             </Grid>
                             <Grid size={12}>
@@ -228,15 +241,15 @@ const KrBusinessNumberInput: React.FC<KrBusinessNumberInputProps> = ({
                             <Grid size={12}>
                                 <ShortTextInput
                                     control={control}
-                                    name="corp_num"
-                                    label="Corporation Number"
+                                    name="biz_started_at"
+                                    label="Business Start Date"
                                 />
                             </Grid>
                             <Grid size={12}>
                                 <ShortTextInput
                                     control={control}
-                                    name="biz_started_at"
-                                    label="Business Started At"
+                                    name="biz_type"
+                                    label="Business Type"
                                 />
                             </Grid>
                             <Grid size={12}>
