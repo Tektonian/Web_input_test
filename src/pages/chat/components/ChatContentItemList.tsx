@@ -10,20 +10,23 @@ import { Message } from "web_component";
 import { ScrollArea, Flex, Box } from "@radix-ui/themes";
 import { ChatRoom } from "../use-chat/Stores/ChatRoomStore";
 
-const MessageRender = ({ messages }: { messages: MessageContentType[] }) => {
+const MessageRender = ({
+    messages,
+    activeRoom,
+}: {
+    messages: MessageContentType[];
+    activeRoom: ChatRoom;
+}) => {
     return (
         <>
             {messages.map((val, idx, array) => {
-                let senderName: undefined | string = "";
-                if (
-                    idx > 0 &&
-                    array[idx - 1].senderName === val.senderName &&
-                    val.direction === "inbound"
-                ) {
-                    senderName = undefined;
-                } else {
-                    senderName = val.senderName;
-                }
+                const senderName: undefined | string = "";
+                // @ts-ignore
+                console.log("Render message", activeRoom, val);
+                const sender = activeRoom.participants.find(
+                    // @ts-ignore
+                    (parti: any) => parti.user_id === val.senderId,
+                );
                 if (val.contentType === "text") {
                     return (
                         <Message
@@ -34,7 +37,7 @@ const MessageRender = ({ messages }: { messages: MessageContentType[] }) => {
                             senderName={
                                 val.direction === "outgoing"
                                     ? undefined
-                                    : senderName
+                                    : sender.username
                             }
                             // @ts-ignore
                             sentAt={new Date(val.createdAt) ?? new Date()}
@@ -58,7 +61,6 @@ export const ChatContentItemList = ({
 }) => {
     const scroll = useRef<HTMLDivElement>(null);
     const sentMessages = useSentMessages((state) => state.messages);
-    const lastMessage = sentMessages.at(-1);
     const sentInit = useSentMessages((state) => state.init);
 
     const scrollToBottom = () => {
@@ -91,7 +93,14 @@ export const ChatContentItemList = ({
                 pb="3"
                 height={{ initial: "80vw", sm: "" }}
             >
-                {MessageRender({ messages: sentMessages })}
+                {activeRoom === undefined ? (
+                    <></>
+                ) : (
+                    MessageRender({
+                        messages: sentMessages,
+                        activeRoom: activeRoom,
+                    })
+                )}
             </Flex>
         </ScrollArea>
     );

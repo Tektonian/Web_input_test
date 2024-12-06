@@ -147,7 +147,7 @@ const UpdateOnConnected = (
     oldChatRoomIds.difference(newChatRoomIds).forEach((erasedId: string) => {
         safeLocalStorage.remove(`sentMessages-${erasedId}`);
     });
-
+    console.log("Update chatroom on connect: ", resChatRooms);
     const ret: ChatRoom[] = resChatRooms.map((room) => {
         const messageLength =
             new TypedStorage<IMessageStorage>(
@@ -157,6 +157,8 @@ const UpdateOnConnected = (
             chatRoomId: room.chatRoomId,
             consumerName: room.consumerName,
             participantNames: [...room.providerNames],
+            // @ts-ignore
+            participants: [...room.participants],
             lastMessage: room.lastMessage,
             lastSentTime: new Date(room.lastSentTime),
             unreadCount: room.messageSeq - messageLength,

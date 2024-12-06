@@ -171,6 +171,7 @@ export const useSocket = () => {
         socket.emit("userTryJoin", {
             chatRoomId: chatRoomId,
             deviceLastSeq: getSentMessageLength(chatRoomId),
+            id: tempId,
         });
     };
 
@@ -232,6 +233,7 @@ export const useSocket = () => {
         });
     };
     const onDestroying = () => {
+        console.log("Destroying on remove");
         // remove all events
         socket.off();
         socket.disconnect();
