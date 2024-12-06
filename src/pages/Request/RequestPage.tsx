@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { RequestProfile } from "web_component";
 import { StickyButton } from "web_component";
 import { Flex, Box, Separator, Container, Button } from "@radix-ui/themes";
@@ -34,12 +34,7 @@ interface RequestProfileProps {
     nationality: string;
     corp_num: number;
 }
-
-export interface RequestPageProps {
-    request_id: string;
-}
-
-const RequestPage: React.FC<RequestPageProps> = ({ request_id }) => {
+const RequestPage = () => {
     const [request, setRequest] = useState<RequestProfileProps | null>(null);
     const [sticky, setSticky] = useState<
         React.ComponentProps<typeof StickyButton>
@@ -52,6 +47,7 @@ const RequestPage: React.FC<RequestPageProps> = ({ request_id }) => {
     const navigate = useNavigate();
     const { data: session, status } = useSession();
     const roles = session?.user?.roles;
+    const { request_id } = useParams<{ request_id: string }>();
 
     console.log(roles);
 
@@ -83,8 +79,8 @@ const RequestPage: React.FC<RequestPageProps> = ({ request_id }) => {
                     are_needed: body.are_needed,
                     are_required: body.are_required,
                     request_status: body.request_status,
-                    start_time: new Date(body.start_time).toISOString(),
-                    end_time: new Date(body.end_time).toISOString(),
+                    start_time: body.start_time,
+                    end_time: body.end_time,
                     address: body.address,
                     address_coordinate: body.address_coordinate,
                     provide_food: body.provide_food,

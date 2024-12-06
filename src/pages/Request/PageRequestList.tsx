@@ -56,15 +56,9 @@ const PageRequestList: React.FC = () => {
     const { fetchRequestList, data, isSuccess } = useRequestList();
 
     useEffect(() => {
-        const student_id = 123;
+        const student_id = 1457;
         fetchRequestList(student_id);
     }, []);
-
-    const handleSelectRequest = (id: number, isSelected: boolean) => {
-        setSelectedRequests((prev) =>
-            isSelected ? [...prev, id] : prev.filter((reqId) => reqId !== id),
-        );
-    };
 
     return (
         <Theme>
@@ -116,7 +110,7 @@ const PageRequestList: React.FC = () => {
                                                     new Date(request.start_date)
                                                 }
                                                 logo_image={request.logo_image}
-                                                link={`/request-profile/${request.request_id}`}
+                                                link={`/request/${request.request_id}`}
                                             />
                                         </Flex>
                                     ),
