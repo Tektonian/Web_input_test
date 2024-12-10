@@ -1,12 +1,13 @@
 /* eslint-disable */
 import * as React from "react";
 
+type UserRoleType = "normal" | "corp" | "orgn" | "student";
 interface User {
     id?: string;
     name?: string | null;
     email?: string | null;
     image?: string | null;
-    roles?: string[] | null;
+    roles?: UserRoleType[] | null;
 }
 
 export interface Session {
