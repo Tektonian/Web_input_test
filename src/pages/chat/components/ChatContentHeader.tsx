@@ -2,7 +2,9 @@ import { MouseEvent, MouseEventHandler, useEffect } from "react";
 import { ChatRoom, useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";
 import { MessageHeader } from "web_component";
 import { ArrowLeftIcon, DropdownMenuIcon } from "@radix-ui/react-icons";
-import { Box, Flex, Separator, Text } from "@radix-ui/themes";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import MenuIcon from "@mui/icons-material/Menu";
+import { Box, Flex, Separator, Strong, Text } from "@radix-ui/themes";
 import { Button } from "@mui/joy";
 /*
 export const ChatContentHeader = () => {
@@ -50,29 +52,39 @@ export const ChatContentHeader = ({
 
     // <MessageHeader key={activeRoom?.chatRoomId ?? "empty"} onClickArrow={(e: MouseEvent) =>{handleAlert()}} onClickMenu={() => handleClick()} username={activeRoom === undefined ? "" : activeRoom.consumerName}/>
     return (
-        <Box pb="2">
+        <Box
+            p="1"
+            height="5vh"
+            style={{
+                border: "1px solid #ccc",
+                borderColor: "indigo",
+                borderLeft: 0,
+                borderRight: 0,
+                borderTop: 0,
+            }}
+        >
             <Flex
                 direction="row"
-                gapX="2"
+                gapX="5"
                 align="center"
                 justify="between"
-                pb="4"
+                p="2"
             >
                 <Button
                     onClick={handleClick}
-                    startDecorator={<ArrowLeftIcon />}
-                />
+                    startDecorator={<ArrowBackIcon />}
+                >
+                    Leave Chat
+                </Button>
 
-                <Text>{activeRoom?.consumerName}</Text>
+                <Text>
+                    <Strong>{activeRoom?.consumerName}</Strong>
+                </Text>
 
                 <Box flexGrow="1" />
 
-                <Button
-                    onClick={handleAlert}
-                    startDecorator={<DropdownMenuIcon />}
-                />
+                <Button onClick={handleAlert} startDecorator={<MenuIcon />} />
             </Flex>
-            <Separator orientation="horizontal" size="4" />
         </Box>
     );
 };

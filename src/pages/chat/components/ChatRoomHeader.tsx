@@ -12,32 +12,31 @@ export const ChatRoomHeader = () => {
     };
 
     return (
-        <Box pb="2">
-            <Flex
-                direction="row"
-                align="center"
-                justify="between"
-                px="3"
-                pb="4"
-                pt="2"
-            >
+        <Box
+            p="1"
+            height="5vh"
+            style={{
+                border: "1px solid #ccc",
+                borderColor: "indigo",
+                borderTop: 0,
+                borderLeft: 0,
+                borderRight: 0,
+            }}
+        >
+            <Flex direction="row" align="center" justify="between" p="3">
                 {/* 뒤로가기 버튼 */}
                 <Button
                     onClick={handleBack}
                     variant="outlined"
                     size="sm"
                     startDecorator={<ArrowBackIcon />}
+                    style={{
+                        backgroundColor: "white",
+                        color: "black",
+                        borderColor: "indigo",
+                    }}
                 >
                     Back
-                </Button>
-
-                {/* 새 채팅방 추가 버튼 */}
-                <Button
-                    variant="outlined"
-                    size="sm"
-                    startDecorator={<PlusIcon />}
-                >
-                    New Room
                 </Button>
             </Flex>
         </Box>
