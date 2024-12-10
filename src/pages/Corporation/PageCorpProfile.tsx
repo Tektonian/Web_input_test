@@ -50,6 +50,9 @@ const PageCorpProfile = () => {
 
                 const { requests, reviews, ...profile } = data;
 
+                console.log(reviews);
+                console.log(requests);
+
                 // reviews와 requests를 1대1로 매핑
                 const mappedReviews = reviews.map(
                     (review: any, index: number) => {
@@ -57,14 +60,15 @@ const PageCorpProfile = () => {
                         return {
                             ...review,
                             request_card: {
-                                title: request.title || "No Title",
-                                subtitle: request.subtitle || "No Subtitle",
-                                reward_price: request.reward_price || 0,
-                                currency: request.currency || "N/A",
-                                address: request.address || "No Address",
+                                title: request.title ?? "No Title",
+                                subtitle: request.subtitle ?? "No Subtitle",
+                                reward_price: request.reward_price ?? 0,
+                                currency: request.currency ?? "N/A",
+                                address: request.address ?? "No Address",
                                 start_date:
-                                    request.start_date || "No Start Date",
-                                end_date: request.end_date || "No End Date",
+                                    new Date(request.start_date) ??
+                                    "No Start Date",
+                                end_date: request.end_date ?? "No End Date",
                                 link: `/request/${request.request_id}`,
                             },
                         };
