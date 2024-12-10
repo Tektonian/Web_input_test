@@ -18,6 +18,10 @@ const Hero = () => {
         navigate("/profileinput");
     };
 
+    const handleRequestNow = () => {
+        navigate("/requestinput");
+    };
+
     return (
         <Box
             id="hero"
@@ -116,6 +120,15 @@ const Hero = () => {
                             onClick={handleStartNow}
                         >
                             Start now
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            size="small"
+                            sx={{ minWidth: "fit-content" }}
+                            onClick={handleRequestNow}
+                        >
+                            Request now
                         </Button>
                     </Stack>
                     <Typography
