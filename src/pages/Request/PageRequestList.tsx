@@ -70,7 +70,6 @@ const PageRequestList: React.FC = () => {
                     gap="3"
                 >
                     <Container>
-                        <Separator my="3" size="4" />
                         <Text as="div" size="6" weight="bold">
                             요청 리스트
                         </Text>
@@ -81,7 +80,7 @@ const PageRequestList: React.FC = () => {
                                 initial: "1",
                                 md: "2",
                             }}
-                            gap="2"
+                            gap="4"
                             rows="auto"
                             width="auto"
                         >

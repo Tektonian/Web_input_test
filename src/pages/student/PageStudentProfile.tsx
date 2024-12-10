@@ -22,9 +22,13 @@ const PageStudentProfile: React.FC = () => {
             setError(null);
 
             try {
-                const [profileResponse] = await Promise.all([
-                    fetch(`http://localhost:8080/api/students/${student_id}`),
-                ]);
+                const profileResponse = await fetch(
+                    `http://localhost:8080/api/students/${student_id}`,
+                    {
+                        method: "GET",
+                        credentials: "include", // 추가: 인증 정보를 포함
+                    },
+                );
 
                 if (!profileResponse.ok) {
                     throw new Error("Failed to fetch student profile");
@@ -32,8 +36,33 @@ const PageStudentProfile: React.FC = () => {
 
                 const studentProfileData = await profileResponse.json();
 
+                const studentReviews = studentProfileData.review.map(
+                    (review: any) => {
+                        const request_card = {
+                            title: review.title,
+                            subtitle: review.subtitle,
+                            reward_price: review.reward_price,
+                            currency: review.currency,
+                            address: review.address,
+                            start_date: new Date(review.start_date),
+                            logo_image: review.logo_image,
+                            link: `/request/${review.request_id}`,
+                        };
+                        return {
+                            request_card,
+                            was_late: review.was_late,
+                            was_proactive: review.was_proactive,
+                            was_diligent: review.was_diligent,
+                            commu_ability: review.commu_ability,
+                            lang_fluent: review.lang_fluent,
+                            goal_fulfillment: review.goal_fulfillment,
+                            want_cowork: review.want_cowork,
+                        };
+                    },
+                );
+
                 setStudentProfile(studentProfileData.profile || null); // Profile 데이터가 없을 경우 null 처리
-                setReviewOfStudent(studentProfileData.review || []); // Reviews 데이터가 없을 경우 빈 배열 처리
+                setReviewOfStudent(studentReviews || []); // Reviews 데이터가 없을 경우 빈 배열 처리
             } catch (err) {
                 setError(
                     err instanceof Error
