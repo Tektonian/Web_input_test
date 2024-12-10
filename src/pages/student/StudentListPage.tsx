@@ -96,8 +96,8 @@ const StudentListPage = () => {
                         <Separator my="3" size="4" />
                         <Grid
                             columns={{
-                                initial: "1",
-                                md: "2",
+                                initial: "2",
+                                md: "3",
                             }}
                             gap="2"
                             rows="auto"
@@ -114,7 +114,7 @@ const StudentListPage = () => {
                                     >
                                         <StudentCard
                                             student_id={card.student_id}
-                                            name={card.name_glb}
+                                            name={card.name_glb["kr"]}
                                             nationality={card.nationality}
                                             school={card.school_name}
                                             major={card.faculty}

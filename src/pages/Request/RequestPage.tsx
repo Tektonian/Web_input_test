@@ -180,7 +180,7 @@ const RequestPage = () => {
                 initial: "300px",
                 xs: "520px",
                 sm: "768px",
-                md: "1024px",
+                md: "100%",
             }}
         >
             <Flex direction="column" align="center" justify="center">
@@ -211,7 +211,7 @@ const RequestPage = () => {
                     nationality={request.nationality}
                     corp_num={request.corp_num}
                 />
-                <Box width="1024px" my="3">
+                <Box my="3">
                     <Button onClick={goToCorporationProfile}>
                         Corporation Profile
                     </Button>
