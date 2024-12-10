@@ -126,8 +126,12 @@ const PageCorpProfile = () => {
         <Theme>
             <Flex direction="column" align="center" justify="center">
                 <Box
-                    width={{ xs: "520px", sm: "768px", md: "1024px" }}
-                    minWidth="300px"
+                    width={{
+                        initial: "300px",
+                        xs: "520px",
+                        sm: "768px",
+                        md: "1024px",
+                    }}
                 >
                     <CorpProfile {...profile} />
 

@@ -23,6 +23,7 @@ const MessageRender = ({
                 const senderName: undefined | string = "";
                 // @ts-ignore
                 console.log("Render message", activeRoom, val);
+                // @ts-ignore
                 const sender = activeRoom.participants.find(
                     // @ts-ignore
                     (parti: any) => parti.user_id === val.senderId,
