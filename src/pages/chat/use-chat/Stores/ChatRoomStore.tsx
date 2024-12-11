@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { io, Socket } from "socket.io-client";
-import { resMessage } from "../useSocket";
+import { ResMessage } from "../useSocket";
 import { safeLocalStorage } from "@toss/storage";
 import { TypedStorage } from "@toss/storage/typed";
 import { IMessageStorage } from "./MessageStore";
@@ -42,7 +42,7 @@ interface ChatRoomStore {
     setActiveRoom: (chatRoomId?: string) => void;
     setChatRooms: (chatRooms: ChatRoom[]) => void;
     removeChatRoom: (chatRoomId: string) => void;
-    updateChatRoom: (message: resMessage) => void;
+    updateChatRoom: (message: ResMessage) => void;
     updateOnConnect: (resChatRooms: ResChatRoom[]) => void;
     setUnread: (chatRoomId: string, unreadCount: number) => void;
 }
@@ -100,7 +100,7 @@ const SetUnread = (
 
 const UpdateChatRoom = (
     chatRooms: ChatRoom[],
-    message: resMessage,
+    message: ResMessage,
     activeRoom?: ChatRoom,
 ) => {
     const msgInChatRoom = chatRooms.find(

@@ -1,11 +1,11 @@
 import { TypedStorage } from "@toss/storage/typed";
 import { create } from "zustand";
-import type { MessageContentType } from "../useSocket";
+import type { MessageContent } from "../useSocket";
 
 // Big TODO: move to indexedDB later
 
 export interface IMessageStorage {
-    messages: MessageContentType[];
+    messages: MessageContent[];
 }
 
 const safeExtract = (messageStorage: TypedStorage<IMessageStorage>) => {
@@ -18,24 +18,24 @@ const safeExtract = (messageStorage: TypedStorage<IMessageStorage>) => {
 };
 
 interface sentMessages {
-    messages: MessageContentType[];
+    messages: MessageContent[];
     init: (chatRoomId?: string) => void;
-    push: (chatRoomId: string, message: MessageContentType) => void;
+    push: (chatRoomId: string, message: MessageContent) => void;
     getMessageLength: (chatRoomId: string) => number;
-    getMessages: (chatRoomId: string) => MessageContentType[];
+    getMessages: (chatRoomId: string) => MessageContent[];
     updateUnread: (chatRoomId: string, lastReadSeqList: number[]) => void;
-    setMessages: (chatRoomId: string, messages: MessageContentType[]) => void;
+    setMessages: (chatRoomId: string, messages: MessageContent[]) => void;
     setMessageByIdx: (
         chatRoomId: string,
-        messages: MessageContentType[],
+        messages: MessageContent[],
         idx: number,
     ) => void;
 }
 
 const PushMessage = (
     chatRoomId: string,
-    oldMessages: MessageContentType[],
-    newMessage: MessageContentType,
+    oldMessages: MessageContent[],
+    newMessage: MessageContent,
 ) => {
     const SentMessageStorage = new TypedStorage<IMessageStorage>(
         `sentMessages-${chatRoomId}`,
@@ -50,8 +50,8 @@ const PushMessage = (
 
 const SetMessageByIdx = (
     chatRoomId: string,
-    oldMessages: MessageContentType[],
-    newMessages: MessageContentType[],
+    oldMessages: MessageContent[],
+    newMessages: MessageContent[],
     idx: number,
 ) => {
     console.log("setmessages ", [oldMessages.slice(0, idx), ...newMessages]);
@@ -71,7 +71,7 @@ const SetMessageByIdx = (
 const UpdateUnread = (
     chatRoomId: string,
     lastReadSeqList: number[],
-    oldMessages: MessageContentType[],
+    oldMessages: MessageContent[],
 ) => {
     // Sequence of -1 means that user never participated in a chatroom and read messages;
     // So if minSeq is -1 we should set it as 0
@@ -155,19 +155,19 @@ export const useSentMessages = create<sentMessages>((set, get) => ({
 
 interface middleStateMessages {
     chatRoomId: string;
-    messages: MessageContentType[];
+    messages: MessageContent[];
     init: (chatRoomId: string) => void;
-    push: (chatRoomId: string, message: MessageContentType) => void;
+    push: (chatRoomId: string, message: MessageContent) => void;
     getMessage: (
         chatRoomId: string,
         messageId: string,
-    ) => MessageContentType | undefined;
+    ) => MessageContent | undefined;
     removeMessage: (chatRoomId: string, messageId: string) => void;
 }
 
 const FilterMessage = (
     chatRoomId: string,
-    messages: MessageContentType[] | null,
+    messages: MessageContent[] | null,
     messageId: string,
 ) => {
     if (messages !== null) {
@@ -179,7 +179,7 @@ const FilterMessage = (
 
 const SpliceMessage = (
     chatRoomId: string,
-    messages: MessageContentType[] | null,
+    messages: MessageContent[] | null,
     messageId: string,
 ) => {
     if (messages !== null) {

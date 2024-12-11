@@ -7,36 +7,35 @@ import {
 import { useChatRoomStore } from "./Stores/ChatRoomStore";
 import { Socket } from "socket.io-client";
 import { useSession } from "../../../hooks/Session";
-type MessageStates = "SENDING" | "SENT" | "UNREAD" | "READ";
 
 interface ChatMessageBase {
     _id: string; // Id should set by server-side. Before that tag Id with randomly generated string
     seq: number;
+    senderId: string;
     unreadCount: number;
-    senderName?: string;
     direction: "outgoing" | "inbound";
     createdAt?: Date;
     updatedAt?: Date;
 }
 
-export interface TextContent extends ChatMessageBase {
+export interface TextContent {
     contentType: "text";
     content: string;
 }
 
-export interface ImageContent extends ChatMessageBase {
+export interface ImageContent {
     contentType: "image";
     url: string;
     data: ArrayBuffer;
 }
 
-export interface FileContent extends ChatMessageBase {
+export interface FileContent {
     contentType: "file";
     url: string;
     data: ArrayBuffer;
 }
 
-export interface MapContent extends ChatMessageBase {
+export interface MapContent {
     contentType: "map";
     content: string;
 }
@@ -47,22 +46,24 @@ export type MessageContentType =
     | MapContent
     | ImageContent;
 
-interface ReqSendMessage {
-    _id: string; // set random string to identify sending and failed message object
+export type MessageContent = MessageContentType & ChatMessageBase;
+
+interface ReqSendMessage extends ChatMessageBase {
     senderId: string;
     chatRoomId: string;
-    state: MessageStates;
-    message: MessageContentType;
+    content: MessageContentType;
 }
 
-export interface resMessage {
+export interface ResMessage {
     _id: string;
     seq: number;
     chatRoomId: string;
     unreadCount: number;
     senderName: string;
-    contentType: "text";
+    contentType: "text" | "image" | "map" | "file";
     content: string;
+    data?: ArrayBuffer;
+    url: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -104,15 +105,15 @@ export const useSocket = () => {
         }) => {
             if (socket === null) return new Promise(() => null);
 
-            pushToSending(chatRoomId, req.message);
-            const res = await socket.emit("sendMessage", JSON.stringify(req));
+            // pushToSending(chatRoomId, req);
+            const res = await socket.emit("sendMessage", req);
             //const res = await fetch(`http://localhost:8080/sendMessage`, {method: 'post', headers: {"Content-Type": "application/json"}, body: JSON.stringify({chatRoomId: chatRoomId, message: message})});
             console.log("Mutations response", res);
             return res;
         },
         onError: (error, variables, context) => {
-            removeSending(variables.chatRoomId, variables.req.message._id);
-            pushToFailed(variables.chatRoomId, variables.req.message);
+            // removeSending(variables.chatRoomId, variables.req._id);
+            // pushToFailed(variables.chatRoomId, variables.req.content);
             console.log("error: ", error);
         },
         onSuccess: (data, variables, context) => {
@@ -120,7 +121,7 @@ export const useSocket = () => {
             console.log("success context", context);
             console.log("success context", variables);
             // remove sending message with variables
-            removeSending(variables.chatRoomId, variables.req.message._id);
+            // removeSending(variables.chatRoomId, variables.req._id);
             // add received message from server
         },
         onSettled: (data, error, variables, context) => {
@@ -190,12 +191,15 @@ export const useSocket = () => {
         if (tempId === undefined) {
             return undefined;
         }
+        console.log("On sending", content);
         const req: ReqSendMessage = {
             _id: Math.floor(Math.random() * 100000).toString(),
-            state: "SENDING",
+            seq: 0,
+            unreadCount: 0,
+            direction: "outgoing",
             senderId: tempId,
             chatRoomId: chatRoomId,
-            message: content,
+            content: content,
         };
 
         mutate({ socket: socket, req: req, chatRoomId: chatRoomId });

@@ -5,7 +5,7 @@ import {
     useSendingMessages,
 } from "../use-chat/Stores/MessageStore";
 
-import type { MessageContentType } from "../use-chat/useSocket";
+import type { MessageContent } from "../use-chat/useSocket";
 import { Message } from "web_component";
 import { ScrollArea, Flex, Box } from "@radix-ui/themes";
 import { ChatRoom } from "../use-chat/Stores/ChatRoomStore";
@@ -14,7 +14,7 @@ const MessageRender = ({
     messages,
     activeRoom,
 }: {
-    messages: MessageContentType[];
+    messages: MessageContent[];
     activeRoom: ChatRoom;
 }) => {
     return (
@@ -22,12 +22,12 @@ const MessageRender = ({
             {messages.map((val, idx, array) => {
                 const senderName: undefined | string = "";
                 // @ts-ignore
-                console.log("Render message", activeRoom, val);
                 // @ts-ignore
                 const sender = activeRoom.participants.find(
                     // @ts-ignore
                     (parti: any) => parti.user_id === val.senderId,
                 );
+                console.log("Render message", activeRoom, sender, val);
                 if (val.contentType === "text") {
                     return (
                         <Message
@@ -38,7 +38,7 @@ const MessageRender = ({
                             senderName={
                                 val.direction === "outgoing"
                                     ? undefined
-                                    : sender.username
+                                    : sender?.username
                             }
                             // @ts-ignore
                             sentAt={new Date(val.createdAt) ?? new Date()}
