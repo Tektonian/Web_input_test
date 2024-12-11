@@ -4,7 +4,7 @@ import { StudentProfile } from "web_component";
 import { ReviewOfStudent } from "web_component";
 import { Theme, Grid, Box, Flex, Text, Separator } from "@radix-ui/themes";
 
-const PageStudentProfile: React.FC = () => {
+const StudentProfilePage: React.FC = () => {
     const [studentProfile, setStudentProfile] = useState<React.ComponentProps<
         typeof StudentProfile
     > | null>(null);
@@ -26,7 +26,7 @@ const PageStudentProfile: React.FC = () => {
                     `http://localhost:8080/api/students/${student_id}`,
                     {
                         method: "GET",
-                        credentials: "include", // 추가: 인증 정보를 포함
+                        credentials: "include",
                     },
                 );
 
@@ -60,6 +60,8 @@ const PageStudentProfile: React.FC = () => {
                         };
                     },
                 );
+
+                console.log(studentReviews);
 
                 setStudentProfile(studentProfileData.profile || null); // Profile 데이터가 없을 경우 null 처리
                 setReviewOfStudent(studentReviews || []); // Reviews 데이터가 없을 경우 빈 배열 처리
@@ -156,4 +158,4 @@ const PageStudentProfile: React.FC = () => {
     );
 };
 
-export default PageStudentProfile;
+export default StudentProfilePage;

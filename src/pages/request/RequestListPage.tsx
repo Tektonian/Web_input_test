@@ -51,7 +51,7 @@ const useRequestList = () => {
     return { fetchRequestList, data, isSuccess };
 };
 
-const PageRequestList: React.FC = () => {
+const RequestListPage: React.FC = () => {
     const [selectedRequests, setSelectedRequests] = useState<number[]>([]);
     const { fetchRequestList, data, isSuccess } = useRequestList();
 
@@ -127,4 +127,4 @@ const PageRequestList: React.FC = () => {
     );
 };
 
-export default PageRequestList;
+export default RequestListPage;
