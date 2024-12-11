@@ -15,15 +15,15 @@ const HomePage = () => {
         // No login
         // or Not verified
         HeroDisplay = Hero({ userRole: undefined });
-    } else if (roles.includes("normal")) {
-        // Logged in and verified
-        HeroDisplay = Hero({ userRole: "normal" });
     } else if (roles.includes("student")) {
         // Student user
         HeroDisplay = Hero({ userRole: "student" });
     } else if (roles.includes("corp") || roles.includes("orgn")) {
         // Organzation user
         HeroDisplay = Hero({ userRole: "corp" });
+    } else if (roles.includes("normal")) {
+        // Logged in and verified
+        HeroDisplay = Hero({ userRole: "normal" });
     } else {
         HeroDisplay = Hero({ userRole: undefined });
     }
