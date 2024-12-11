@@ -10,10 +10,8 @@ import LanguageHistoryListInput from "./student/components/LanguageHistoryListIn
 import { ProfileImageInput } from "web_component";
 import BusinessNumberInput from "./corporation/components/BusinessNumberInput";
 import BusinessInfoInput from "./corporation/components/BusinessInfoInput";
-import { Buffer } from "buffer";
 import ConsumerInfoInput from "./corporation/components/ConsumerInfoInput";
 import KrBusinessNumberInput from "./corporation/components/KrBusinessNumberInput";
-import { useNavigate } from "react-router-dom";
 
 interface AcademicHistoryCardProps {
     degree: string;
