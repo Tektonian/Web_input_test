@@ -10,7 +10,6 @@ import LanguageHistoryInput from "./student/components/LanguageHistoryInput";
 import { ProfileImageInput } from "web_component";
 import BusinessNumberInput from "./Corporation/components/BusinessNumberInput";
 import BusinessInfoInput from "./Corporation/components/BusinessInfoInput";
-import { Buffer } from "buffer";
 import ConsumerInfoInput from "./Corporation/components/ConsumerInfoInput";
 import KrBusinessNumberInput from "./Corporation/components/KrBusinessNumberInput";
 
