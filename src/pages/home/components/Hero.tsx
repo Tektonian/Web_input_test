@@ -122,6 +122,10 @@ const Hero = ({
         }
     };
 
+    const handleRequestNow = () => {
+        navigate("/requestinput");
+    };
+
     return (
         <Box
             id="hero"

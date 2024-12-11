@@ -1,10 +1,10 @@
-/* eslint-disable */
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { RequestProfile } from "web_component";
 import { StickyButton } from "web_component";
 import { Flex, Box, Separator, Container, Button } from "@radix-ui/themes";
 import { useSession } from "../../hooks/Session";
+import { APIType } from "api_spec";
 
 interface RequestProfileProps {
     request_id: number;
@@ -34,6 +34,7 @@ interface RequestProfileProps {
     nationality: string;
     corp_num: number;
 }
+
 const RequestPage = () => {
     const [request, setRequest] = useState<RequestProfileProps | null>(null);
     const [sticky, setSticky] = useState<
@@ -46,10 +47,8 @@ const RequestPage = () => {
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
     const { data: session, status } = useSession();
-    const roles = session?.user?.roles;
+    const roles = session?.user?.roles || [];
     const { request_id } = useParams<{ request_id: string }>();
-
-    console.log(roles);
 
     useEffect(() => {
         const fetchRequestData = async () => {
@@ -97,8 +96,8 @@ const RequestPage = () => {
                 });
 
                 setSticky({
-                    viewerType: roles?.includes("student") ? 1 : 2,
-                    innerText: roles?.includes("student")
+                    viewerType: roles.includes("student") ? 1 : 2,
+                    innerText: roles.includes("student")
                         ? "신청하기"
                         : "추천학생",
                 });
@@ -109,8 +108,36 @@ const RequestPage = () => {
             }
         };
 
-        fetchRequestData();
+        fetchRequestData(); //eslint-disable-line
     }, [request_id]);
+
+    const handleStickyButtonClick = async () => {
+        if (roles.includes("student")) {
+            try {
+                const response = await fetch("/api/message/chatroom", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({
+                        request_id: request_id,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to send chatroom request");
+                }
+
+                const data = await response.json();
+                console.log("Chatroom created:", data);
+            } catch (error) {
+                console.error("Error creating chatroom:", error);
+            }
+        } else {
+            navigate(`/student/list/${request_id}`);
+        }
+    };
 
     if (loading) {
         return (
@@ -184,41 +211,14 @@ const RequestPage = () => {
             }}
         >
             <Flex direction="column" align="center" justify="center">
-                <RequestProfile
-                    request_id={request.request_id}
-                    consumer_id={request.consumer_id}
-                    title={request.title}
-                    subtitle={request.subtitle}
-                    head_count={request.head_count}
-                    reward_price={request.reward_price}
-                    currency={request.currency}
-                    content={request.content}
-                    are_needed={request.are_needed}
-                    are_required={request.are_required}
-                    start_date={request.start_date}
-                    end_date={request.end_date}
-                    start_time={request.start_time}
-                    end_time={request.end_time}
-                    address={request.address}
-                    address_coordinate={request.address_coordinate}
-                    provide_food={request.provide_food}
-                    provide_trans_exp={request.provide_trans_exp}
-                    prep_material={request.prep_material}
-                    created_at={request.created_at}
-                    request_status={request.request_status}
-                    corp_id={request.corp_id}
-                    corp_name={request.corp_name}
-                    nationality={request.nationality}
-                    corp_num={request.corp_num}
-                />
+                <RequestProfile {...request} />
                 <Box my="3">
                     <Button onClick={goToCorporationProfile}>
                         Corporation Profile
                     </Button>
-                    <Separator my="3" size="4" />
                 </Box>
             </Flex>
-            <StickyButton {...sticky} />
+            <StickyButton {...sticky} onClick={handleStickyButtonClick} />
         </Container>
     );
 };
