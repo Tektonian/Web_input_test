@@ -13,6 +13,7 @@ import BusinessInfoInput from "./corporation/components/BusinessInfoInput";
 import { Buffer } from "buffer";
 import ConsumerInfoInput from "./corporation/components/ConsumerInfoInput";
 import KrBusinessNumberInput from "./corporation/components/KrBusinessNumberInput";
+import { useNavigate } from "react-router-dom";
 
 interface AcademicHistoryCardProps {
     degree: string;
@@ -84,6 +85,7 @@ const ProfileSetup: React.FC = () => {
 
     const { Funnel, Step, setStep } = useFunnel("userType");
     const userType = watch("userType");
+    const navigate = useNavigate();
 
     const [defaultValues, setDefaultValues] = useState<ProfileProps>({
         userType: "",
@@ -166,6 +168,7 @@ const ProfileSetup: React.FC = () => {
                         "Student data submitted successfully:",
                         studentResult,
                     );
+                    navigate("/home");
                 } else {
                     console.error(
                         "Failed to submit student data:",
@@ -202,6 +205,7 @@ const ProfileSetup: React.FC = () => {
                 if (response.ok) {
                     const result = await response.json();
                     console.log("Data successfully submitted:", result);
+                    navigate("/home");
                 } else {
                     console.error(
                         "Failed to submit data:",
