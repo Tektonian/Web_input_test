@@ -9,16 +9,6 @@ import {
     Box,
 } from "@mui/material";
 
-export interface ConsumerAttributes {
-    user_id?: any;
-    corp_id?: number; //서버에서 받도록
-    orgn_id?: number;
-    consumer_type: string;
-    consumer_email: string;
-    consumer_verified?: Date;
-    phone_number: string;
-}
-
 interface ConsumerInfoInputProps {
     control: any;
     onNext: () => void;

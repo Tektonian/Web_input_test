@@ -18,7 +18,7 @@ interface CorporationReviewProps {
     sense_of_achive?: number;
 }
 
-const PageCorporationReviewInput: React.FC = () => {
+const CorpReviewInput: React.FC = () => {
     const { request_id } = useParams<{ request_id: string }>();
     const { control, handleSubmit } = useForm<CorporationReviewProps>({
         defaultValues: {
@@ -114,4 +114,4 @@ const PageCorporationReviewInput: React.FC = () => {
     );
 };
 
-export default PageCorporationReviewInput;
+export default CorpReviewInput;

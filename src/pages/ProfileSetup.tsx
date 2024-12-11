@@ -5,14 +5,14 @@ import UserTypeInput from "../components/input/UserTypeInput";
 import EmailInput from "../components/input/EmailInput";
 import TokenInput from "../components/input/TokenInput";
 import BasicInfoInput from "./student/components/BasicInfoInput";
-import AcademicHistoryInput from "./student/components/AcademicHistoryInput";
-import LanguageHistoryInput from "./student/components/LanguageHistoryInput";
+import AcademicHistoryListInput from "./student/components/AcademicHistoryListInput";
+import LanguageHistoryListInput from "./student/components/LanguageHistoryListInput";
 import { ProfileImageInput } from "web_component";
-import BusinessNumberInput from "./Corporation/components/BusinessNumberInput";
-import BusinessInfoInput from "./Corporation/components/BusinessInfoInput";
+import BusinessNumberInput from "./corporation/components/BusinessNumberInput";
+import BusinessInfoInput from "./corporation/components/BusinessInfoInput";
 import { Buffer } from "buffer";
-import ConsumerInfoInput from "./Corporation/components/ConsumerInfoInput";
-import KrBusinessNumberInput from "./Corporation/components/KrBusinessNumberInput";
+import ConsumerInfoInput from "./corporation/components/ConsumerInfoInput";
+import KrBusinessNumberInput from "./corporation/components/KrBusinessNumberInput";
 
 interface AcademicHistoryCardProps {
     degree: string;
@@ -244,7 +244,7 @@ const ProfileSetup: React.FC = () => {
 
                 {/* 학생 3: Academic History 입력 */}
                 <Step name="academicHistory">
-                    <AcademicHistoryInput
+                    <AcademicHistoryListInput
                         control={control}
                         onNext={() => setStep("examHistory")}
                         onPrevious={() => setStep("basicInfo")}
@@ -253,7 +253,7 @@ const ProfileSetup: React.FC = () => {
 
                 {/* 학생 4: Language History 입력 */}
                 <Step name="examHistory">
-                    <LanguageHistoryInput
+                    <LanguageHistoryListInput
                         control={control}
                         onNext={() => setStep("image")}
                         onPrevious={() => setStep("academicHistory")}

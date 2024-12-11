@@ -101,7 +101,7 @@ const RequestInput = ({
                 const requestId = result.request_id;
                 console.log("Request ID:", requestId);
 
-                navigate(`/student/list/${requestId}`);
+                navigate(`/request/${requestId}`);
             } else {
                 console.error("Failed to create request:", response.status);
             }

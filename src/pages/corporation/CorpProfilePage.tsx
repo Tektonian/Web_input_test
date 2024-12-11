@@ -53,7 +53,6 @@ const PageCorpProfile = () => {
                 console.log(reviews);
                 console.log(requests);
 
-                // reviews와 requests를 1대1로 매핑
                 const mappedReviews = reviews.map(
                     (review: any, index: number) => {
                         const request = requests[index] || {};
