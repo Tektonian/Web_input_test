@@ -62,14 +62,16 @@ const PageRequestList: React.FC = () => {
 
     return (
         <Theme>
-            <Box width="100%" height="100%" minWidth="300px">
-                <Flex
-                    direction="column"
-                    align="center"
-                    justify="center"
-                    gap="3"
-                >
-                    <Container>
+            <Flex direction="column" align="center" justify="center" gap="3">
+                <Container>
+                    <Box
+                        width={{
+                            initial: "300px",
+                            xs: "520px",
+                            sm: "768px",
+                            md: "1024px",
+                        }}
+                    >
                         <Text as="div" size="6" weight="bold">
                             요청 리스트
                         </Text>
@@ -118,9 +120,9 @@ const PageRequestList: React.FC = () => {
                                 <Text>데이터를 불러올 수 없습니다.</Text>
                             )}
                         </Grid>
-                    </Container>
-                </Flex>
-            </Box>
+                    </Box>
+                </Container>
+            </Flex>
         </Theme>
     );
 };
