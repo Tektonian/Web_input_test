@@ -59,7 +59,7 @@ const AddressInput: React.FC<AddressInputProps> = ({ control, setValue }) => {
 
             setValue("address_coordinate", {
                 type: "Point",
-                coordinates: [lng, lat],
+                coordinates: [lat, lng],
             });
         } catch (error) {
             console.error("Error fetching coordinates:", error);
