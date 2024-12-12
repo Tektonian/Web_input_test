@@ -3,19 +3,21 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionProvider } from "./hooks/Session";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Government } from "./components/Government";
-import RequestPage from "./pages/Request/RequestPage";
+import RequestInfoPage from "./pages/request/RequestInfoPage";
 import ProfileSetup from "./pages/ProfileSetup";
 import ChatPage from "./pages/chat/ChatPage";
 import { Consumer } from "./components/Consumer";
-import RequestInput from "./pages/Request/RequestInput";
+import RequestInput from "./pages/request/RequestInput";
 import "./App.css";
-import PageStudentProfile from "./pages/student/PageStudentProfile";
-import PageCorpProfile from "./pages/Corporation/PageCorpProfile";
-import PageCorporationReview from "./pages/Corporation/PageCorporationReviewInput";
+import StudentProfilePage from "./pages/student/StudentProfilePage";
+import CorpProfilePage from "./pages/corporation/CorpProfilePage";
+import PageCorporationReview from "./pages/corporation/CorpReviewInput";
 import StudentListPage from "./pages/student/StudentListPage";
 import Header from "./pages/home/components/Header";
 import HomePage from "./pages/home/HomePage";
-import PageRequestList from "./pages/Request/PageRequestList";
+import RequestListPage from "./pages/request/RequestListPage";
+import CorpReviewInput from "./pages/corporation/CorpReviewInput";
+import StudentReviewInput from "./pages/student/StudentReviewInput";
 
 const queryClient = new QueryClient();
 
@@ -31,11 +33,19 @@ function App() {
                         <Routes>
                             <Route
                                 path="/corporation/:corp_id"
-                                element={<PageCorpProfile />}
+                                element={<CorpProfilePage />}
+                            />
+                            <Route
+                                path="/corporationreview/"
+                                element={<CorpReviewInput />}
                             />
                             <Route
                                 path="/student/:student_id"
-                                element={<PageStudentProfile />}
+                                element={<StudentProfilePage />}
+                            />
+                            <Route
+                                path="/studentreview/"
+                                element={<StudentReviewInput />}
                             />
                             <Route
                                 path="/government"
@@ -43,11 +53,11 @@ function App() {
                             />
                             <Route
                                 path="/request/:request_id"
-                                element={<RequestPage />}
+                                element={<RequestInfoPage />}
                             />
                             <Route
                                 path="/request-list"
-                                element={<PageRequestList />}
+                                element={<RequestListPage />}
                             />
                             <Route path="/consumer" element={<Consumer />} />
                             <Route
