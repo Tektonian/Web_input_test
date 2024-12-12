@@ -14,21 +14,19 @@ import ConsumerInfoInput from "./corporation/components/ConsumerInfoInput";
 import KrBusinessNumberInput from "./corporation/components/KrBusinessNumberInput";
 import { useNavigate } from "react-router-dom";
 
-interface AcademicHistoryCardProps {
+interface AcademicHistoryProps {
+    school_id: number;
     degree: string;
     faculty: string;
     school_name: string;
     start_date: string;
     end_date: string;
     status: "Graduated" | "In Progress" | "Withdrawn";
-    logo?: string;
 }
 
-export interface LanguageCardProps {
-    level: number;
-    exam_result: string;
-    exam_name: string;
-    language: string;
+export interface ExamProps {
+    exam_id: number;
+    exam_result: { class: string; level: number };
 }
 
 interface StudentProfileProps {
@@ -43,8 +41,9 @@ interface StudentProfileProps {
     image: string;
     has_car?: boolean;
     keyword_list?: object;
-    academicHistory: AcademicHistoryCardProps[];
-    examHistory: LanguageCardProps[];
+    academicHistory: AcademicHistoryProps[];
+    examHistory: ExamProps[];
+    token: string;
 }
 interface ConsumerProfileProps {
     userType: string;
@@ -100,6 +99,7 @@ const ProfileSetup: React.FC = () => {
         keyword_list: {},
         academicHistory: [],
         examHistory: [],
+        token: "",
     });
 
     useEffect(() => {
@@ -119,6 +119,7 @@ const ProfileSetup: React.FC = () => {
                     keyword_list: {},
                     academicHistory: [],
                     examHistory: [],
+                    token: "",
                 };
             } else if (userType === "corp") {
                 return {
