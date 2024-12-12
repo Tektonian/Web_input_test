@@ -13,6 +13,7 @@ import {
     Grid2 as Grid,
 } from "@mui/material";
 import { NavigationButton } from "web_component";
+import NationalityInput from "../../../components/input/NationalityInput";
 
 interface BasicInfoInputProps {
     control: any;
@@ -51,7 +52,7 @@ const BasicInfoInput: React.FC<BasicInfoInputProps> = ({
                             />
                         </Grid>
                         <Grid size={6}>
-                            <ShortTextInput
+                            <NationalityInput
                                 control={control}
                                 name="nationality"
                                 label="Nationality"
@@ -140,8 +141,8 @@ const BasicInfoInput: React.FC<BasicInfoInputProps> = ({
                 </Box>
 
                 <Box display="flex" justifyContent="space-between" mt={3}>
-                    <NavigationButton label="previous" onClick={onPrevious}/>
-                    <NavigationButton label="next" onClick={onNext}/>
+                    <NavigationButton label="previous" onClick={onPrevious} />
+                    <NavigationButton label="next" onClick={onNext} />
                 </Box>
             </Box>
         </Container>

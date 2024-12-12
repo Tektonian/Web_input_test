@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Controller } from "react-hook-form";
+import { Controller, useWatch } from "react-hook-form";
 import { ShortTextInput } from "web_component";
 import { YearMonthInput } from "web_component";
 import {
@@ -9,9 +9,13 @@ import {
     TextField,
     MenuItem,
     IconButton,
+    Autocomplete,
 } from "@mui/material";
 import { SelectInput } from "web_component";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import { APIType } from "api_spec";
+import { useSession } from "../../../hooks/Session";
+import NationalityInput from "../../../components/input/NationalityInput";
 
 interface AcademicHistoryInputProps {
     control: any;
@@ -24,6 +28,7 @@ interface School {
     school_id: number;
     school_name: string;
     school_name_glb: { [key: string]: string };
+    country_code: string;
 }
 
 const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
@@ -33,12 +38,27 @@ const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
     locale,
 }) => {
     const [schools, setSchools] = useState<School[]>([]);
+    const country_code = useWatch({
+        control,
+        name: `academicHistory[${index}].country_code`,
+    });
 
     useEffect(() => {
         const fetchSchools = async () => {
+            if (!country_code) {
+                setSchools([
+                    {
+                        school_id: -1,
+                        school_name: "국적을 먼저 선택해 주세요",
+                        school_name_glb: {},
+                        country_code: "xx",
+                    },
+                ]);
+                return;
+            }
             try {
                 const response = await fetch(
-                    "http://localhost:8080/api/schools",
+                    `http://localhost:8080/api/search/schools?country_code=${country_code}`,
                     {
                         method: "GET",
                         headers: {
@@ -46,15 +66,16 @@ const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
                         },
                     },
                 );
-                const data: School[] = await response.json();
-                setSchools(data);
+                const data = await response.json();
+                console.log("data:", data);
+                setSchools(data.ret);
             } catch (error) {
                 console.error("Error fetching school data:", error);
             }
         };
 
         fetchSchools(); // eslint-disable-line
-    }, []);
+    }, [country_code]);
 
     return (
         <Box
@@ -86,29 +107,49 @@ const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
                 </Grid>
 
                 {/* 입력 필드들 */}
-                <Grid size={4}>
+                <Grid size={2}>
+                    <NationalityInput
+                        control={control}
+                        name={`academicHistory[${index}].country_code`}
+                        label="Country"
+                    />
+                </Grid>
+                <Grid size={2}>
                     <Controller
                         name={`academicHistory[${index}].school_id`}
                         control={control}
                         defaultValue=""
-                        render={({ field }) => (
-                            <TextField
-                                {...field}
-                                select
-                                label="School Name"
-                                fullWidth
-                                variant="outlined"
-                            >
-                                {schools.map((school) => (
-                                    <MenuItem
-                                        key={school.school_id}
-                                        value={school.school_id}
-                                    >
-                                        {school.school_name}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        )}
+                        render={({ field }) => {
+                            const { onChange, value } = field;
+                            const selectedSchool =
+                                schools.find(
+                                    (school) => school.school_id === value,
+                                ) || null;
+
+                            return (
+                                <Autocomplete
+                                    options={schools}
+                                    getOptionLabel={(option) =>
+                                        option.school_name
+                                    }
+                                    value={selectedSchool}
+                                    onChange={(_, newValue) => {
+                                        onChange(
+                                            newValue ? newValue.school_id : "",
+                                        );
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="School Name"
+                                            variant="outlined"
+                                            fullWidth
+                                        />
+                                    )}
+                                    disablePortal
+                                />
+                            );
+                        }}
                     />
                 </Grid>
                 <Grid size={4}>
