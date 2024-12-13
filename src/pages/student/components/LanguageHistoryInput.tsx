@@ -1,7 +1,15 @@
-import React from "react";
-import { ShortTextInput } from "web_component";
-import { Box, Typography, Grid2 as Grid, IconButton } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { SelectInput, ShortTextInput } from "web_component";
+import {
+    Box,
+    Typography,
+    Grid2 as Grid,
+    IconButton,
+    Autocomplete,
+    TextField,
+} from "@mui/material";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import { Controller, useWatch } from "react-hook-form";
 
 interface LanguageHistoryInputProps {
     control: any;
@@ -9,11 +17,50 @@ interface LanguageHistoryInputProps {
     onRemove: () => void;
 }
 
+interface Exam {
+    exam_id: number;
+    exam_name_glb: { en: string; kr: string; jp: string };
+    exam_result_type: string;
+    exam_results: { class: string; level: number }[];
+    lang_country_code: string;
+}
+
 const LanguageHistoryInput: React.FC<LanguageHistoryInputProps> = ({
     control,
     index,
     onRemove,
 }) => {
+    const [exams, setExams] = useState<Exam[]>([]);
+    const selectedExamId = useWatch({
+        control,
+        name: `examHistory[${index}].exam_id`,
+    });
+
+    const selectedExam = exams.find((exam) => exam.exam_id === selectedExamId);
+    const examResults = selectedExam?.exam_results || [];
+
+    useEffect(() => {
+        const fetchExams = async () => {
+            try {
+                const response = await fetch(
+                    "http://localhost:8080/api/search/exams",
+                    {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    },
+                );
+                const data = await response.json();
+                console.log("data:", data);
+                setExams(data.ret);
+            } catch (error) {
+                console.error("Error fetching exam data:", error);
+            }
+        };
+        fetchExams(); // eslint-disable-line
+    }, []);
+
     return (
         <Box
             sx={{
@@ -43,19 +90,50 @@ const LanguageHistoryInput: React.FC<LanguageHistoryInputProps> = ({
                     </IconButton>
                 </Grid>
 
-                {/* Exam Name 및 Exam Result 입력 필드 */}
+                {/* Exam Name 필드 */}
                 <Grid size={12}>
-                    <ShortTextInput
+                    <Controller
                         control={control}
-                        name={`examHistory[${index}].exam_name`}
-                        label="Exam Name"
+                        name={`examHistory[${index}].exam_id`}
+                        render={({ field }) => {
+                            const { onChange, value } = field;
+                            const selectedExam =
+                                exams.find((exam) => exam.exam_id === value) ||
+                                null;
+                            return (
+                                <Autocomplete
+                                    options={exams}
+                                    getOptionLabel={(option) =>
+                                        option.exam_name_glb.jp
+                                    }
+                                    value={selectedExam}
+                                    onChange={(_, newValue) => {
+                                        onChange(
+                                            newValue ? newValue.exam_id : "",
+                                        );
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Exam Name"
+                                            variant="outlined"
+                                            fullWidth
+                                        />
+                                    )}
+                                    disablePortal
+                                />
+                            );
+                        }}
                     />
                 </Grid>
+
+                {/* Exam Results 필드 */}
                 <Grid size={12}>
-                    <ShortTextInput
+                    <SelectInput
                         control={control}
                         name={`examHistory[${index}].exam_result`}
-                        label="Exam Result"
+                        label="Exam Results"
+                        options={examResults.map((result) => `${result.class}`)}
                     />
                 </Grid>
             </Grid>

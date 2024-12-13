@@ -17,6 +17,7 @@ import { SelectInput } from "web_component";
 import AddressInput from "./components/AddressInput";
 import { useNavigate } from "react-router-dom";
 import { useSession } from "../../hooks/Session";
+
 export interface RequestProfileProps {
     consumer_id: number;
     title: string;
@@ -28,22 +29,22 @@ export interface RequestProfileProps {
     are_needed?: string;
     are_required?: string;
     start_date: Date;
-    end_date: Date;
+    end_date?: Date;
     address: string;
     address_coordinate: {
         type: "Point";
-        coordinates: [lng: number, lat: number];
+        coordinates: [lat: number, lng: number];
     };
     provide_food: boolean;
     provide_trans_exp: boolean;
     prep_material: string;
     status: number;
-    start_time: Date | string | null;
-    end_time: Date | string | null;
+    start_time: Date;
+    end_time: Date;
     created_at: Date;
     updated_at?: Date;
-    corp_id: number;
-    orgn_id: number;
+    corp_id?: number;
+    orgn_id?: number;
 }
 
 const RequestInput = ({
@@ -64,8 +65,8 @@ const RequestInput = ({
             are_required: "",
             start_date: new Date(),
             end_date: new Date(),
-            start_time: null,
-            end_time: null,
+            start_time: new Date(),
+            end_time: new Date(),
             address: "",
             address_coordinate: {
                 type: "Point",
@@ -81,12 +82,8 @@ const RequestInput = ({
     const navigate = useNavigate();
 
     const onSubmit = async (data: RequestProfileProps) => {
-        data.start_time = new Date(data.start_time ?? "").toLocaleTimeString(
-            "it-IT",
-        );
-        data.end_time = new Date(data.end_time ?? "").toLocaleTimeString(
-            "it-IT",
-        );
+        data.start_time = new Date(data.start_time ?? "")
+        data.end_time = new Date(data.end_time ?? "")
         try {
             const response = await fetch("/api/requests", {
                 method: "POST",
