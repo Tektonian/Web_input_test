@@ -1,31 +1,28 @@
 import { create } from "zustand";
 import { io, Socket } from "socket.io-client";
-import { ResMessage } from "../useSocket";
 import { safeLocalStorage } from "@toss/storage";
 import { TypedStorage } from "@toss/storage/typed";
 import { IMessageStorage } from "./MessageStore";
 
+import { APIType } from "api_spec";
+
+type ResMessage = APIType.WebSocketType.ResMessage;
+
+export interface ChatUserProfile {
+    user_name: string;
+    image_url: string;
+    user_id: string;
+    email: string;
+}
 export interface ChatRoom {
+    title: string;
     chatRoomId: string;
-    consumerId?: string; // deprecated
-    consumerName: string;
-    providerId?: string; // deprecated
-    providerName?: string; // deprecated
-    participantNames: string[];
+    consumer: ChatUserProfile;
+    participants: ChatUserProfile[];
     unreadCount?: number;
     lastSender?: string;
     lastMessage?: string;
     lastSentTime?: Date;
-}
-
-export interface ResChatRoom {
-    chatRoomId: string;
-    consumerName: string;
-    providerNames: [string];
-    messageSeq: number;
-    lastSender: string;
-    lastMessage: string;
-    lastSentTime: Date;
 }
 
 interface IChatRoomStorage {
@@ -43,7 +40,7 @@ interface ChatRoomStore {
     setChatRooms: (chatRooms: ChatRoom[]) => void;
     removeChatRoom: (chatRoomId: string) => void;
     updateChatRoom: (message: ResMessage) => void;
-    updateOnConnect: (resChatRooms: ResChatRoom[]) => void;
+    updateOnConnect: (resChatRooms: APIType.ChatRoomType.ResChatRoom[]) => void;
     setUnread: (chatRoomId: string, unreadCount: number) => void;
 }
 
@@ -109,7 +106,7 @@ const UpdateChatRoom = (
     console.log("Update chatroom", msgInChatRoom);
     if (msgInChatRoom === undefined) {
         // TODO: add chatroom
-        return;
+        return chatRooms;
     } else if (
         activeRoom === undefined ||
         msgInChatRoom.chatRoomId !== activeRoom.chatRoomId
@@ -138,7 +135,7 @@ const UpdateChatRoom = (
 
 const UpdateOnConnected = (
     chatRooms: ChatRoom[],
-    resChatRooms: ResChatRoom[],
+    resChatRooms: APIType.ChatRoomType.ResChatRoom[],
 ) => {
     const oldChatRoomIds = new Set(chatRooms.map((room) => room.chatRoomId));
     const newChatRoomIds = new Set(resChatRooms.map((room) => room.chatRoomId));
@@ -154,10 +151,9 @@ const UpdateOnConnected = (
                 `sentMessages-${room.chatRoomId}`,
             ).get()?.messages.length ?? 0;
         return {
+            title: room.title,
             chatRoomId: room.chatRoomId,
-            consumerName: room.consumerName,
-            participantNames: [...room.providerNames],
-            // @ts-ignore
+            consumer: room.consumer,
             participants: [...room.participants],
             lastMessage: room.lastMessage,
             lastSentTime: new Date(room.lastSentTime),
@@ -193,11 +189,9 @@ export const useChatRoomStore = create<ChatRoomStore>((set) => ({
         })),
     updateChatRoom: (message) =>
         set((state) => ({
-            chatRooms: UpdateChatRoom(
-                state.chatRooms,
-                message,
-                state.activeRoom,
-            ),
+            chatRooms: [
+                ...UpdateChatRoom(state.chatRooms, message, state.activeRoom),
+            ],
         })),
     updateOnConnect: (resChatRooms) =>
         set((state) => ({

@@ -7,66 +7,44 @@ import {
 import { useChatRoomStore } from "./Stores/ChatRoomStore";
 import { Socket } from "socket.io-client";
 import { useSession } from "../../../hooks/Session";
+import { APIType } from "api_spec";
 
-interface ChatMessageBase {
-    _id: string; // Id should set by server-side. Before that tag Id with randomly generated string
-    seq: number;
-    senderId: string;
-    unreadCount: number;
-    direction: "outgoing" | "inbound";
-    createdAt?: Date;
-    updatedAt?: Date;
-}
+type ReqSendMessage = APIType.WebSocketType.ReqSendMessage;
+type MessageContentType = APIType.ContentType.MessageContentType;
+type MessageContent = APIType.ContentType.MessageContent;
+type ResMessage = APIType.WebSocketType.ResMessage;
+type ResTryJoin = APIType.WebSocketType.ResTryJoin;
 
-export interface TextContent {
-    contentType: "text";
-    content: string;
-}
-
-export interface ImageContent {
-    contentType: "image";
-    url: string;
-    data: ArrayBuffer;
-}
-
-export interface FileContent {
-    contentType: "file";
-    url: string;
-    data: ArrayBuffer;
-}
-
-export interface MapContent {
-    contentType: "map";
-    content: string;
-}
-
-export type MessageContentType =
-    | TextContent
-    | FileContent
-    | MapContent
-    | ImageContent;
-
-export type MessageContent = MessageContentType & ChatMessageBase;
-
-interface ReqSendMessage extends ChatMessageBase {
-    senderId: string;
-    chatRoomId: string;
-    content: MessageContentType;
-}
-
-export interface ResMessage {
-    _id: string;
-    seq: number;
-    chatRoomId: string;
-    unreadCount: number;
-    senderName: string;
-    contentType: "text" | "image" | "map" | "file";
-    content: string;
-    data?: ArrayBuffer;
-    url: string;
-    createdAt: Date;
-    updatedAt: Date;
-}
+const resMsgToContent = (message: ResMessage): MessageContent => {
+    if (message.contentType === "text") {
+        return {
+            _id: message._id,
+            seq: message.seq,
+            unreadCount: message.unreadCount,
+            direction: message.direction,
+            senderId: message.senderId,
+            createdAt: message.createdAt,
+            updatedAt: message.updatedAt,
+            contentType: message.contentType,
+            content: message.content,
+        };
+    } else {
+        // @ts-ignore
+        return {
+            _id: message._id,
+            seq: message.seq,
+            unreadCount: message.unreadCount,
+            direction: message.direction,
+            senderId: message.senderId,
+            createdAt: message.createdAt,
+            updatedAt: message.updatedAt,
+            // @ts-ignore
+            contentType: message.contentType,
+            content: "",
+            url: "",
+        };
+    }
+};
 
 export const useSocket = () => {
     const {
@@ -106,10 +84,14 @@ export const useSocket = () => {
             if (socket === null) return new Promise(() => null);
 
             // pushToSending(chatRoomId, req);
-            const res = await socket.emit("sendMessage", req);
-            //const res = await fetch(`http://localhost:8080/sendMessage`, {method: 'post', headers: {"Content-Type": "application/json"}, body: JSON.stringify({chatRoomId: chatRoomId, message: message})});
-            console.log("Mutations response", res);
-            return res;
+            if (req.message.contentType === "text") {
+                return await socket.emit("sendMessage", req);
+            } else if (req.message.contentType === "file") {
+            } else if (req.message.contentType === "image") {
+            } else if (req.message.contentType === "map") {
+            } else {
+                throw new Error("Wrong type");
+            }
         },
         onError: (error, variables, context) => {
             // removeSending(variables.chatRoomId, variables.req._id);
@@ -132,16 +114,18 @@ export const useSocket = () => {
     const onJoin = (chatRoomId: string) => {
         socket.on("userJoined", (res, callback) => {
             console.log("Joined to room", res);
-            const { messages, lastReadSequences } = JSON.parse(res);
+            const { messages, lastReadSequences }: ResTryJoin = JSON.parse(res);
             console.log("Joined", messages, lastReadSequences, session);
+            const data = messages.map((m) => resMsgToContent(m));
             setSentMessageByIdx(
                 chatRoomId,
-                messages,
+                data,
                 getSentMessageLength(chatRoomId),
             );
             updateSentUnread(chatRoomId, lastReadSequences);
-            if (messages.length !== 0) {
-                updateChatRoom(messages.at(-1));
+            const lastMsg = messages.at(-1);
+            if (lastMsg !== undefined) {
+                updateChatRoom(lastMsg);
             }
             // TODO: update device last seq
             callback({
@@ -149,15 +133,13 @@ export const useSocket = () => {
             });
         });
         socket.on("someoneSent", (res, callback) => {
-            const data = JSON.parse(res);
+            const message: ResMessage = JSON.parse(res);
+            console.log("Someone sent message: ", message, " - ", res);
+
+            const data: MessageContent = resMsgToContent(message);
+
             pushToSent(chatRoomId, data);
-            updateChatRoom(data);
-            console.log(
-                "Someone sent message: ",
-                data,
-                " - ",
-                getSentMessageLength(chatRoomId),
-            );
+            updateChatRoom(message);
             callback({
                 id: tempId,
                 lastReadSeq: getSentMessageLength(chatRoomId),
@@ -194,12 +176,9 @@ export const useSocket = () => {
         console.log("On sending", content);
         const req: ReqSendMessage = {
             _id: Math.floor(Math.random() * 100000).toString(),
-            seq: 0,
-            unreadCount: 0,
-            direction: "outgoing",
             senderId: tempId,
             chatRoomId: chatRoomId,
-            content: content,
+            message: content,
         };
 
         mutate({ socket: socket, req: req, chatRoomId: chatRoomId });
@@ -209,7 +188,6 @@ export const useSocket = () => {
     const onConnecting = () => {
         socket.once("connected", (res, callback) => {
             console.log("Chat user tmp ID: ", res);
-
             setTempId(res.id);
 
             updateOnConnect(res.chatRooms);
@@ -232,7 +210,7 @@ export const useSocket = () => {
                 updateChatRoom(data);
             }
             if (activeRoom !== undefined) {
-                pushToSent(activeRoom.chatRoomId, data);
+                // pushToSent(activeRoom.chatRoomId, data);
             }
         });
     };

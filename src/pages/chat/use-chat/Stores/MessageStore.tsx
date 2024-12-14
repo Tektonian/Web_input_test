@@ -1,8 +1,10 @@
 import { TypedStorage } from "@toss/storage/typed";
 import { create } from "zustand";
-import type { MessageContent } from "../useSocket";
-
+import type { APIType } from "api_spec";
 // Big TODO: move to indexedDB later
+
+type MessageContent = APIType.ContentType.MessageContent;
+type ResMessage = APIType.WebSocketType.ResMessage;
 
 export interface IMessageStorage {
     messages: MessageContent[];

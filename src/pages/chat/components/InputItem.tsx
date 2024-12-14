@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import { ChatRoom } from "../use-chat/Stores/ChatRoomStore";
 import { TextField, Box, Button, Typography, IconButton } from "@mui/material";
-import type { MessageContentType, TextContent } from "../use-chat/useSocket";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import { Message } from "web_component";
+
+import type { APIType } from "api_spec";
+type MessageContent = APIType.ContentType.MessageContent;
+type MessageContentType = APIType.ContentType.MessageContentType;
 
 interface InputItemProps {
     onSending: Function;
@@ -38,7 +42,7 @@ export const InputItem = (props: InputItemProps) => {
             const isMapLink = typedString.trim().startsWith("https://maps");
 
             const textContent: MessageContentType = {
-                contentType: isMapLink ? "map" : "text",
+                contentType: "text",
                 content: typedString,
             };
             setTypedString("");

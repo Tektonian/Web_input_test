@@ -1,11 +1,13 @@
-import { MouseEvent, MouseEventHandler, useEffect } from "react";
+import { MouseEvent, MouseEventHandler, useEffect, useState } from "react";
 import { ChatRoom, useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";
-import { MessageHeader } from "web_component";
-import { ArrowLeftIcon, DropdownMenuIcon } from "@radix-ui/react-icons";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import MenuIcon from "@mui/icons-material/Menu";
 import { Box, Flex, Separator, Strong, Text } from "@radix-ui/themes";
-import { Button } from "@mui/joy";
+import { Button, DialogTitle } from "@mui/joy";
+import Modal from "@mui/joy/Modal";
+import ModalClose from "@mui/joy/ModalClose";
+import ModalDialog from "@mui/joy/ModalDialog";
+
 /*
 export const ChatContentHeader = () => {
     const activeRoom = useChatRoomStore((state) => state.activeRoom);
@@ -35,6 +37,34 @@ export const ChatContentHeader = () => {
 }
 */
 
+interface ModalButtonProps {
+    onExist: MouseEventHandler;
+    onApprove: MouseEventHandler;
+    onDone: MouseEventHandler;
+}
+const ModalButton = ({ onExist, onApprove, onDone }: ModalButtonProps) => {
+    const [open, setOpen] = useState(false);
+
+    return (
+        <>
+            <Button
+                variant="outlined"
+                color="neutral"
+                onClick={() => setOpen(true)}
+            >
+                Modal
+            </Button>
+            <Modal open={open} onClose={() => setOpen(false)}>
+                <ModalDialog>
+                    <Button onClick={onExist}>Exit Room</Button>
+                    <Button onClick={onApprove}>Approve</Button>
+                    <Button onClick={onDone}>Request Done</Button>
+                </ModalDialog>
+            </Modal>
+        </>
+    );
+};
+
 export const ChatContentHeader = ({
     activeRoom,
 }: {
@@ -45,7 +75,35 @@ export const ChatContentHeader = ({
         setActiveRoom(undefined);
     };
     const handleAlert = () => {
-        alert("df");
+        if (activeRoom === undefined) {
+            return;
+        }
+        alert("a");
+    };
+    const handleExit = () => {
+        if (activeRoom === undefined) {
+            return;
+        }
+    };
+    const handleApprove = () => {
+        if (activeRoom === undefined) {
+            return;
+        }
+        fetch("/api/message/request", {
+            headers: {
+                "Content-Type": "application/json",
+            },
+            method: "PUT",
+            credentials: "include",
+            body: JSON.stringify({ chatRoomId: activeRoom.chatRoomId }),
+        })
+            .then((val) => val)
+            .catch((e) => e);
+    };
+    const handleDone = () => {
+        if (activeRoom === undefined) {
+            return;
+        }
     };
 
     useEffect(() => {}, [activeRoom?.chatRoomId]);
@@ -78,12 +136,15 @@ export const ChatContentHeader = ({
                 </Button>
 
                 <Text>
-                    <Strong>{activeRoom?.consumerName}</Strong>
+                    <Strong>{activeRoom?.title}</Strong>
                 </Text>
 
                 <Box flexGrow="1" />
-
-                <Button onClick={handleAlert} startDecorator={<MenuIcon />} />
+                <ModalButton
+                    onApprove={handleApprove}
+                    onDone={handleDone}
+                    onExist={handleExit}
+                />
             </Flex>
         </Box>
     );
