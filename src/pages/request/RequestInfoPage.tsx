@@ -56,7 +56,9 @@ const RequestPage = () => {
                 setLoading(true);
                 setError(null);
 
-                const response = await fetch(`/api/requests/${request_id}`);
+                const response = await fetch(`/api/requests/${request_id}`, {
+                    method: "GET",
+                });
 
                 if (!response.ok) {
                     throw new Error(
@@ -65,34 +67,38 @@ const RequestPage = () => {
                 }
 
                 const body = await response.json();
+                console.log("session:", session)
 
                 setRequest({
-                    request_id: body.request_id,
-                    consumer_id: body.consumer_id,
-                    title: body.title,
-                    subtitle: body.subtitle,
-                    head_count: body.head_count,
-                    reward_price: body.reward_price,
-                    currency: body.currency,
-                    content: body.content,
-                    are_needed: body.are_needed,
-                    are_required: body.are_required,
-                    request_status: body.request_status,
-                    start_time: body.start_time,
-                    end_time: body.end_time,
-                    address: body.address,
-                    address_coordinate: body.address_coordinate,
-                    provide_food: body.provide_food,
-                    provide_trans_exp: body.provide_trans_exp,
-                    prep_material: body.prep_material,
-                    created_at: new Date(body.created_at),
-                    updated_at: new Date(body.updated_at),
-                    start_date: new Date(body.start_date),
-                    end_date: new Date(body.end_date),
-                    corp_id: body.corp_id,
-                    corp_name: body.corp_name,
-                    nationality: body.nationality,
-                    corp_num: body.corp_num,
+                    request_id: body.data.request_id,
+                    consumer_id: body.data.consumer_id,
+                    title: body.data.title,
+                    subtitle: body.data.subtitle,
+                    head_count: body.data.head_count,
+                    reward_price: body.data.reward_price,
+                    currency: body.data.currency,
+                    content: body.data.content,
+                    are_needed: body.data.are_needed,
+                    are_required: body.data.are_required,
+                    request_status: body.data.request_status,
+                    start_time: body.data.start_time,
+                    end_time: body.data.end_time,
+                    address: body.data.address,
+                    address_coordinate: {
+                        lat: body.data.address_coordinate.coordinates[1],
+                        lng: body.data.address_coordinate.coordinates[0],
+                    },
+                    provide_food: body.data.provide_food,
+                    provide_trans_exp: body.data.provide_trans_exp,
+                    prep_material: body.data.prep_material,
+                    created_at: new Date(body.data.created_at),
+                    updated_at: new Date(body.data.updated_at),
+                    start_date: new Date(body.data.start_date),
+                    end_date: new Date(body.data.end_date),
+                    corp_id: body.data.corp_id,
+                    corp_name: body.data.corp_name,
+                    nationality: body.data.nationality,
+                    corp_num: body.data.corp_num,
                 });
 
                 setSticky({
