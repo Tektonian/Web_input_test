@@ -1,12 +1,13 @@
-import { useEffect, useState, useRef } from "react";
-import { ChatRoom, useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";
-import { Flex } from "@radix-ui/themes";
+import { useEffect, useState } from "react";
+import { ChatRoom } from "../use-chat/Stores/ChatRoomStore";
 import { TextField, Box, Button, Typography, IconButton } from "@mui/material";
-import { Textarea } from "@mui/joy";
-import type { MessageContentType, TextContent } from "../use-chat/useSocket";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import { Message } from "web_component";
+
+import type { APIType } from "api_spec";
+type MessageContent = APIType.ContentType.MessageContent;
+type MessageContentType = APIType.ContentType.MessageContentType;
 
 interface InputItemProps {
     onSending: Function;
@@ -41,11 +42,7 @@ export const InputItem = (props: InputItemProps) => {
             const isMapLink = typedString.trim().startsWith("https://maps");
 
             const textContent: MessageContentType = {
-                _id: "-1", // Just for type fitting
-                seq: -1,
-                direction: "outgoing", // Just for type fitting 2
-                contentType: isMapLink ? "map" : "text",
-                unreadCount: 0,
+                contentType: "text",
                 content: typedString,
             };
             setTypedString("");
@@ -70,23 +67,27 @@ export const InputItem = (props: InputItemProps) => {
                 const fileContent: MessageContentType =
                     selectedFile.type.startsWith("image/")
                         ? {
-                              _id: "-1",
-                              seq: -1,
-                              direction: "outgoing",
                               contentType: "image",
-                              url: URL.createObjectURL(selectedFile) || "",
-                              data: arrayBuffer,
-                              unreadCount: 0,
+                              url: "",
+                              data: {
+                                  // @ts-ignore
+                                  name: selectedFile.name,
+                                  // @ts-ignore
+                                  type: selectedFile.type,
+                                  // @ts-ignore
+                                  created_at: selectedFile.lastModified,
+                                  // @ts-ignore
+                                  size: selectedFile.size,
+                                  // @ts-ignore
+                                  data: arrayBuffer,
+                              },
                           }
                         : {
-                              _id: "-1",
-                              seq: -1,
-                              direction: "outgoing",
                               contentType: "file",
-                              url: URL.createObjectURL(selectedFile) || "",
+                              url: "",
                               data: arrayBuffer,
-                              unreadCount: 0,
                           };
+                console.log("Selected file", selectedFile);
                 setSelectedFile(null);
                 setPreviewmode(false);
                 onSending(activeRoom.chatRoomId, fileContent);

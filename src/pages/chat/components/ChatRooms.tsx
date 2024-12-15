@@ -22,6 +22,15 @@ export const ChatRooms = () => {
         };
     }, [activeRoom]);
 
+    const getProviderName = (chatRoom: (typeof chatRooms)[0]) => {
+        const consumer = chatRoom?.consumer;
+        const providers = chatRoom?.participants;
+        return (
+            providers.find((p) => p.user_id === consumer.user_id)?.user_name ??
+            "U"
+        );
+    };
+
     return (
         <ScrollArea scrollbars="vertical">
             <Flex direction="column">
@@ -31,7 +40,9 @@ export const ChatRooms = () => {
                         onContextMenu={() => 0}
                         key={chatRoom.chatRoomId}
                         chatRoomId={chatRoom.chatRoomId}
-                        title={chatRoom.consumerName}
+                        title={`${getProviderName(
+                            chatRoom,
+                        )}${chatRoom.title.slice(0, 10)}`}
                         lastMessage={chatRoom.lastMessage ?? ""}
                         lastSentAt={chatRoom.lastSentTime ?? new Date()}
                         unreadCount={chatRoom.unreadCount ?? 0}
