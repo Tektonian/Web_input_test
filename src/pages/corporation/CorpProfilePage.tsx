@@ -11,7 +11,6 @@ const PageCorpProfile = () => {
             React.ComponentProps<typeof ReviewOfCorp> & {
                 requestCard: {
                     title: string;
-                    subtitle?: string;
                     reward_price: number;
                     currency: string;
                     address: string;
@@ -60,7 +59,6 @@ const PageCorpProfile = () => {
                             ...review,
                             request_card: {
                                 title: request.title ?? "No Title",
-                                subtitle: request.subtitle ?? "No Subtitle",
                                 reward_price: request.reward_price ?? 0,
                                 currency: request.currency ?? "N/A",
                                 address: request.address ?? "No Address",

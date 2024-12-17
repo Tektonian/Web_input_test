@@ -15,7 +15,6 @@ import { RequestCard } from "web_component";
 export interface RequestCardProps {
     request_id: number;
     title: string;
-    subtitle: string;
     reward_price: number;
     currency: "USD" | "KRW" | "JPY" | "";
     address: string;
@@ -101,7 +100,6 @@ const RequestListPage: React.FC = () => {
                                         >
                                             <RequestCard
                                                 title={request.title}
-                                                subtitle={request.subtitle}
                                                 reward_price={
                                                     request.reward_price
                                                 }

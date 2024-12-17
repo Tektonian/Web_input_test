@@ -1,6 +1,6 @@
 import React from "react";
 import GlobalNameInput from "./GlobalNameInput";
-import { ShortTextInput } from "web_component";
+import { DateInput, ShortTextInput } from "web_component";
 import {
     Box,
     Container,
@@ -40,7 +40,7 @@ const BasicInfoInput: React.FC<BasicInfoInputProps> = ({
                     />
                 </Box>
                 <Box mb={2}>
-                    <ShortTextInput control={control} name="age" label="Age" />
+                    <DateInput control={control} name="birth_date" label="Birthday" />
                 </Box>
                 <Box mb={2}>
                     <Grid container alignItems="center" spacing={2}>

@@ -21,7 +21,6 @@ import { useSession } from "../../hooks/Session";
 export interface RequestProfileProps {
     consumer_id: number;
     title: string;
-    subtitle: string;
     head_count: number;
     reward_price: number;
     currency: "USD" | "JPY" | "KRW" | "";
@@ -56,7 +55,6 @@ const RequestInput = ({
         defaultValues: {
             consumer_id: 2,
             title: "",
-            subtitle: "",
             head_count: 0,
             reward_price: 0,
             currency: "",
@@ -126,14 +124,6 @@ const RequestInput = ({
                                 control={control}
                                 name="title"
                                 label="Title"
-                            />
-                        </Grid>
-
-                        <Grid size={12}>
-                            <ShortTextInput
-                                control={control}
-                                name="subtitle"
-                                label="Subtitle"
                             />
                         </Grid>
 
