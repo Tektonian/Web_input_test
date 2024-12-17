@@ -4,13 +4,12 @@ import { RequestProfile } from "web_component";
 import { StickyButton } from "web_component";
 import { Flex, Box, Separator, Container, Button } from "@radix-ui/themes";
 import { useSession } from "../../hooks/Session";
-import { APIType } from "api_spec";
+import { APISpec, APIType } from "api_spec";
 
 interface RequestProfileProps {
     request_id: number;
     consumer_id: number;
     title: string;
-    subtitle: string;
     head_count: number;
     reward_price: number;
     currency: "USD" | "KRW" | "JPY" | "";
@@ -66,14 +65,13 @@ const RequestPage = () => {
                     );
                 }
 
-                const body = await response.json();
-                console.log("session:", session)
+                const body: APIType.RequestType = await response.json();
+                console.log("session:", session);
 
                 setRequest({
                     request_id: body.data.request_id,
                     consumer_id: body.data.consumer_id,
                     title: body.data.title,
-                    subtitle: body.data.subtitle,
                     head_count: body.data.head_count,
                     reward_price: body.data.reward_price,
                     currency: body.data.currency,
@@ -85,8 +83,8 @@ const RequestPage = () => {
                     end_time: body.data.end_time,
                     address: body.data.address,
                     address_coordinate: {
-                        lat: body.data.address_coordinate.coordinates[1],
-                        lng: body.data.address_coordinate.coordinates[0],
+                        lat: body.data.address_coordinate.coordinates[0],
+                        lng: body.data.address_coordinate.coordinates[1],
                     },
                     provide_food: body.data.provide_food,
                     provide_trans_exp: body.data.provide_trans_exp,

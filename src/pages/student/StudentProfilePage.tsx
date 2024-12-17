@@ -40,7 +40,6 @@ const StudentProfilePage: React.FC = () => {
                     (review: any) => {
                         const request_card = {
                             title: review.title,
-                            subtitle: review.subtitle,
                             reward_price: review.reward_price,
                             currency: review.currency,
                             address: review.address,
