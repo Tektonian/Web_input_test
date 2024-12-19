@@ -1,7 +1,7 @@
 import React from "react";
 import { useFieldArray } from "react-hook-form";
 import AcademicHistoryInput from "./AcademicHistoryInput";
-import { Container, Typography, Box, Button } from "@mui/material";
+import { Typography, Box, Button, Card, CardContent } from "@mui/material";
 import { NavigationButton } from "web_component";
 
 interface AcademicHistoryListInputProps {
@@ -21,49 +21,56 @@ const AcademicHistoryListInput: React.FC<AcademicHistoryListInputProps> = ({
     });
 
     return (
-        <Container>
-            {/* 제목 */}
-            <Typography variant="h4" gutterBottom>
-                Academic History
-            </Typography>
+        <Card
+            sx={{
+                maxWidth: 1080,
+                margin: "auto",
+                borderRadius: "16px",
+                fontFamily: "Noto Sans KR",
+                color: "rgba(0, 0, 0, 0.7)",
+                backgroundColor: "#f5f5f5",
+                boxShadow: "none",
+                display: "flex",
+                position: "relative",
+            }}
+        >
+            <CardContent>
+                <Box>
+                    {fields.map((field, index) => (
+                        <AcademicHistoryInput
+                            key={field.id}
+                            control={control}
+                            index={index}
+                            onRemove={() => remove(index)}
+                        />
+                    ))}
+                </Box>
 
-            {/* 학력 입력 필드 */}
-            <Box>
-                {fields.map((field, index) => (
-                    <AcademicHistoryInput
-                        key={field.id}
-                        control={control}
-                        index={index}
-                        onRemove={() => remove(index)}
-                    />
-                ))}
-            </Box>
+                <Box textAlign="center" mb={2}>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() =>
+                            append({
+                                degree: "",
+                                faculty: "",
+                                school_id: 1,
+                                start_date: "",
+                                end_date: "",
+                                status: "In Progress",
+                            })
+                        }
+                    >
+                        Add Academic History
+                    </Button>
+                </Box>
 
-            {/* 학력 추가 버튼 */}
-            <Box textAlign="center" mb={2}>
-                <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={() =>
-                        append({
-                            degree: "",
-                            faculty: "",
-                            school_id: 1,
-                            start_date: "",
-                            end_date: "",
-                            status: "In Progress",
-                        })
-                    }
-                >
-                    Add Academic History
-                </Button>
-            </Box>
-
-            <Box display="flex" justifyContent="space-between" mt={3}>
-                <NavigationButton label="previous" onClick={onPrevious} />
-                <NavigationButton label="next" onClick={onNext} />
-            </Box>
-        </Container>
+                <Box display="flex" justifyContent="space-between" mt={3}>
+                    <NavigationButton label="previous" onClick={onPrevious} />
+                    <NavigationButton label="next" onClick={onNext} />
+                </Box>
+            </CardContent>
+        </Card>
     );
 };
 
