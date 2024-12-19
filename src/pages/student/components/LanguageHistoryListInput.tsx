@@ -1,7 +1,7 @@
 import React from "react";
 import { useFieldArray } from "react-hook-form";
 import LanguageHistoryInput from "./LanguageHistoryInput";
-import { Container, Typography, Box, Button } from "@mui/material";
+import { Container, Typography, Box, Button, Card } from "@mui/material";
 import { NavigationButton } from "web_component";
 
 interface LanguageHistoryListInputProps {
@@ -15,18 +15,25 @@ const LanguageHistoryListInput: React.FC<LanguageHistoryListInputProps> = ({
     onNext,
     onPrevious,
 }) => {
-    // useFieldArray에서 상위 컴포넌트에서 전달받은 control 사용
     const { fields, append, remove } = useFieldArray({
         control,
         name: "examHistory",
     });
 
     return (
-        <Container>
-            <Typography variant="h4" gutterBottom>
-                Language History
-            </Typography>
-
+        <Card
+            sx={{
+                maxWidth: 1080,
+                margin: "auto",
+                borderRadius: "16px",
+                fontFamily: "Noto Sans KR",
+                color: "rgba(0, 0, 0, 0.7)",
+                backgroundColor: "#f5f5f5",
+                boxShadow: "none",
+                display: "flex",
+                position: "relative",
+            }}
+        >
             <Box>
                 {fields.map((field, index) => (
                     <LanguageHistoryInput
@@ -59,7 +66,7 @@ const LanguageHistoryListInput: React.FC<LanguageHistoryListInputProps> = ({
                 <NavigationButton label="previous" onClick={onPrevious} />
                 <NavigationButton label="next" onClick={onNext} />
             </Box>
-        </Container>
+        </Card>
     );
 };
 
