@@ -7,15 +7,16 @@ import {
     Typography,
     Grid2 as Grid,
     TextField,
-    MenuItem,
     IconButton,
     Autocomplete,
+    Card,
+    CardContent,
 } from "@mui/material";
 import { SelectInput } from "web_component";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import { APIType } from "api_spec";
-import { useSession } from "../../../hooks/Session";
+import { APIType } from "api_spec/dist/esm";
 import NationalityInput from "../../../components/input/NationalityInput";
+import "@fontsource/noto-sans-kr";
 
 interface AcademicHistoryInputProps {
     control: any;
@@ -78,119 +79,124 @@ const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
     }, [country_code]);
 
     return (
-        <Box
+        <Card
             sx={{
-                border: "1px solid #d4d4d4",
-                borderRadius: "8px",
-                padding: "16px",
-                backgroundColor: "#f9f9f9",
+                border: "1px solid #d3d3d3",
+                borderRadius: "16px",
+                padding: "24px",
+                backgroundColor: "#ffffff",
                 marginBottom: "16px",
+                fontFamily: "Noto Sans KR",
             }}
         >
-            <Grid container spacing={2} alignItems="center">
-                {/* 제목과 Remove 버튼 */}
-                <Grid size={11.5}>
-                    <Typography variant="h6" gutterBottom>
-                        Academic History {index + 1}
-                    </Typography>
-                </Grid>
-                <Grid size={0.5}>
-                    <IconButton
-                        onClick={onRemove}
-                        aria-label="Remove Academic History"
-                        sx={{
-                            color: "#888",
-                        }}
-                    >
-                        <RemoveCircleOutlineIcon />
-                    </IconButton>
-                </Grid>
+            <CardContent sx={{ padding: "0 !important" }}>
+                <Grid container spacing={2} alignItems="center">
+                    {/* 제목과 Remove 버튼 */}
+                    <Grid size={11.5}>
+                        <Typography variant="h6" gutterBottom>
+                            Academic History {index + 1}
+                        </Typography>
+                    </Grid>
+                    <Grid size={0.5}>
+                        <IconButton
+                            onClick={onRemove}
+                            aria-label="Remove Academic History"
+                            sx={{
+                                color: "#888",
+                            }}
+                        >
+                            <RemoveCircleOutlineIcon />
+                        </IconButton>
+                    </Grid>
 
-                {/* 입력 필드들 */}
-                <Grid size={2}>
-                    <NationalityInput
-                        control={control}
-                        name={`academicHistory[${index}].country_code`}
-                        label="Country"
-                    />
-                </Grid>
-                <Grid size={2}>
-                    <Controller
-                        name={`academicHistory[${index}].school_id`}
-                        control={control}
-                        defaultValue=""
-                        render={({ field }) => {
-                            const { onChange, value } = field;
-                            const selectedSchool =
-                                schools.find(
-                                    (school) => school.school_id === value,
-                                ) || null;
+                    {/* 입력 필드들 */}
+                    <Grid size={2}>
+                        <NationalityInput
+                            control={control}
+                            name={`academicHistory[${index}].country_code`}
+                            label="Country"
+                        />
+                    </Grid>
+                    <Grid size={2}>
+                        <Controller
+                            name={`academicHistory[${index}].school_id`}
+                            control={control}
+                            defaultValue=""
+                            render={({ field }) => {
+                                const { onChange, value } = field;
+                                const selectedSchool =
+                                    schools.find(
+                                        (school) => school.school_id === value,
+                                    ) || null;
 
-                            return (
-                                <Autocomplete
-                                    options={schools}
-                                    getOptionLabel={(option) =>
-                                        option.school_name
-                                    }
-                                    value={selectedSchool}
-                                    onChange={(_, newValue) => {
-                                        onChange(
-                                            newValue ? newValue.school_id : "",
-                                        );
-                                    }}
-                                    renderInput={(params) => (
-                                        <TextField
-                                            {...params}
-                                            label="School Name"
-                                            variant="outlined"
-                                            fullWidth
-                                        />
-                                    )}
-                                    disablePortal
-                                />
-                            );
-                        }}
-                    />
+                                return (
+                                    <Autocomplete
+                                        options={schools}
+                                        getOptionLabel={(option) =>
+                                            option.school_name
+                                        }
+                                        value={selectedSchool}
+                                        onChange={(_, newValue) => {
+                                            onChange(
+                                                newValue
+                                                    ? newValue.school_id
+                                                    : "",
+                                            );
+                                        }}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label="School Name"
+                                                variant="outlined"
+                                                fullWidth
+                                            />
+                                        )}
+                                        disablePortal
+                                    />
+                                );
+                            }}
+                        />
+                    </Grid>
+                    <Grid size={4}>
+                        <ShortTextInput
+                            control={control}
+                            name={`academicHistory[${index}].faculty`}
+                            label="Faculty"
+                        />
+                    </Grid>
+                    <Grid size={4}>
+                        <SelectInput
+                            control={control}
+                            name={`academicHistory[${index}].degree`}
+                            label="Degree"
+                            options={["Bachelor", "Master", "Doctor"]}
+                        />
+                    </Grid>
+                    <Grid size={4}>
+                        <YearMonthInput
+                            control={control}
+                            name={`academicHistory[${index}].start_date`}
+                            label="Start Date"
+                        />
+                    </Grid>
+                    <Grid size={4}>
+                        <YearMonthInput
+                            control={control}
+                            name={`academicHistory[${index}].end_date`}
+                            label="End Date"
+                        />
+                    </Grid>
+                    <Grid size={4}>
+                        <SelectInput
+                            control={control}
+                            name={`academicHistory[${index}].status`}
+                            label="Status"
+                            options={["In progress", "Graduated", "Dropout"]}
+                        />
+                    </Grid>
                 </Grid>
-                <Grid size={4}>
-                    <ShortTextInput
-                        control={control}
-                        name={`academicHistory[${index}].faculty`}
-                        label="Faculty"
-                    />
-                </Grid>
-                <Grid size={4}>
-                    <SelectInput
-                        control={control}
-                        name={`academicHistory[${index}].degree`}
-                        label="Degree"
-                        options={["Bachelor", "Master", "Doctor"]}
-                    />
-                </Grid>
-                <Grid size={4}>
-                    <YearMonthInput
-                        control={control}
-                        name={`academicHistory[${index}].start_date`}
-                        label="Start Date"
-                    />
-                </Grid>
-                <Grid size={4}>
-                    <YearMonthInput
-                        control={control}
-                        name={`academicHistory[${index}].end_date`}
-                        label="End Date"
-                    />
-                </Grid>
-                <Grid size={4}>
-                    <SelectInput
-                        control={control}
-                        name={`academicHistory[${index}].status`}
-                        label="Status"
-                        options={["In progress", "Graduated", "Dropout"]}
-                    />
-                </Grid>
-            </Grid>
-        </Box>
+            </CardContent>
+        </Card>
     );
 };
 

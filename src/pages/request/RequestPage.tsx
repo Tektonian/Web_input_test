@@ -27,6 +27,7 @@ const RequestPage = () => {
                 console.error("Error fetching request data:", error);
             }
         };
+        fetchData(); //eslint-disable-line
     }, []);
 
     const sections = ["0", "1", "2", "3", "4"];
@@ -50,11 +51,13 @@ const RequestPage = () => {
                     <RequestDataCard
                         requestData={reqData.request}
                         corpCard={reqData.corp_card}
-                        pastRequests={reqData.past_requests.map((request) => ({
-                            ...request,
-                            renderLogo: false,
-                            onClick: () => alert("request card clicked"),
-                        }))}
+                        otherRequests={reqData.other_requests.map(
+                            (request) => ({
+                                ...request,
+                                renderLogo: false,
+                                onClick: () => alert("request card clicked"),
+                            }),
+                        )}
                     />
                 )}
             </Container>
