@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useFunnel } from "../hooks/useFunnel";
-import UserTypeInput from "../components/input/UserTypeInput";
+import {
+    UserTypeInput,
+    EmailTokenInput,
+    PageContainer,
+    StudentProfileInput,
+    StudentStepperCard,
+} from "web_component";
 import EmailInput from "../components/input/EmailInput";
 import TokenInput from "../components/input/TokenInput";
 import BasicInfoInput from "./student/components/BasicInfoInput";
@@ -29,44 +35,43 @@ export interface ExamProps {
     exam_result: { class: string; level: number };
 }
 
-interface StudentProfileProps {
-    userType: string;
+interface VerificationProps {
+    userType: "student" | "corp" | "orgn" | "";
+    mail_address: string;
+    token: string;
+}
+
+interface StudentProfileProps extends VerificationProps {
     name_glb: object;
     nationality: string;
-    age: string;
+    birth_date: Date;
     phone_number: string;
     emergency_contact: string;
-    email_verified?: Date;
-    gender: "남자" | "여지" | "표시하지 않음" | "";
+    gender: number;
     image: string;
     has_car?: boolean;
     keyword_list?: object;
     academicHistory: AcademicHistoryProps[];
     examHistory: ExamProps[];
-    token: string;
 }
-interface ConsumerProfileProps {
-    userType: string;
+interface ConsumerProfileProps extends VerificationProps {
     corp_id?: number | null;
     orgn_id?: number | null;
     consumer_type: string;
-    consumer_email: string;
-    token: string;
     phone_number: string;
 }
 
-type ProfileProps = StudentProfileProps | ConsumerProfileProps;
+type ProfileProps =
+    | VerificationProps
+    | StudentProfileProps
+    | ConsumerProfileProps;
 
 const ProfileSetup: React.FC = () => {
     const { control, handleSubmit, watch, reset } = useForm<ProfileProps>({
         defaultValues: {
             userType: "",
-            image: "",
-            nationality: "",
-            age: "",
-            gender: "",
-            academicHistory: [],
-            examHistory: [],
+            mail_address: "",
+            token: "",
         },
     });
     const [corpId, setcorpId] = useState<number | null>(null);
@@ -85,60 +90,60 @@ const ProfileSetup: React.FC = () => {
     const userType = watch("userType");
     const navigate = useNavigate();
 
-    const [defaultValues, setDefaultValues] = useState<ProfileProps>({
-        userType: "",
-        name_glb: {},
-        nationality: "",
-        age: "",
-        phone_number: "",
-        emergency_contact: "",
-        email_verified: new Date(),
-        gender: "",
-        image: "",
-        has_car: false,
-        keyword_list: {},
-        academicHistory: [],
-        examHistory: [],
-        token: "",
-    });
-
     useEffect(() => {
         const getDefaultValues = (): ProfileProps => {
             if (userType === "student") {
                 return {
-                    userType: "student",
                     name_glb: {},
                     nationality: "",
-                    age: "",
+                    birth_date: new Date(),
                     phone_number: "",
                     emergency_contact: "",
-                    email_verified: new Date(),
-                    gender: "",
+                    gender: -1,
                     image: "",
                     has_car: false,
                     keyword_list: {},
                     academicHistory: [],
                     examHistory: [],
+                    userType: "",
+                    mail_address: "",
                     token: "",
                 };
             } else if (userType === "corp") {
                 return {
-                    userType: "corp",
+                    corp_id: -1,
                     consumer_type: "corp",
-                    consumer_email: "",
-                    token: "",
                     phone_number: "",
+                    userType: "",
+                    mail_address: "",
+                    token: "",
                 };
             } else if (userType === "orgn") {
                 return {
-                    userType: "orgn",
+                    orgn_id: -1,
                     consumer_type: "orgn",
-                    consumer_email: "",
-                    token: "",
                     phone_number: "",
+                    userType: "",
+                    mail_address: "",
+                    token: "",
                 };
             } else {
-                return defaultValues;
+                return {
+                    name_glb: {},
+                    nationality: "",
+                    birth_date: new Date(),
+                    phone_number: "",
+                    emergency_contact: "",
+                    gender: -1,
+                    image: "",
+                    has_car: false,
+                    keyword_list: {},
+                    academicHistory: [],
+                    examHistory: [],
+                    userType: "",
+                    mail_address: "",
+                    token: "",
+                };
             }
         };
 
@@ -146,7 +151,8 @@ const ProfileSetup: React.FC = () => {
     }, [userType, reset]);
 
     const onSubmit = async (data: ProfileProps) => {
-        let url = "";
+        const url = "/api/verification/callback/identity-verify";
+
         console.log(data);
         const isStudentProfile = (
             profile: ProfileProps,
@@ -180,15 +186,13 @@ const ProfileSetup: React.FC = () => {
                 console.log(error);
             }
         } else {
-            url = "/api/verification/callback/identity-verify";
-
             try {
                 const submissionData = corpId
                     ? {
-                          type: data.userType,
-                          verifyEmail: data.consumer_email,
+                          userType: data.userType,
+                          verifyEmail: data.mail_address,
                           token: data.token,
-                          phoneNumber: data.phone_number,
+                          phoneNumber: data.mail_address,
                           profileId: corpId,
                       }
                     : {
@@ -237,98 +241,104 @@ const ProfileSetup: React.FC = () => {
                     <UserTypeInput control={control} onNext={onNextStep} />
                 </Step>
 
-                {/* 학생 2: Basic Info 입력 */}
+                {/* 학생 step 시작 */}
                 <Step name="basicInfo">
-                    <BasicInfoInput
-                        control={control}
-                        onNext={() => setStep("academicHistory")}
-                        onPrevious={() => setStep("userType")}
+                    <PageContainer
+                        main={
+                            <StudentProfileInput
+                                control={control}
+                                onNext={() => setStep("academicHistory")}
+                                onPrevious={() => setStep("userType")}
+                            />
+                        }
+                        side={<StudentStepperCard currentStep={1} />}
                     />
                 </Step>
 
-                {/* 학생 3: Academic History 입력 */}
                 <Step name="academicHistory">
-                    <AcademicHistoryListInput
-                        control={control}
-                        onNext={() => setStep("examHistory")}
-                        onPrevious={() => setStep("basicInfo")}
+                    <PageContainer
+                        main={
+                            <AcademicHistoryListInput
+                                control={control}
+                                onNext={() => setStep("examHistory")}
+                                onPrevious={() => setStep("basicInfo")}
+                            />
+                        }
+                        side={<StudentStepperCard currentStep={2} />}
                     />
                 </Step>
 
-                {/* 학생 4: Language History 입력 */}
                 <Step name="examHistory">
-                    <LanguageHistoryListInput
-                        control={control}
-                        onNext={() => setStep("image")}
-                        onPrevious={() => setStep("academicHistory")}
+                    <PageContainer
+                        main={
+                            <LanguageHistoryListInput
+                                control={control}
+                                onNext={() => setStep("studentEmail")}
+                                onPrevious={() => setStep("academicHistory")}
+                            />
+                        }
+                        side={<StudentStepperCard currentStep={3} />}
                     />
                 </Step>
 
-                {/* 학생 5: Image URL 입력 */}
-                <Step name="image">
-                    <ProfileImageInput
-                        control={control}
-                        onNext={() => setStep("email")}
-                        onPrevious={() => setStep("examHistory")}
+                <Step name="studentEmail">
+                    <PageContainer
+                        main={
+                            <EmailTokenInput
+                                control={control}
+                                onSend={() => {}}
+                                onSubmit={handleSubmit(onSubmit)}
+                                onPrevious={() => setStep("examHistory")}
+                                userType="student"
+                            />
+                        }
+                        side={<StudentStepperCard currentStep={4} />}
                     />
                 </Step>
 
-                {/* 학생 Step 6: Email 입력 */}
-                <Step name="email">
-                    <EmailInput
-                        control={control}
-                        onNext={() => setStep("token")}
-                        onPrevious={() => setStep("image")}
-                        userType="student"
+                {/* 기업 Step 시작 */}
+                <Step name="corpNumber">
+                    <PageContainer
+                        main={
+                            <KrBusinessNumberInput
+                                onCorpIdReceived={handleCorpIdReceived}
+                                onNext={() => setStep("consumerInfo")}
+                                onPrevious={() => setStep("userType")}
+                            />
+                        }
+                        side={<StudentStepperCard currentStep={1} />}
                     />
                 </Step>
 
-                {/* 학생 7: Token 입력 */}
-                <Step name="token">
-                    <TokenInput
-                        control={control}
-                        onSubmit={handleSubmit(onSubmit)}
-                        onPrevious={() => setStep("email")}
-                    />
-                </Step>
-
-                {/* 기업 Step 2: Business Number 입력 */}
-                <Step name="businessNumber">
-                    <KrBusinessNumberInput
-                        onCorpIdReceived={handleCorpIdReceived}
-                        onNext={() => setStep("consumerInfo")}
-                        onPrevious={() => setStep("userType")}
-                    />
-                </Step>
-                {/* 기업 Step 3: Phone Number 입력 */}
                 <Step name="consumerInfo">
-                    <ConsumerInfoInput
-                        control={control}
-                        onNext={() => setStep("businessEmail")}
-                        onPrevious={() => setStep("businessNumber")}
+                    <PageContainer
+                        main={
+                            <ConsumerInfoInput
+                                control={control}
+                                onNext={() => setStep("corpEmail")}
+                                onPrevious={() => setStep("corpNumber")}
+                            />
+                        }
+                        side={<StudentStepperCard currentStep={2} />}
                     />
                 </Step>
 
-                {/* 기업 Step 3: Email 입력 */}
-                <Step name="businessEmail">
-                    <EmailInput
-                        control={control}
-                        onNext={() => setStep("businessToken")}
-                        onPrevious={() => setStep("businessInfo")}
-                        userType="corp"
+                <Step name="corpEmail">
+                    <PageContainer
+                        main={
+                            <EmailTokenInput
+                                control={control}
+                                onSend={() => {}}
+                                onSubmit={handleSubmit(onSubmit)}
+                                onPrevious={() => setStep("consumerInfo")}
+                                userType="corp"
+                            />
+                        }
+                        side={<StudentStepperCard currentStep={4} />}
                     />
                 </Step>
 
-                {/* 기업 4: Token 입력 */}
-                <Step name="businessToken">
-                    <TokenInput
-                        control={control}
-                        onSubmit={handleSubmit(onSubmit)}
-                        onPrevious={() => setStep("businessEmail")}
-                    />
-                </Step>
-
-                {/* 기관 Step 2: orgn Number 입력 */}
+                {/* 기관 Step 시작 */}
                 <Step name="orgnNumber">
                     <BusinessNumberInput
                         control={control}
@@ -345,7 +355,6 @@ const ProfileSetup: React.FC = () => {
                     />
                 </Step>
 
-                {/* 기관 Step 3: Email 입력 */}
                 <Step name="orgnEmail">
                     <EmailInput
                         control={control}
@@ -355,7 +364,6 @@ const ProfileSetup: React.FC = () => {
                     />
                 </Step>
 
-                {/* 기관 4: Token 입력 */}
                 <Step name="orgnToken">
                     <TokenInput
                         control={control}

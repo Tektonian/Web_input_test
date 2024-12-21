@@ -1,159 +1,145 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { StudentProfile } from "web_component";
-import { ReviewOfStudent } from "web_component";
-import { Theme, Grid, Box, Flex, Text, Separator } from "@radix-ui/themes";
+import { Box, Container, Typography } from "@mui/material";
+import { StudentProfileCard, IndexCard, RequestCard } from "web_component";
+import { APIType } from "api_spec/dist/esm";
+import { useNavigate } from "react-router-dom";
 
 const StudentProfilePage: React.FC = () => {
-    const [studentProfile, setStudentProfile] = useState<React.ComponentProps<
-        typeof StudentProfile
-    > | null>(null);
-    const [reviewOfStudent, setReviewOfStudent] = useState<
-        React.ComponentProps<typeof ReviewOfStudent>[] | null
-    >(null);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-
-    const { student_id } = useParams();
+    const [
+        studentData,
+        setStudentData,
+    ] = useState<APIType.StudentType.ResGetStudentProfile | null>(null);
+    const student_id = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchStudentData = async () => {
-            setLoading(true);
-            setError(null);
-
+        const fetchData = async () => {
             try {
-                const profileResponse = await fetch(
-                    `http://localhost:8080/api/students/${student_id}`,
-                    {
-                        method: "GET",
-                        credentials: "include",
-                    },
-                );
+                const response = await fetch(`api/students/${student_id}`, {
+                    method: "GET",
+                });
+                const data: APIType.StudentType.ResGetStudentProfile = await response.json();
 
-                if (!profileResponse.ok) {
-                    throw new Error("Failed to fetch student profile");
-                }
+                console.log(data);
 
-                const studentProfileData = await profileResponse.json();
-
-                const studentReviews = studentProfileData.review.map(
-                    (review: any) => {
-                        const request_card = {
-                            title: review.title,
-                            reward_price: review.reward_price,
-                            currency: review.currency,
-                            address: review.address,
-                            start_date: new Date(review.start_date),
-                            logo_image: review.logo_image,
-                            link: `/request/${review.request_id}`,
-                        };
-                        return {
-                            request_card,
-                            was_late: review.was_late,
-                            was_proactive: review.was_proactive,
-                            was_diligent: review.was_diligent,
-                            commu_ability: review.commu_ability,
-                            lang_fluent: review.lang_fluent,
-                            goal_fulfillment: review.goal_fulfillment,
-                            want_cowork: review.want_cowork,
-                        };
-                    },
-                );
-
-                console.log(studentReviews);
-
-                setStudentProfile(studentProfileData.profile || null); // Profile 데이터가 없을 경우 null 처리
-                setReviewOfStudent(studentReviews || []); // Reviews 데이터가 없을 경우 빈 배열 처리
-            } catch (err) {
-                setError(
-                    err instanceof Error
-                        ? err.message
-                        : "Unknown error occurred",
-                );
-            } finally {
-                setLoading(false);
+                setStudentData(data);
+            } catch (error) {
+                console.error("Error fetching student data", error);
             }
         };
-
-        fetchStudentData(); // eslint-disable-line
     }, []);
 
-    if (loading) {
-        return (
-            <Flex justify="center" align="center" style={{ height: "100vh" }}>
-                <Text size="6" weight="bold">
-                    Loading...
-                </Text>
-            </Flex>
-        );
-    }
+    const handleSendingAlarm = () => {};
 
-    if (error) {
-        return (
-            <Flex justify="center" align="center" style={{ height: "100vh" }}>
-                <Text size="6" color="red" weight="bold">
-                    {error}
-                </Text>
-            </Flex>
-        );
-    }
+    const handleRenderReview = () => {};
 
-    if (!studentProfile) {
-        return (
-            <Flex justify="center" align="center" style={{ height: "100vh" }}>
-                <Text size="6" color="red" weight="bold">
-                    Student profile not found.
-                </Text>
-            </Flex>
-        );
-    }
+    const ongoingRequests = studentData?.requests.filter(
+        (req) => req.request_status === 3,
+    );
+    const openRequests = studentData?.requests.filter(
+        (req) => req.request_status === 0,
+    );
+    const pastRequests = studentData?.requests.filter(
+        (req) => req.request_status === 4 || req.request_status === 5,
+    );
+
+    const sections = ["0", "1", "2", "3", "4"];
 
     return (
-        <Theme>
-            <Flex direction="column" align="center" justify="center">
-                <Box
-                    width={{ xs: "520px", sm: "768px", md: "1024px" }}
-                    minWidth="300px"
-                >
-                    {/* Student Profile Section */}
-                    <StudentProfile {...studentProfile} />
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "flex-start",
+                gap: "24px",
+                maxWidth: "1080px",
+                margin: "auto",
+                padding: "16px",
+            }}
+            id={sections[0]}
+        >
+            <Container sx={{ width: "712px", padding: "0 !important" }}>
+                {studentData && (
+                    <StudentProfileCard
+                        {...studentData.profile}
+                        student_name={JSON.stringify(
+                            studentData?.profile.name_glb,
+                        )}
+                    />
+                )}
 
-                    {/* Reviews Section */}
-                    {reviewOfStudent && reviewOfStudent.length > 0 ? (
-                        <>
-                            <Separator my="3" size="4" />
-                            <Grid gapY="5">
-                                <Text as="div" size="6" weight="bold">
-                                    Past Activity
-                                </Text>
-                                <Grid
-                                    columns={{ initial: "1", md: "2" }}
-                                    gap="3"
-                                >
-                                    {reviewOfStudent.map((review, index) => (
-                                        <Flex
-                                            key={index}
-                                            justify="center"
-                                            align="center"
-                                            style={{
-                                                width: "100%",
-                                                height: "100%",
-                                            }}
-                                        >
-                                            <ReviewOfStudent {...review} />
-                                        </Flex>
-                                    ))}
-                                </Grid>
-                            </Grid>
-                        </>
-                    ) : (
-                        <Text as="div" size="4" color="gray" align="center">
-                            No reviews available.
-                        </Text>
-                    )}
+                <Box sx={{ marginTop: "24px" }} id={sections[1]}>
+                    <Typography
+                        variant="h6"
+                        sx={{ fontWeight: "bold", marginBottom: "16px" }}
+                    >
+                        도착 알람을 보내세요!
+                    </Typography>
+                    {ongoingRequests?.map((request, index) => (
+                        <Box key={index} sx={{ marginTop: "16px" }}>
+                            <RequestCard
+                                {...request}
+                                renderLogo={true}
+                                onClick={handleSendingAlarm}
+                            />
+                        </Box>
+                    ))}
                 </Box>
-            </Flex>
-        </Theme>
+
+                <Box sx={{ marginTop: "24px" }} id={sections[4]}>
+                    <Typography
+                        variant="h6"
+                        sx={{ fontWeight: "bold", marginBottom: "16px" }}
+                    >
+                        신청 요청
+                    </Typography>
+                    {openRequests?.map((request, index) => (
+                        <Box key={index} sx={{ marginTop: "16px" }}>
+                            <RequestCard
+                                {...request}
+                                renderLogo={true}
+                                onClick={() =>
+                                    navigate(`/request/${request.request_id}`)
+                                }
+                            />
+                        </Box>
+                    ))}
+                </Box>
+
+                <Box sx={{ marginTop: "24px" }}>
+                    <Typography
+                        variant="h6"
+                        sx={{ fontWeight: "bold", marginBottom: "16px" }}
+                    >
+                        과거 요청
+                    </Typography>
+                    {pastRequests?.map((request, index) => (
+                        <Box key={index} sx={{ marginTop: "16px" }}>
+                            <RequestCard
+                                {...request}
+                                renderLogo={true}
+                                onClick={handleRenderReview}
+                            />
+                        </Box>
+                    ))}
+                </Box>
+            </Container>
+
+            <Container
+                sx={{
+                    width: { xs: "100%", md: "344px" }, // 작은 화면에서는 100% 폭
+                    padding: "0 !important",
+                    position: { xs: "relative", md: "sticky" }, // 작은 화면에서는 위치 고정 해제
+                    top: { md: "50%" }, // 중간 위치 (데스크톱만)
+                    transform: { md: "translateY(-50%)" }, // 중간 위치 조정 (데스크톱만)
+                    order: { xs: -1, md: 1 }, // 모바일에서 위로 이동
+                }}
+            >
+                <IndexCard roles="student" sections={sections} />
+            </Container>
+        </Box>
     );
 };
 

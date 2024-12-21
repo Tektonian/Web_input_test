@@ -4,7 +4,7 @@ import { safeLocalStorage } from "@toss/storage";
 import { TypedStorage } from "@toss/storage/typed";
 import { IMessageStorage } from "./MessageStore";
 
-import { APIType } from "api_spec";
+import { APIType } from "api_spec/dist/esm";
 
 type ResMessage = APIType.WebSocketType.ResMessage;
 

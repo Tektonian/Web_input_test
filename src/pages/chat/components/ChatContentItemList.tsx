@@ -9,7 +9,7 @@ import { ScrollArea, Flex, Box } from "@radix-ui/themes";
 import { ChatRoom } from "../use-chat/Stores/ChatRoomStore";
 import { Message } from "web_component";
 
-import type { APIType } from "api_spec";
+import type { APIType } from "api_spec/dist/esm";
 type MessageContent = APIType.ContentType.MessageContent;
 
 const MessageRender = ({

@@ -1,7 +1,7 @@
 import React from "react";
 import { useFieldArray } from "react-hook-form";
 import AcademicHistoryInput from "./AcademicHistoryInput";
-import { Typography, Box, Button, Card, CardContent } from "@mui/material";
+import { Box, Button, Card, CardContent } from "@mui/material";
 import { NavigationButton } from "web_component";
 
 interface AcademicHistoryListInputProps {

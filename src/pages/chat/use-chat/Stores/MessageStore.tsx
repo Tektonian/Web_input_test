@@ -1,6 +1,6 @@
 import { TypedStorage } from "@toss/storage/typed";
 import { create } from "zustand";
-import type { APIType } from "api_spec";
+import type { APIType } from "api_spec/dist/esm";
 // Big TODO: move to indexedDB later
 
 type MessageContent = APIType.ContentType.MessageContent;
