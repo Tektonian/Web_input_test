@@ -1,173 +1,137 @@
-import React, { useEffect, useState } from "react";
-import { CorpProfile } from "web_component";
-import { ReviewOfCorp } from "web_component";
-import { Theme, Grid, Box, Flex, Text, Separator } from "@radix-ui/themes";
+import React, { useState, useEffect } from "react";
+import { Box, Container, Typography } from "@mui/material";
+import { IndexCard, RequestCard, CorpProfileCard } from "web_component";
+import { APIType } from "api_spec/dist/esm";
 import { useParams } from "react-router-dom";
 
-const PageCorpProfile = () => {
-    const [corpData, setCorpData] = useState<{
-        profile: React.ComponentProps<typeof CorpProfile>;
-        reviews: Array<
-            React.ComponentProps<typeof ReviewOfCorp> & {
-                requestCard: {
-                    title: string;
-                    reward_price: number;
-                    currency: string;
-                    address: string;
-                    start_date: string;
-                    end_date: string;
-                };
-            }
-        >;
-    } | null>(null);
-
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const { corp_id } = useParams<{ corp_id: string }>();
+const CorpProfilePage = () => {
+    const [
+        corpData,
+        setCorpData,
+    ] = useState<APIType.CorporationType.ResGetCorpProfile | null>(null);
+    const corp_id = useParams();
 
     useEffect(() => {
-        const fetchCorpData = async () => {
-            setLoading(true);
-            setError(null);
-
+        const fetchData = async () => {
             try {
-                const response = await fetch(
-                    `/api/corporation-reviews/${corp_id}`,
-                    {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    },
-                );
+                const response = await fetch(`/api/corporations/${corp_id}`, {
+                    method: "GET",
+                });
 
-                if (!response.ok) {
-                    throw new Error("Failed to fetch corporation data");
-                }
+                const data: APIType.CorporationType.ResGetCorpProfile = await response.json();
 
-                const data = await response.json();
+                console.log(data);
 
-                const { requests, reviews, ...profile } = data;
-
-                console.log(reviews);
-                console.log(requests);
-
-                const mappedReviews = reviews.map(
-                    (review: any, index: number) => {
-                        const request = requests[index] || {};
-                        return {
-                            ...review,
-                            request_card: {
-                                title: request.title ?? "No Title",
-                                reward_price: request.reward_price ?? 0,
-                                currency: request.currency ?? "N/A",
-                                address: request.address ?? "No Address",
-                                start_date:
-                                    new Date(request.start_date) ??
-                                    "No Start Date",
-                                end_date: request.end_date ?? "No End Date",
-                                link: `/request/${request.request_id}`,
-                            },
-                        };
-                    },
-                );
-
-                setCorpData({ profile, reviews: mappedReviews });
-            } catch (err) {
-                setError(
-                    err instanceof Error
-                        ? err.message
-                        : "Unknown error occurred",
-                );
-            } finally {
-                setLoading(false);
+                setCorpData(data);
+            } catch (error) {
+                console.error("Error fetching corporation data", error);
             }
         };
+    }, []);
 
-        fetchCorpData(); //eslint-disable-line
-    }, [corp_id]);
+    const ongoingRequests = corpData?.requests.filter(
+        (req) => req.request_status === 3,
+    );
+    const openRequests = corpData?.requests.filter(
+        (req) => req.request_status === 0,
+    );
+    const pastRequests = corpData?.requests.filter(
+        (req) => req.request_status === 4 || req.request_status === 5,
+    );
 
-    if (loading) {
-        return (
-            <Flex justify="center" align="center" style={{ height: "100vh" }}>
-                <Text size="6" weight="bold">
-                    Loading...
-                </Text>
-            </Flex>
-        );
-    }
-
-    if (error) {
-        return (
-            <Flex justify="center" align="center" style={{ height: "100vh" }}>
-                <Text size="6" color="red" weight="bold">
-                    {error}
-                </Text>
-            </Flex>
-        );
-    }
-
-    if (!corpData) {
-        return (
-            <Flex justify="center" align="center" style={{ height: "100vh" }}>
-                <Text size="6" color="red" weight="bold">
-                    Corporation data not found.
-                </Text>
-            </Flex>
-        );
-    }
-
-    const { profile, reviews } = corpData;
+    const sections = ["0", "1", "2", "3", "4"];
 
     return (
-        <Theme>
-            <Flex direction="column" align="center" justify="center">
-                <Box
-                    width={{
-                        initial: "300px",
-                        xs: "520px",
-                        sm: "768px",
-                        md: "1024px",
-                    }}
-                >
-                    <CorpProfile {...profile} />
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: { xs: "column", md: "row" },
+                justifyContent: "center",
+                alignItems: "flex-start",
+                gap: "24px",
+                maxWidth: "1080px",
+                margin: "auto",
+                padding: "16px",
+            }}
+            id={sections[0]}
+        >
+            <Container
+                sx={{
+                    width: { xs: "100%", md: "712px" },
+                    padding: "0 !important",
+                }}
+            >
+                {corpData && <CorpProfileCard {...corpData?.corp} />}
 
-                    {reviews && reviews.length > 0 ? (
-                        <>
-                            <Separator my="3" size="4" />
-                            <Grid gapY="5">
-                                <Text as="div" size="6" weight="bold">
-                                    Past Activity
-                                </Text>
-                                <Grid
-                                    columns={{ initial: "1", md: "2" }}
-                                    gap="3"
-                                >
-                                    {reviews.map((review, index) => (
-                                        <Flex
-                                            key={index}
-                                            justify="center"
-                                            align="center"
-                                            style={{
-                                                width: "100%",
-                                                height: "100%",
-                                            }}
-                                        >
-                                            <ReviewOfCorp {...review} />
-                                        </Flex>
-                                    ))}
-                                </Grid>
-                            </Grid>
-                        </>
-                    ) : (
-                        <Text as="div" size="4" color="gray" align="center">
-                            No reviews available.
-                        </Text>
-                    )}
+                <Box sx={{ marginTop: "24px" }} id={sections[1]}>
+                    <Typography
+                        variant="h6"
+                        sx={{ fontWeight: "bold", marginBottom: "16px" }}
+                    >
+                        진행 중인 요청
+                    </Typography>
+                    {ongoingRequests?.map((request, index) => (
+                        <Box key={index} sx={{ marginTop: "16px" }}>
+                            <RequestCard
+                                {...request}
+                                renderLogo={false}
+                                onClick={() => alert("ongoing request clicked")}
+                            />
+                        </Box>
+                    ))}
                 </Box>
-            </Flex>
-        </Theme>
+
+                <Box sx={{ marginTop: "24px" }} id={sections[4]}>
+                    <Typography
+                        variant="h6"
+                        sx={{ fontWeight: "bold", marginBottom: "16px" }}
+                    >
+                        신청 요청
+                    </Typography>
+                    {openRequests?.map((request, index) => (
+                        <Box key={index} sx={{ marginTop: "16px" }}>
+                            <RequestCard
+                                {...request}
+                                renderLogo={false}
+                                onClick={() => alert("open request clicked")}
+                            />
+                        </Box>
+                    ))}
+                </Box>
+
+                <Box sx={{ marginTop: "24px" }}>
+                    <Typography
+                        variant="h6"
+                        sx={{ fontWeight: "bold", marginBottom: "16px" }}
+                    >
+                        과거 요청
+                    </Typography>
+                    {pastRequests?.map((request, index) => (
+                        <Box key={index} sx={{ marginTop: "16px" }}>
+                            <RequestCard
+                                {...request}
+                                renderLogo={false}
+                                onClick={() => alert("past request clicked")}
+                            />
+                        </Box>
+                    ))}
+                </Box>
+            </Container>
+
+            <Container
+                sx={{
+                    width: { xs: "100%", md: "344px" }, // 작은 화면에서는 100% 폭
+                    padding: "0 !important",
+                    position: { xs: "relative", md: "sticky" }, // 작은 화면에서는 위치 고정 해제
+                    top: { md: "50%" }, // 중간 위치 (데스크톱만)
+                    transform: { md: "translateY(-50%)" }, // 중간 위치 조정 (데스크톱만)
+                    order: { xs: -1, md: 1 }, // 모바일에서 위로 이동
+                }}
+            >
+                <IndexCard roles="corp" sections={sections} />
+            </Container>
+        </Box>
     );
 };
 
-export default PageCorpProfile;
+export default CorpProfilePage;

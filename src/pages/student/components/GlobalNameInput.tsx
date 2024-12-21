@@ -1,9 +1,9 @@
 import React from "react";
-import { Controller } from "react-hook-form";
+import { Control, Controller } from "react-hook-form";
 import { TextField, Grid2 as Grid, MenuItem } from "@mui/material";
 
 interface GlobalNameInputProps {
-    control: any;
+    control: Control<any>;
     name: string;
     availableLanguages: string[];
 }

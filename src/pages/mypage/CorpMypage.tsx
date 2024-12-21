@@ -6,7 +6,7 @@ import {
     RequestCard,
     CorpProfileCard,
 } from "web_component";
-import { APIType } from "api_spec";
+import { APIType } from "api_spec/dist/esm";
 import { useParams } from "react-router-dom";
 
 const CorpMypage = () => {

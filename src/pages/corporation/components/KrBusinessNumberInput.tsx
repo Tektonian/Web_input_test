@@ -8,6 +8,8 @@ import {
     Typography,
     Box,
     Grid2 as Grid,
+    Card,
+    CardContent,
 } from "@mui/material";
 
 export interface CorporationAttributes {
@@ -145,15 +147,15 @@ const KrBusinessNumberInput: React.FC<KrBusinessNumberInputProps> = ({
     };
 
     return (
-        <Container>
-            <Typography variant="h4" gutterBottom>
-                {showCorpProfile
-                    ? "Corporate Profile"
-                    : "Enter Corporation Number"}
-            </Typography>
+        <Card component="form" noValidate sx={{ padding: "0 !important" }}>
+            <CardContent sx={{ padding: "24px" }}>
+                <Typography variant="h4" gutterBottom>
+                    {showCorpProfile
+                        ? "Corporate Profile"
+                        : "Enter Corporation Number"}
+                </Typography>
 
-            <Box component="form" noValidate sx={{ mt: 3 }}>
-                <Grid container spacing={3}>
+                <Grid container spacing="24px">
                     {!showCorpProfile ? (
                         <>
                             <Grid size={12}>
@@ -285,8 +287,8 @@ const KrBusinessNumberInput: React.FC<KrBusinessNumberInputProps> = ({
                         </>
                     )}
                 </Grid>
-            </Box>
-        </Container>
+            </CardContent>
+        </Card>
     );
 };
 

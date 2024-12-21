@@ -1,7 +1,7 @@
 import React from "react";
 import { useFieldArray } from "react-hook-form";
 import LanguageHistoryInput from "./LanguageHistoryInput";
-import { Container, Typography, Box, Button, Card } from "@mui/material";
+import { Box, Button, Card } from "@mui/material";
 import { NavigationButton } from "web_component";
 
 interface LanguageHistoryListInputProps {

@@ -7,7 +7,6 @@ import {
     Box,
     Flex,
     Grid,
-    Button,
 } from "@radix-ui/themes";
 import { useMutation } from "@tanstack/react-query";
 import { RequestCard } from "web_component";
@@ -109,7 +108,9 @@ const RequestListPage: React.FC = () => {
                                                     new Date(request.start_date)
                                                 }
                                                 logo_image={request.logo_image}
-                                                link={`/request/${request.request_id}`}
+                                                onClick={() => {}}
+                                                renderLogo={true}
+                                                request_status={1}
                                             />
                                         </Flex>
                                     ),
