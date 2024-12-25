@@ -1,7 +1,7 @@
 import { MouseEvent, MouseEventHandler, useEffect, useState } from "react";
 import { ChatRoom, useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { Box, Flex, Separator, Strong, Text } from "@radix-ui/themes";
+import { Box } from "@mui/material";
 import { Button } from "@mui/joy";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
@@ -73,35 +73,17 @@ export const ChatContentHeader = ({
 
     // <MessageHeader key={activeRoom?.chatRoomId ?? "empty"} onClickArrow={(e: MouseEvent) =>{handleAlert()}} onClickMenu={() => handleClick()} username={activeRoom === undefined ? "" : activeRoom.consumerName}/>
     return (
-        <Box
-            p="1"
-            height="5vh"
-            style={{
-                border: "1px solid #ccc",
-                borderColor: "indigo",
-                borderLeft: 0,
-                borderRight: 0,
-                borderTop: 0,
-            }}
-        >
-            <Flex
-                direction="row"
-                gapX="5"
-                align="center"
-                justify="between"
-                p="2"
-            >
-                <MessageHeader
-                    username="user"
-                    onClickArrow={() => 1}
-                    onClickUser={() => 1}
-                ></MessageHeader>
-                <ModalButton
-                    onApprove={handleApprove}
-                    onDone={handleDone}
-                    onExist={handleExit}
-                />
-            </Flex>
+        <Box>
+            <MessageHeader
+                username="user"
+                onClickArrow={() => 1}
+                onClickUser={() => 1}
+            ></MessageHeader>
+            <ModalButton
+                onApprove={handleApprove}
+                onDone={handleDone}
+                onExist={handleExit}
+            />
         </Box>
     );
 };
