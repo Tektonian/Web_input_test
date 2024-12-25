@@ -115,8 +115,14 @@ const InitOnLoad = (state: ChatRoomStore): ChatRoomStore => {
 
 const SetActiveRoom = (
     state: ChatRoomStore,
-    chatRoomId: string,
+    chatRoomId?: string,
 ): ChatRoomStore => {
+    if(chatRoomId === undefined){
+        return {
+            ...state,
+            activeRoom: undefined
+        }
+    }
     console.log("Set active room", state, chatRoomId)
     const allChatRooms = chatRoomStorage.get()?.chatRooms ?? [];
 
@@ -326,7 +332,7 @@ export const useChatRoomStore: UseBoundStore<StoreApi<ChatRoomStore>> =
         }),
         removeSocket: () =>
             set((state) => ({ socket: state.socket.disconnect() })),
-        setActiveRoom: (chatRoomId) =>
+        setActiveRoom: (chatRoomId?) =>
             set((state) => SetActiveRoom(state, chatRoomId)),
         setChatRooms: (chatRooms) => set(() => ({ renderChatRoom: chatRooms })),
         updateOnReceive: (message) =>

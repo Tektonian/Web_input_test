@@ -1,6 +1,6 @@
 import { MouseEvent, MouseEventHandler, useEffect, useState } from "react";
-import { ChatRoom, useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";
+import type { Request, ChatRoom } from "../use-chat/Stores/ChatRoomStore";
 import { Box } from "@mui/material";
 import { Button } from "@mui/joy";
 import Modal from "@mui/joy/Modal";
@@ -29,8 +29,10 @@ const ModalButton = ({ onExist, onApprove, onDone }: ModalButtonProps) => {
 };
 
 export const ChatContentHeader = ({
+    activeRequest,
     activeRoom,
 }: {
+    activeRequest?: Request;
     activeRoom?: ChatRoom;
 }) => {
     const setActiveRoom = useChatRoomStore((state) => state.setActiveRoom);
@@ -69,13 +71,13 @@ export const ChatContentHeader = ({
         }
     };
 
-    useEffect(() => {}, [activeRoom?.chatRoomId]);
-
+    useEffect(() => {}, [activeRoom?.chatRoomId, activeRequest?.requestId]);
+    
     // <MessageHeader key={activeRoom?.chatRoomId ?? "empty"} onClickArrow={(e: MouseEvent) =>{handleAlert()}} onClickMenu={() => handleClick()} username={activeRoom === undefined ? "" : activeRoom.consumerName}/>
     return (
         <Box>
             <MessageHeader
-                username="user"
+                username={`${activeRequest?.title}-${activeRoom?.title}`}
                 onClickArrow={() => 1}
                 onClickUser={() => 1}
             ></MessageHeader>

@@ -4,7 +4,7 @@ import {
 } from "../use-chat/Stores/MessageStore";
 
 import { Container, List } from "@mui/material";
-import { ChatRoom } from "../use-chat/Stores/ChatRoomStore";
+import type { ChatRoom, Request } from "../use-chat/Stores/ChatRoomStore";
 import { Message } from "web_component";
 
 import type { APIType } from "api_spec";
@@ -78,8 +78,10 @@ const MessageRender = ({
 };
 
 export const ChatContentItemList = ({
+    activeRequest,
     activeRoom,
 }: {
+    activeRequest?: Request;
     activeRoom?: ChatRoom;
 }) => {
     const scroll = useRef<HTMLUListElement>(null);
@@ -90,13 +92,11 @@ export const ChatContentItemList = ({
         scroll.current?.scrollTo({
             top: scroll.current?.scrollHeight,
         });
-
-        //scroll.current?.scrollIntoView({ block: "start", inline: "end"});
     };
 
     useEffect(() => {
         sentInit(activeRoom?.chatRoomId ?? undefined);
-    }, [activeRoom, sentInit]);
+    }, [activeRoom, activeRequest, sentInit]);
 
     useEffect(() => {
         scrollToBottom();
