@@ -1,44 +1,42 @@
-import { Flex, Box, Separator, Text } from "@radix-ui/themes";
-import { Button } from "@mui/joy";
-import { PlusIcon } from "@radix-ui/react-icons";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
+import { useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";
+import { ChatRoomHeader as ChatRoomHeaderComponent } from "web_component";
 
-export const ChatRoomHeader = () => {
+interface CheckBoxState {
+    chatRoomId: string;
+    checked: boolean;
+}
+
+export const ChatRoomHeader = ({ state }: { state: CheckBoxState[] }) => {
     const navigate = useNavigate();
+    const activeRequest = useChatRoomStore((state) => state.activeRequest);
 
     const handleBack = () => {
         navigate("/home");
     };
 
+    const handleClick = () => {
+        console.log(state);
+        for (const s of state) {
+            const ret = fetch("http://localhost:8080/api/requests/provider", {
+                method: "post",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    chatroom_id: s.chatRoomId,
+                }),
+            });
+        }
+    };
     return (
-        <Box
-            p="1"
-            height="5vh"
-            style={{
-                border: "1px solid #ccc",
-                borderColor: "indigo",
-                borderTop: 0,
-                borderLeft: 0,
-                borderRight: 0,
-            }}
-        >
-            <Flex direction="row" align="center" justify="between" p="3">
-                {/* 뒤로가기 버튼 */}
-                <Button
-                    onClick={handleBack}
-                    variant="outlined"
-                    size="sm"
-                    startDecorator={<ArrowBackIcon />}
-                    style={{
-                        backgroundColor: "white",
-                        color: "black",
-                        borderColor: "indigo",
-                    }}
-                >
-                    Back
-                </Button>
-            </Flex>
-        </Box>
+        <ChatRoomHeaderComponent
+            title={activeRequest?.title ?? ""}
+            menuItemList={[
+                <button onClick={handleClick}>change Provider</button>,
+            ]}
+            onBackClick={handleBack}
+        />
     );
 };

@@ -1,41 +1,11 @@
 import { MouseEvent, MouseEventHandler, useEffect, useState } from "react";
 import { ChatRoom, useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import MenuIcon from "@mui/icons-material/Menu";
 import { Box, Flex, Separator, Strong, Text } from "@radix-ui/themes";
-import { Button, DialogTitle } from "@mui/joy";
+import { Button } from "@mui/joy";
 import Modal from "@mui/joy/Modal";
-import ModalClose from "@mui/joy/ModalClose";
 import ModalDialog from "@mui/joy/ModalDialog";
-
-/*
-export const ChatContentHeader = () => {
-    const activeRoom = useChatRoomStore((state) => state.activeRoom);
-    const chatRooms = useChatRoomStore((state) => state.chatRooms);
-
-    const [currentUserAvatar, currentUserName] = useMemo(() => {
-
-        if (activeRoom) {
-            const chatRoom = chatRooms.find((val: any) => val.chatRoomId === activeRoom)
-            console.log(chatRoom)
-            if (chatRoom) {
-                return [<Avatar src="https://www.w3schools.com/howto/img_avatar.png"/>, chatRoom.consumerName]
-            }
-        }
-        return [undefined, undefined];
-    }, [activeRoom]);
-
-    console.log("ChatContentHeader");
-    return (
-        <>
-            {activeRoom && <ConversationHeader>
-                {currentUserAvatar}
-                <ConversationHeader.Content userName={currentUserName} />
-            </ConversationHeader>}
-        </>
-    )
-}
-*/
+import { MessageHeader } from "web_component";
 
 interface ModalButtonProps {
     onExist: MouseEventHandler;
@@ -47,13 +17,6 @@ const ModalButton = ({ onExist, onApprove, onDone }: ModalButtonProps) => {
 
     return (
         <>
-            <Button
-                variant="outlined"
-                color="neutral"
-                onClick={() => setOpen(true)}
-            >
-                Modal
-            </Button>
             <Modal open={open} onClose={() => setOpen(false)}>
                 <ModalDialog>
                     <Button onClick={onExist}>Exit Room</Button>
@@ -72,7 +35,7 @@ export const ChatContentHeader = ({
 }) => {
     const setActiveRoom = useChatRoomStore((state) => state.setActiveRoom);
     const handleClick = () => {
-        setActiveRoom(undefined);
+        // setActiveRoom("");
     };
     const handleAlert = () => {
         if (activeRoom === undefined) {
@@ -128,18 +91,11 @@ export const ChatContentHeader = ({
                 justify="between"
                 p="2"
             >
-                <Button
-                    onClick={handleClick}
-                    startDecorator={<ArrowBackIcon />}
-                >
-                    Leave Chat
-                </Button>
-
-                <Text>
-                    <Strong>{activeRoom?.title}</Strong>
-                </Text>
-
-                <Box flexGrow="1" />
+                <MessageHeader
+                    username="user"
+                    onClickArrow={() => 1}
+                    onClickUser={() => 1}
+                ></MessageHeader>
                 <ModalButton
                     onApprove={handleApprove}
                     onDone={handleDone}
