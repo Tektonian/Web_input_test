@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import {
-    Theme,
     Container,
-    Separator,
-    Text,
+    Typography,
     Box,
-    Flex,
-    Grid,
+    Grid2 as Grid,
     Button,
-} from "@radix-ui/themes";
+    Divider,
+} from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { StudentCard } from "web_component";
@@ -79,82 +77,70 @@ const StudentListPage = () => {
     };
 
     return (
-        <Theme>
-            <Box width="100%" height="100%" minWidth="300px">
-                <Flex
-                    direction="column"
-                    align="center"
-                    justify="center"
-                    gap="3"
-                >
-                    <Container>
-                        <Separator my="3" size="4" />
+        <Box width="100%" minWidth="300px" py={4}>
+            <Container maxWidth="lg">
+                <Divider sx={{ my: 3 }} />
 
-                        <Text as="div" size="6" weight="bold">
-                            학생 리스트
-                        </Text>
-                        <Separator my="3" size="4" />
-                        <Grid
-                            columns={{
-                                initial: "2",
-                                md: "3",
-                            }}
-                            gap="2"
-                            rows="auto"
-                            width="auto"
-                        >
-                            {isSuccess === true ? (
-                                data.map((card: any, idx: number) => (
-                                    <Flex
-                                        key={idx}
-                                        justify="center"
-                                        align="center"
-                                        width="100%"
-                                        height="100%"
-                                    >
-                                        <StudentCard
-                                            student_id={card.student_id}
-                                            name={card.name_glb["kr"]}
-                                            nationality={card.nationality}
-                                            school={card.school_name}
-                                            major={card.faculty}
-                                            imageUrl=""
-                                            link={`http://localhost:3000/student/${card.student_id}`}
-                                            languageWithLevel={[
-                                                {
-                                                    language: "jp",
-                                                    level: 2,
-                                                },
-                                            ]}
-                                            isBookmarked={bookmarkedIds.includes(
-                                                card.student_id,
-                                            )}
-                                            onBookmarkClick={(newState) =>
-                                                handleBookmarkToggle(
-                                                    card.student_id,
-                                                    newState,
-                                                )
-                                            }
-                                        />
-                                    </Flex>
-                                ))
-                            ) : (
-                                <>로딩 실패</>
-                            )}
-                        </Grid>
-                        <Flex justify="center" mt="4">
-                            <Button
-                                variant="solid"
-                                color="blue"
-                                onClick={sendAlarm}
-                            >
-                                Submit
-                            </Button>
-                        </Flex>
-                    </Container>
-                </Flex>
-            </Box>
-        </Theme>
+                <Typography
+                    variant="h4"
+                    component="div"
+                    fontWeight="bold"
+                    gutterBottom
+                >
+                    학생 리스트
+                </Typography>
+                <Divider sx={{ my: 3 }} />
+
+                {isSuccess ? (
+                    <Grid container spacing={2}>
+                        {data.map((card: any, idx: number) => (
+                            <Grid size={12} key={idx}>
+                                <StudentCard
+                                    student_id={card.student_id}
+                                    name={card.name_glb.kr}
+                                    nationality={card.nationality}
+                                    school={card.school_name}
+                                    major={card.faculty}
+                                    imageUrl=""
+                                    link={`http://localhost:3000/student/${card.student_id}`}
+                                    languageWithLevel={[
+                                        {
+                                            language: "jp",
+                                            level: 2,
+                                        },
+                                    ]}
+                                    isBookmarked={bookmarkedIds.includes(
+                                        card.student_id,
+                                    )}
+                                    onBookmarkClick={(newState) =>
+                                        handleBookmarkToggle(
+                                            card.student_id,
+                                            newState,
+                                        )
+                                    }
+                                />
+                            </Grid>
+                        ))}
+                    </Grid>
+                ) : (
+                    <Box display="flex" justifyContent="center" py={4}>
+                        <Typography variant="body1" color="error">
+                            로딩 실패
+                        </Typography>
+                    </Box>
+                )}
+
+                <Box display="flex" justifyContent="center" mt={4}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={sendAlarm}
+                    >
+                        Submit
+                    </Button>
+                </Box>
+            </Container>
+        </Box>
     );
 };
 

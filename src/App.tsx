@@ -2,11 +2,9 @@ import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionProvider } from "./hooks/Session";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Government } from "./components/Government";
 import RequestPage from "./pages/request/RequestPage";
 import ProfileSetup from "./pages/ProfileSetup";
 import ChatPage from "./pages/chat/ChatPage";
-import { Consumer } from "./components/Consumer";
 import RequestInput from "./pages/request/RequestInput";
 import "./App.css";
 //import StudentProfilePage from "./pages/student/StudentProfilePage";
@@ -49,10 +47,6 @@ function App() {
                                 element={<StudentReviewInput />}
                             />
                             <Route
-                                path="/government"
-                                element={<Government />}
-                            />
-                            <Route
                                 path="/request/:request_id"
                                 element={<RequestPage />}
                             />
@@ -60,7 +54,6 @@ function App() {
                                 path="/request-list"
                                 element={<RequestListPage />}
                             />
-                            <Route path="/consumer" element={<Consumer />} />
                             <Route
                                 path="/profileinput"
                                 element={<ProfileSetup />}

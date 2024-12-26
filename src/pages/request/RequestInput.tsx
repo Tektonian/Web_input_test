@@ -9,86 +9,65 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { useForm } from "react-hook-form";
-import { ShortTextInput } from "web_component";
-import { LongTextInput } from "web_component";
-import { DateInput } from "web_component";
-import { TimeInput } from "web_component";
-import { SelectInput } from "web_component";
+import {
+    ShortTextInput,
+    LongTextInput,
+    DateInput,
+    TimeInput,
+    SelectInput,
+} from "web_component";
 import AddressInput from "./components/AddressInput";
 import { useNavigate } from "react-router-dom";
 import { useSession } from "../../hooks/Session";
+import { APIType } from "api_spec";
+import dayjs from "dayjs";
 
-export interface RequestProfileProps {
-    consumer_id: number;
-    title: string;
-    head_count: number;
-    reward_price: number;
-    currency: "USD" | "JPY" | "KRW" | "";
-    content: string;
-    are_needed?: string;
-    are_required?: string;
-    start_date: Date;
-    end_date?: Date;
-    address: string;
-    address_coordinate: {
-        type: "Point";
-        coordinates: [lat: number, lng: number];
-    };
-    provide_food: boolean;
-    provide_trans_exp: boolean;
-    prep_material: string;
-    status: number;
-    start_time: Date;
-    end_time: Date;
-    created_at: Date;
-    updated_at?: Date;
-    corp_id?: number;
-    orgn_id?: number;
-}
-
-const RequestInput = ({
-    role = "corp",
-}: {
-    role?: "corp" | "orgn" | "normal";
-}) => {
-    const { control, setValue, handleSubmit } = useForm<RequestProfileProps>({
+const RequestInput = () => {
+    const { control, setValue, handleSubmit } = useForm<
+        APIType.RequestType.ReqCreateRequest
+    >({
         defaultValues: {
-            consumer_id: 2,
-            title: "",
-            head_count: 0,
-            reward_price: 0,
-            currency: "",
-            content: "",
-            are_needed: "",
-            are_required: "",
-            start_date: new Date(),
-            end_date: new Date(),
-            start_time: new Date(),
-            end_time: new Date(),
-            address: "",
-            address_coordinate: {
-                type: "Point",
-                coordinates: [0, 0],
+            role: "",
+            data: {
+                consumer_id: -1,
+                title: "",
+                head_count: 0,
+                reward_price: 0,
+                currency: "",
+                content: "",
+                are_needed: [],
+                are_required: [],
+                start_date: new Date(),
+                end_date: new Date(),
+                start_time: dayjs().format("HH:mm"),
+                end_time: dayjs().format("HH:mm"),
+                address: "",
+                address_coordinate: {
+                    type: "Point",
+                    coordinates: [0, 0],
+                },
+                prep_material: [],
+                created_at: new Date(),
             },
-            prep_material: "",
-            created_at: new Date(),
         },
     });
 
     const session = useSession();
+    const roles = session.data?.user?.roles;
 
     const navigate = useNavigate();
 
-    const onSubmit = async (data: RequestProfileProps) => {
-        data.start_time = new Date(data.start_time ?? "")
-        data.end_time = new Date(data.end_time ?? "")
+    const onSubmit = async (request: APIType.RequestType.ReqCreateRequest) => {
         try {
             const response = await fetch("/api/requests", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
                 // TODO: change later of role
-                body: JSON.stringify({ data: data, role: role }),
+                body: JSON.stringify({
+                    data: request.data,
+                    role: request.role,
+                }),
             });
 
             if (response.ok) {

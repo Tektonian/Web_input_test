@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Container, Typography, Card, CardContent } from "@mui/material";
 import { RequestDataCard, RequestSideCard } from "web_component";
 import { useParams } from "react-router-dom";
-import { APIType } from "api_spec/dist/esm";
+import { APIType } from "api_spec";
 
 const RequestPage = () => {
     const [
