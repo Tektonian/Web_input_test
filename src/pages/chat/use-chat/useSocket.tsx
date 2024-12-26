@@ -7,7 +7,7 @@ import {
 import { useChatRoomStore } from "./Stores/ChatRoomStore";
 import { Socket } from "socket.io-client";
 import { useSession } from "../../../hooks/Session";
-import { APIType } from "api_spec/dist/esm";
+import { APIType } from "api_spec";
 
 type ReqSendMessage = APIType.WebSocketType.ReqSendMessage;
 type MessageContentType = APIType.ContentType.MessageContentType;
@@ -52,8 +52,8 @@ export const useSocket = () => {
         tempId,
         activeRoom,
         setTempId,
-        updateChatRoom,
-        updateOnConnect,
+        updateOnReceive,
+        updateOnRefresh,
     } = useChatRoomStore((state) => state);
     const session = useSession();
 
@@ -125,7 +125,7 @@ export const useSocket = () => {
             updateSentUnread(chatRoomId, lastReadSequences);
             const lastMsg = messages.at(-1);
             if (lastMsg !== undefined) {
-                updateChatRoom(lastMsg);
+                updateOnReceive(lastMsg);
             }
             // TODO: update device last seq
             callback({
@@ -139,7 +139,7 @@ export const useSocket = () => {
             const data: MessageContent = resMsgToContent(message);
 
             pushToSent(chatRoomId, data);
-            updateChatRoom(message);
+            updateOnReceive(message);
             callback({
                 id: tempId,
                 lastReadSeq: getSentMessageLength(chatRoomId),
@@ -189,30 +189,34 @@ export const useSocket = () => {
         socket.once("connected", (res, callback) => {
             console.log("Chat user tmp ID: ", res);
             setTempId(res.id);
-
-            updateOnConnect(res.chatRooms);
-
+            updateOnRefresh({
+                chatRooms: res.chatRooms,
+                requests: res.requests,
+            });
             callback({
                 id: res.id,
                 status: "ok",
             });
         });
 
-        socket.connect();
+        socket.on("refreshChatRooms", (res) => {
+            console.log("Refresh chatrooms", res);
+            updateOnRefresh(res);
+        });
 
         socket.on("updateChatRoom", (res, callback) => {
             const data = JSON.parse(res);
-            // @ts-ignore
             console.log("Update chatroom");
             data.direction = "inbound";
             if (activeRoom?.chatRoomId !== data.chatRoomId) {
                 console.log("Update chatroom: ", data, ", ", socket.id);
-                updateChatRoom(data);
+                updateOnReceive(data);
             }
             if (activeRoom !== undefined) {
                 // pushToSent(activeRoom.chatRoomId, data);
             }
         });
+        socket.connect();
     };
     const onDestroying = () => {
         console.log("Destroying on remove");

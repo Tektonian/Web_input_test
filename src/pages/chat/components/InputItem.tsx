@@ -5,7 +5,7 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import { Message } from "web_component";
 
-import type { APIType } from "api_spec/dist/esm";
+import type { APIType } from "api_spec";
 type MessageContent = APIType.ContentType.MessageContent;
 type MessageContentType = APIType.ContentType.MessageContentType;
 
