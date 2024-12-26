@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Box, Container, Typography } from "@mui/material";
 import { StudentProfileCard, IndexCard, RequestCard } from "web_component";
-import { APIType } from "api_spec/dist/esm";
+import { APIType } from "api_spec";
 import { useNavigate } from "react-router-dom";
 
 const StudentProfilePage: React.FC = () => {

@@ -10,10 +10,8 @@ import {
 } from "web_component";
 import EmailInput from "../components/input/EmailInput";
 import TokenInput from "../components/input/TokenInput";
-import BasicInfoInput from "./student/components/BasicInfoInput";
 import AcademicHistoryListInput from "./student/components/AcademicHistoryListInput";
 import LanguageHistoryListInput from "./student/components/LanguageHistoryListInput";
-import { ProfileImageInput } from "web_component";
 import BusinessNumberInput from "./corporation/components/BusinessNumberInput";
 import BusinessInfoInput from "./corporation/components/BusinessInfoInput";
 import ConsumerInfoInput from "./corporation/components/ConsumerInfoInput";

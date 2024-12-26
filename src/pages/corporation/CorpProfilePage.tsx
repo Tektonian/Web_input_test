@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Container, Typography } from "@mui/material";
 import { IndexCard, RequestCard, CorpProfileCard } from "web_component";
-import { APIType } from "api_spec/dist/esm";
+import { APIType } from "api_spec";
 import { useParams } from "react-router-dom";
 
 const CorpProfilePage = () => {

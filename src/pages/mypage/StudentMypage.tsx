@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Container, Typography } from "@mui/material";
 import { StudentProfileCard, IndexCard, RequestCard } from "web_component";
-import { APIType } from "api_spec/dist/esm";
+import { APIType } from "api_spec";
 import { useNavigate, useParams } from "react-router-dom";
 
 const StudentMypage = () => {
