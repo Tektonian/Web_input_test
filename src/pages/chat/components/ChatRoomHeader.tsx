@@ -1,42 +1,67 @@
 import { useNavigate } from "react-router-dom";
 import { useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";
+import { useCheckBoxStore } from "../use-chat/Stores/CheckBoxStore";
+import { useRequestQuery } from "../use-chat/useRequest";
+import { Button, Box } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseButton from "./ChatRoomHeader/CloseButton";
+import DeleteButton from "./ChatRoomHeader/DeleteButton";
 import { ChatRoomHeader as ChatRoomHeaderComponent } from "web_component";
+import { MenuButton } from "web_component";
+import RequestApproveDiagram from "./ChatRoomHeader/RequestApprove";
 
-interface CheckBoxState {
-    chatRoomId: string;
-    checked: boolean;
-}
-
-export const ChatRoomHeader = ({ state }: { state: CheckBoxState[] }) => {
+export const ChatRoomHeader = () => {
     const navigate = useNavigate();
     const activeRequest = useChatRoomStore((state) => state.activeRequest);
+    const checkBoxMode = useCheckBoxStore((state) => state.checkBoxMode);
+    const changeCheckBoxMode = useCheckBoxStore((state) => state.changeMode);
+    const { updateProvider } = useRequestQuery();
+
+    const mutateUpdateProvider = updateProvider.mutate;
 
     const handleBack = () => {
-        navigate("/home");
+        window.history.back();
     };
 
-    const handleClick = () => {
-        console.log(state);
-        for (const s of state) {
-            const ret = fetch("http://localhost:8080/api/requests/provider", {
-                method: "post",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    chatroom_id: s.chatRoomId,
-                }),
-            });
-        }
-    };
     return (
-        <ChatRoomHeaderComponent
-            title={activeRequest?.title ?? ""}
-            menuItemList={[
-                <button onClick={handleClick}>change Provider</button>,
-            ]}
-            onBackClick={handleBack}
-        />
+        <Box
+            width="100%"
+            height="fit-content"
+            position="sticky"
+            top="0"
+            zIndex="999"
+        >
+            <ChatRoomHeaderComponent
+                key={activeRequest?.requestId}
+                title={activeRequest?.title ?? ""}
+                menuItemList={
+                    checkBoxMode === false
+                        ? [
+                              <MenuButton.MenuButton trigger={<MenuIcon />}>
+                                  <MenuButton.Item>
+                                      {<RequestApproveDiagram />}
+                                  </MenuButton.Item>
+                              </MenuButton.MenuButton>,
+                          ]
+                        : [
+                              <Button
+                                  color="inherit"
+                                  onClick={() => mutateUpdateProvider()}
+                              >
+                                  선택 변경
+                              </Button>,
+                              <CloseButton
+                                  onClick={() => changeCheckBoxMode(false)}
+                              />,
+                              <MenuButton.MenuButton trigger={<MenuIcon />}>
+                                  <MenuButton.ItemWithClose>
+                                      {<DeleteButton onClick={() => 0} />}
+                                  </MenuButton.ItemWithClose>
+                              </MenuButton.MenuButton>,
+                          ]
+                }
+                onBackClick={handleBack}
+            />
+        </Box>
     );
 };

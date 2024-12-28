@@ -24,7 +24,6 @@ interface sentMessages {
     init: (chatRoomId?: string) => void;
     push: (chatRoomId: string, message: MessageContent) => void;
     getMessageLength: (chatRoomId: string) => number;
-    getMessages: (chatRoomId: string) => MessageContent[];
     updateUnread: (chatRoomId: string, lastReadSeqList: number[]) => void;
     setMessages: (chatRoomId: string, messages: MessageContent[]) => void;
     setMessageByIdx: (
@@ -101,7 +100,6 @@ const UpdateUnread = (
     console.log("seq", newUnreadList);
     for (let i = 0; i < newUnreadList.length; i++) {
         if (oldMessages.at(-1 * (i + 1)) !== undefined) {
-            // @ts-expect-error
             oldMessages.at(-1 * (i + 1)).unreadCount = newUnreadList[i];
         }
     }
@@ -110,18 +108,18 @@ const UpdateUnread = (
     return oldMessages;
 };
 
+const InitSent=(chatRoomId?: string) => {
+    if(!chatRoomId){
+        return []
+    }
+    const messages = safeExtract(new TypedStorage<IMessageStorage>(`sentMessages-${chatRoomId}`));
+    return messages;
+}
 export const useSentMessages = create<sentMessages>((set, get) => ({
     messages: [],
     init: (chatRoomId) =>
-        set(() => ({
-            messages:
-                chatRoomId === undefined
-                    ? []
-                    : safeExtract(
-                          new TypedStorage<IMessageStorage>(
-                              `sentMessages-${chatRoomId}`,
-                          ),
-                      ),
+        set((state) => ({
+            messages: [...InitSent(chatRoomId)],
         })),
     push: (chatRoomId, message) =>
         set((state) => ({
@@ -130,10 +128,6 @@ export const useSentMessages = create<sentMessages>((set, get) => ({
     getMessageLength: (chatRoomId) =>
         new TypedStorage<IMessageStorage>(`sentMessages-${chatRoomId}`).get()
             ?.messages.length ?? 0,
-    getMessages: (chatRoomId: string) =>
-        safeExtract(
-            new TypedStorage<IMessageStorage>(`sentMessages-${chatRoomId}`),
-        ),
     updateUnread: (chatRoomId, lastReadSeqList) =>
         set((state) => ({
             messages: [

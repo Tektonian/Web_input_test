@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import {
     useSentMessages,
@@ -6,7 +7,6 @@ import {
 } from "./Stores/MessageStore";
 import { useChatRoomStore } from "./Stores/ChatRoomStore";
 import { Socket } from "socket.io-client";
-import { useSession } from "../../../hooks/Session";
 import { APIType } from "api_spec";
 
 type ReqSendMessage = APIType.WebSocketType.ReqSendMessage;
@@ -51,11 +51,12 @@ export const useSocket = () => {
         socket,
         tempId,
         activeRoom,
+        activeRequest,
         setTempId,
+        setActiveRoom,
         updateOnReceive,
         updateOnRefresh,
     } = useChatRoomStore((state) => state);
-    const session = useSession();
 
     const pushToSent = useSentMessages((state) => state.push);
     const setSentMessageByIdx = useSentMessages(
@@ -75,11 +76,9 @@ export const useSocket = () => {
         mutationFn: async ({
             socket,
             req,
-            chatRoomId,
         }: {
             socket: Socket | null;
             req: ReqSendMessage;
-            chatRoomId: string;
         }) => {
             if (socket === null) return new Promise(() => null);
 
@@ -111,30 +110,23 @@ export const useSocket = () => {
         },
     });
 
-    const onJoin = (chatRoomId: string) => {
-        socket.on("userJoined", (res, callback) => {
-            console.log("Joined to room", res);
-            const { messages, lastReadSequences }: ResTryJoin = JSON.parse(res);
-            console.log("Joined", messages, lastReadSequences, session);
-            const data = messages.map((m) => resMsgToContent(m));
-            setSentMessageByIdx(
-                chatRoomId,
-                data,
-                getSentMessageLength(chatRoomId),
-            );
-            updateSentUnread(chatRoomId, lastReadSequences);
-            const lastMsg = messages.at(-1);
-            if (lastMsg !== undefined) {
-                updateOnReceive(lastMsg);
-            }
-            // TODO: update device last seq
-            callback({
-                status: "ok",
-            });
+    const onJoin = async (chatRoomId: string) => {
+        socket.once("userJoined", (callback) => {
+            console.log("User joined");
+            console.log("Set active room", chatRoomId);
+            callback({ status: "ok" });
         });
+
         socket.on("someoneSent", (res, callback) => {
             const message: ResMessage = JSON.parse(res);
-            console.log("Someone sent message: ", message, " - ", res);
+            console.log(
+                "Someone sent message: ",
+                message,
+                " - ",
+                res,
+                " - ",
+                socket.id,
+            );
 
             const data: MessageContent = resMsgToContent(message);
 
@@ -142,7 +134,7 @@ export const useSocket = () => {
             updateOnReceive(message);
             callback({
                 id: tempId,
-                lastReadSeq: getSentMessageLength(chatRoomId),
+                lastReadSeq: data.seq,
                 status: "ok",
             });
         });
@@ -151,17 +143,38 @@ export const useSocket = () => {
             console.log("Updateunread", res);
             updateSentUnread(chatRoomId, lastReadSequences);
         });
-        socket.emit("userTryJoin", {
-            chatRoomId: chatRoomId,
-            deviceLastSeq: getSentMessageLength(chatRoomId),
-            id: tempId,
-        });
+
+        try {
+            const res = await socket.timeout(500).emitWithAck("userTryJoin", {
+                chatRoomId: chatRoomId,
+                deviceLastSeq: getSentMessageLength(chatRoomId),
+                id: tempId,
+            });
+            console.log("User try join", res);
+            const { messages, lastReadSequences }: ResTryJoin = JSON.parse(res);
+            const data = messages.map((m) => resMsgToContent(m));
+            setSentMessageByIdx(
+                chatRoomId,
+                data,
+                getSentMessageLength(chatRoomId),
+            );
+
+            updateSentUnread(chatRoomId, lastReadSequences);
+            const lastMsg = messages.at(-1);
+            if (lastMsg !== undefined) {
+                updateOnReceive(lastMsg);
+            }
+        } catch (error) {
+            console.log("User failed to join a room", chatRoomId);
+            setActiveRoom(undefined);
+            return;
+        }
     };
 
     const onUnjoin = () => {
+        console.log("User unjoin");
         socket.off("someoneSent");
         socket.off("updateUnread");
-        socket.off("userJoined");
         socket.emit("userTryUnjoin");
     };
 
@@ -181,7 +194,7 @@ export const useSocket = () => {
             message: content,
         };
 
-        mutate({ socket: socket, req: req, chatRoomId: chatRoomId });
+        mutate({ socket: socket, req: req });
 
         return { isError, isSuccess };
     };
@@ -206,24 +219,45 @@ export const useSocket = () => {
 
         socket.on("updateChatRoom", (res, callback) => {
             const data = JSON.parse(res);
-            console.log("Update chatroom");
-            data.direction = "inbound";
+            console.log("Update chatroom: ", data, ", ", socket.id);
+            updateOnReceive(data);
             if (activeRoom?.chatRoomId !== data.chatRoomId) {
-                console.log("Update chatroom: ", data, ", ", socket.id);
-                updateOnReceive(data);
+                //updateOnReceive(data);
             }
             if (activeRoom !== undefined) {
                 // pushToSent(activeRoom.chatRoomId, data);
             }
         });
+
+        socket.on("disconnect", (reason, detail) => {
+            console.log("Socket disconnected", reason, detail);
+        });
         socket.connect();
     };
-    const onDestroying = () => {
+    const onDisconnecting = () => {
         console.log("Destroying on remove");
         // remove all events
         socket.off();
         socket.disconnect();
+        setActiveRoom(undefined);
     };
 
-    return { onJoin, onUnjoin, onSending, onConnecting, onDestroying };
+    useEffect(() => {
+        if (activeRoom) {
+            onJoin(activeRoom?.chatRoomId)
+                .then()
+                .catch(() => 1);
+        }
+        return () => {
+            if (activeRoom) {
+                onUnjoin();
+            }
+        };
+    }, [activeRoom]);
+
+    useEffect(() => {
+        setActiveRoom(undefined);
+    }, [activeRequest]);
+
+    return { onJoin, onUnjoin, onSending, onConnecting, onDisconnecting };
 };

@@ -103,6 +103,7 @@ export const InputItem = (props: InputItemProps) => {
 
     return (
         <Box
+            flexGrow={0}
             display="flex"
             flexDirection="column"
             alignItems="stretch"
@@ -218,7 +219,7 @@ export const InputItem = (props: InputItemProps) => {
                     onChange={(e) => setTypedString(e.target.value)}
                     onKeyDown={handleTextSending}
                     disabled={!activeRoom}
-                    sx={{ flexGrow: 1 }}
+                    sx={{ flexGrow: 1, paddingRight: 2 }}
                 />
             </Box>
         </Box>

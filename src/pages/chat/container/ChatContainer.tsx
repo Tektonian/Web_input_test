@@ -1,26 +1,44 @@
 import { ChatContentHeader } from "../components/ChatContentHeader";
 import { ChatContentItemList } from "../components/ChatContentItemList";
 import { InputItem } from "../components/InputItem";
-import { useSocket } from "../use-chat/useSocket";
 import { useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";
-import { Container } from "@mui/material";
-import { useEffect } from "react";
-export const ChatContainer = () => {
-    const { onSending } = useSocket();
+import { useSentMessages } from "../use-chat/Stores/MessageStore";
+import { Stack, Box } from "@mui/material";
+import { useEffect, useState } from "react";
+
+interface ChatContainerProps {
+    onTextSending: Function;
+}
+export const ChatContainer = (props: ChatContainerProps) => {
     const activeRoom = useChatRoomStore((state) => state.activeRoom);
     const activeRequest = useChatRoomStore((state) => state.activeRequest);
 
+    const initSent = useSentMessages((state) => state.init);
+
+    useEffect(() => {
+        initSent(activeRoom?.chatRoomId);
+    }, [activeRoom]);
+
     return (
-        <Container maxWidth="lg">
-            <ChatContentHeader
+        <Stack
+            flex={1}
+            minWidth="200px"
+            width="100%"
+            height="auto"
+            flexDirection="column"
+            sx={{
+                display: {
+                    xs: activeRoom === undefined ? "none" : "flex",
+                    md: "flex",
+                },
+            }}
+        >
+            <ChatContentHeader activeRoom={activeRoom} />
+            <ChatContentItemList activeRoom={activeRoom} />
+            <InputItem
+                onSending={props.onTextSending}
                 activeRoom={activeRoom}
-                activeRequest={activeRequest}
             />
-            <ChatContentItemList
-                activeRoom={activeRoom}
-                activeRequest={activeRequest}
-            />
-            <InputItem onSending={onSending} activeRoom={activeRoom} />
-        </Container>
+        </Stack>
     );
 };
