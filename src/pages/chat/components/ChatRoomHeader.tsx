@@ -11,7 +11,6 @@ import { MenuButton } from "web_component";
 import RequestApproveDiagram from "./ChatRoomHeader/RequestApprove";
 
 export const ChatRoomHeader = () => {
-    const navigate = useNavigate();
     const activeRequest = useChatRoomStore((state) => state.activeRequest);
     const checkBoxMode = useCheckBoxStore((state) => state.checkBoxMode);
     const changeCheckBoxMode = useCheckBoxStore((state) => state.changeMode);

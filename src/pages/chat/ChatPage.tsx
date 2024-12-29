@@ -7,8 +7,9 @@ import { Container, Stack } from "@mui/material";
 import { RequestContainer } from "./container/RequestContainer";
 
 const ChatPage = () => {
-    const { onConnecting, onDisconnecting, onSending } = useSocket();
+    const { onConnecting, onDisconnecting } = useSocket();
     const initChatRoom = useChatRoomStore((state) => state.initOnLoad);
+
     useEffect(() => {
         onConnecting();
         initChatRoom();
@@ -36,7 +37,7 @@ const ChatPage = () => {
         >
             <RequestContainer />
             <ChatRoomContainer />
-            <ChatContainer onTextSending={onSending} />
+            <ChatContainer />
         </Container>
     );
 };

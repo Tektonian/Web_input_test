@@ -3,6 +3,7 @@ import { ChatRoom } from "../use-chat/Stores/ChatRoomStore";
 import { TextField, Box, Button, Typography, IconButton } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import { useSocketTextMutation } from "../use-chat/useSocket";
 import { Message } from "web_component";
 
 import type { APIType } from "api_spec";
@@ -10,13 +11,12 @@ type MessageContent = APIType.ContentType.MessageContent;
 type MessageContentType = APIType.ContentType.MessageContentType;
 
 interface InputItemProps {
-    onSending: Function;
     activeRoom: ChatRoom | undefined;
 }
 
 export const InputItem = (props: InputItemProps) => {
-    const { onSending, activeRoom } = props;
-
+    const { activeRoom } = props;
+    const onTextSending = useSocketTextMutation();
     const [typedString, setTypedString] = useState("");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewMode, setPreviewmode] = useState(false);
@@ -47,7 +47,7 @@ export const InputItem = (props: InputItemProps) => {
             };
             setTypedString("");
 
-            onSending(activeRoom?.chatRoomId, textContent);
+            onTextSending(textContent);
         }
     };
 

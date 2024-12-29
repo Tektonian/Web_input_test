@@ -67,49 +67,6 @@ export const useSocket = () => {
     );
     const updateSentUnread = useSentMessages((state) => state.updateUnread);
 
-    const pushToSending = useSendingMessages((state) => state.push);
-    const removeSending = useSendingMessages((state) => state.removeMessage);
-
-    const pushToFailed = useFailedMessages((state) => state.push);
-
-    const { mutate, isError, isSuccess } = useMutation({
-        mutationFn: async ({
-            socket,
-            req,
-        }: {
-            socket: Socket | null;
-            req: ReqSendMessage;
-        }) => {
-            if (socket === null) return new Promise(() => null);
-
-            // pushToSending(chatRoomId, req);
-            if (req.message.contentType === "text") {
-                return await socket.emit("sendMessage", req);
-            } else if (req.message.contentType === "file") {
-            } else if (req.message.contentType === "image") {
-            } else if (req.message.contentType === "map") {
-            } else {
-                throw new Error("Wrong type");
-            }
-        },
-        onError: (error, variables, context) => {
-            // removeSending(variables.chatRoomId, variables.req._id);
-            // pushToFailed(variables.chatRoomId, variables.req.content);
-            console.log("error: ", error);
-        },
-        onSuccess: (data, variables, context) => {
-            console.log("success", data);
-            console.log("success context", context);
-            console.log("success context", variables);
-            // remove sending message with variables
-            // removeSending(variables.chatRoomId, variables.req._id);
-            // add received message from server
-        },
-        onSettled: (data, error, variables, context) => {
-            // Error or success... doesn't matter
-        },
-    });
-
     const onJoin = async (chatRoomId: string) => {
         socket.once("userJoined", (callback) => {
             console.log("User joined");
@@ -178,26 +135,6 @@ export const useSocket = () => {
         socket.emit("userTryUnjoin");
     };
 
-    const onSending = (chatRoomId: string, content: MessageContentType) => {
-        if (activeRoom === undefined) {
-            console.log("Sending on no activeRoom");
-            return undefined;
-        }
-        if (tempId === undefined) {
-            return undefined;
-        }
-        console.log("On sending", content);
-        const req: ReqSendMessage = {
-            _id: Math.floor(Math.random() * 100000).toString(),
-            senderId: tempId,
-            chatRoomId: chatRoomId,
-            message: content,
-        };
-
-        mutate({ socket: socket, req: req });
-
-        return { isError, isSuccess };
-    };
     const onConnecting = () => {
         socket.once("connected", (res, callback) => {
             console.log("Chat user tmp ID: ", res);
@@ -259,5 +196,75 @@ export const useSocket = () => {
         setActiveRoom(undefined);
     }, [activeRequest]);
 
-    return { onJoin, onUnjoin, onSending, onConnecting, onDisconnecting };
+    return { onJoin, onUnjoin, onConnecting, onDisconnecting };
+};
+
+export const useSocketTextMutation = () => {
+    const { socket, activeRoom, tempId } = useChatRoomStore((state) => state);
+    const pushToSending = useSendingMessages((state) => state.push);
+    const removeSending = useSendingMessages((state) => state.removeMessage);
+
+    const pushToFailed = useFailedMessages((state) => state.push);
+
+    const { mutate, isError, isSuccess } = useMutation({
+        mutationFn: async ({
+            socket,
+            req,
+        }: {
+            socket: Socket | null;
+            req: ReqSendMessage;
+        }) => {
+            if (socket === null) return new Promise(() => null);
+
+            // pushToSending(chatRoomId, req);
+            if (req.message.contentType === "text") {
+                return socket.timeout(3000).emitWithAck("sendMessage", req);
+            } else if (req.message.contentType === "file") {
+            } else if (req.message.contentType === "image") {
+            } else if (req.message.contentType === "map") {
+            } else {
+                throw new Error("Wrong type");
+            }
+        },
+        onError: (error, variables, context) => {
+            // removeSending(variables.chatRoomId, variables.req._id);
+            // pushToFailed(variables.chatRoomId, variables.req.content);
+            console.log("error: ", error);
+        },
+        onSuccess: (data, variables, context) => {
+            console.log("success", data);
+            console.log("success context", context);
+            console.log("success context", variables);
+            // remove sending message with variables
+            // removeSending(variables.chatRoomId, variables.req._id);
+            // add received message from server
+        },
+        onSettled: (data, error, variables, context) => {
+            // Error or success... doesn't matter
+            console.log("WHen sending", data, error);
+        },
+    });
+
+    const onTextSending = (content: MessageContentType) => {
+        if (activeRoom === undefined) {
+            console.log("Sending on no activeRoom");
+            return undefined;
+        }
+        if (tempId === undefined) {
+            return undefined;
+        }
+        console.log("On sending", content);
+        const req: ReqSendMessage = {
+            _id: Math.floor(Math.random() * 100000).toString(),
+            senderId: tempId,
+            chatRoomId: activeRoom.chatRoomId,
+            message: content,
+        };
+
+        mutate({ socket: socket, req: req });
+
+        return { isError, isSuccess };
+    };
+
+    return onTextSending;
 };
