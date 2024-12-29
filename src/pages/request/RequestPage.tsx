@@ -5,24 +5,26 @@ import { useParams } from "react-router-dom";
 import { APIType } from "api_spec";
 
 const RequestPage = () => {
-    const [
-        reqData,
-        setReqData,
-    ] = useState<APIType.RequestType.ResGetRequest | null>(null);
+    const [data, setData] = useState<APIType.RequestType.ResGetRequest | null>(
+        null,
+    );
 
-    const request_id = useParams();
+    const { request_id: request_id } = useParams();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`api/requests/${request_id}`, {
-                    method: "GET",
-                });
+                const response = await fetch(
+                    `http://localhost:8080/api/requests/${request_id}`,
+                    {
+                        method: "GET",
+                    },
+                );
                 const data: APIType.RequestType.ResGetRequest = await response.json();
 
-                console.log(data);
+                console.log("data:", data);
 
-                setReqData(data);
+                setData(data);
             } catch (error) {
                 console.error("Error fetching request data:", error);
             }
@@ -43,21 +45,28 @@ const RequestPage = () => {
                 maxWidth: "1080px",
                 margin: "auto",
                 padding: "16px",
+                minHeight: "100vh",
             }}
             id={sections[0]}
         >
             <Container sx={{ width: "712px", padding: "0 !important" }}>
-                {reqData && (
+                {data && (
                     <RequestDataCard
-                        requestData={reqData.request}
-                        corpCard={reqData.corp_card}
-                        otherRequests={reqData.other_requests.map(
-                            (request) => ({
-                                ...request,
-                                renderLogo: false,
-                                onClick: () => alert("request card clicked"),
-                            }),
-                        )}
+                        requestData={{
+                            ...data.request,
+                            are_needed: data.request.are_needed as string[],
+                            are_required: data.request.are_required as string[],
+                            prep_material: data.request
+                                .prep_material as string[],
+                        }}
+                        corpCard={data.corp_card}
+                        otherRequests={data.other_requests.map((request) => ({
+                            ...request,
+                            request_status: request.request_status ?? 0,
+                            address: request.address ?? "",
+                            renderLogo: false,
+                            onClick: () => alert("request card clicked"),
+                        }))}
                     />
                 )}
             </Container>
@@ -75,7 +84,7 @@ const RequestPage = () => {
                     gap: "24px",
                 }}
             >
-                {reqData && <RequestSideCard request={reqData?.request} />}
+                {data && <RequestSideCard request={data?.request} />}
                 <Card
                     sx={{
                         borderRadius: "16px",
