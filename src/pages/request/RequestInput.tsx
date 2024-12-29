@@ -95,98 +95,77 @@ const RequestInput = () => {
                 autoComplete="off"
                 onSubmit={handleSubmit(onSubmit)}
             >
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <Grid container spacing={2}>
-                        <Grid size={12}>
-                            <ShortTextInput
-                                control={control}
-                                name="title"
-                                label="Title"
-                            />
-                        </Grid>
-
-                        <Grid size={4}>
-                            <ShortTextInput
-                                control={control}
-                                name="head_count"
-                                label="Head Count"
-                            />
-                        </Grid>
-
-                        <Grid size={4}>
-                            <ShortTextInput
-                                control={control}
-                                name="reward_price"
-                                label="Reward Price"
-                            />
-                        </Grid>
-                        <Grid size={4}>
-                            <SelectInput
-                                control={control}
-                                name="currency"
-                                label="Currency"
-                                options={["JPY", "KRW", "USD"]}
-                            />
-                        </Grid>
-
-                        <Grid size={6}>
-                            <DateInput
-                                control={control}
-                                name="start_date"
-                                label="Start Date"
-                            />
-                        </Grid>
-
-                        <Grid size={6}>
-                            <DateInput
-                                control={control}
-                                name="end_date"
-                                label="End Date"
-                            />
-                        </Grid>
-
-                        <Grid size={6}>
-                            <TimeInput
-                                control={control}
-                                name="start_time"
-                                label="Start Time"
-                            />
-                        </Grid>
-
-                        <Grid size={6}>
-                            <TimeInput
-                                control={control}
-                                name="end_time"
-                                label="End Time"
-                            />
-                        </Grid>
-
-                        <Grid size={12}>
-                            <LongTextInput
-                                control={control}
-                                name="content"
-                                label="Content"
-                            />
-                        </Grid>
-
-                        <Grid size={12}>
-                            <AddressInput
-                                control={control}
-                                setValue={setValue}
-                            />
-                        </Grid>
-
-                        <Grid size={12} display="flex" justifyContent="center">
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                type="submit"
-                            >
-                                Submit
-                            </Button>
-                        </Grid>
+                <Grid container spacing={2}>
+                    <Grid size={12}>
+                        <ShortTextInput
+                            control={control}
+                            name="title"
+                            label="Title"
+                        />
                     </Grid>
-                </LocalizationProvider>
+
+                    <Grid size={4}>
+                        <ShortTextInput
+                            control={control}
+                            name="head_count"
+                            label="Head Count"
+                        />
+                    </Grid>
+
+                    <Grid size={4}>
+                        <ShortTextInput
+                            control={control}
+                            name="reward_price"
+                            label="Reward Price"
+                        />
+                    </Grid>
+                    <Grid size={4}>
+                        <SelectInput
+                            control={control}
+                            name="currency"
+                            label="Currency"
+                            options={["JPY", "KRW", "USD"]}
+                        />
+                    </Grid>
+
+                    <Grid size={6}>
+                        <DateInput
+                            control={control}
+                            name="start_date"
+                            label="Start Date"
+                        />
+                    </Grid>
+
+                    <Grid size={6}>
+                        <DateInput
+                            control={control}
+                            name="end_date"
+                            label="End Date"
+                        />
+                    </Grid>
+
+                    <Grid size={12}>
+                        <LongTextInput
+                            control={control}
+                            name="content"
+                            label="Content"
+                        />
+                    </Grid>
+
+                    <Grid size={12}>
+                        <AddressInput control={control} setValue={setValue} />
+                    </Grid>
+
+                    <Grid size={12} display="flex" justifyContent="center">
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                        >
+                            Submit
+                        </Button>
+                    </Grid>
+                </Grid>
             </Box>
         </Container>
     );

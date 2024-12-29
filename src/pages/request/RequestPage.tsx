@@ -3,8 +3,10 @@ import { Box, Container, Typography, Card, CardContent } from "@mui/material";
 import { RequestDataCard, RequestSideCard } from "web_component";
 import { useParams } from "react-router-dom";
 import { APIType } from "api_spec";
+import { useNavigate } from "react-router-dom";
 
 const RequestPage = () => {
+    const navigate = useNavigate();
     const [data, setData] = useState<APIType.RequestType.ResGetRequest | null>(
         null,
     );
@@ -30,7 +32,7 @@ const RequestPage = () => {
             }
         };
         fetchData(); //eslint-disable-line
-    }, []);
+    }, [request_id]);
 
     const sections = ["0", "1", "2", "3", "4"];
 
@@ -65,7 +67,8 @@ const RequestPage = () => {
                             request_status: request.request_status ?? 0,
                             address: request.address ?? "",
                             renderLogo: false,
-                            onClick: () => alert("request card clicked"),
+                            onClick: () =>
+                                navigate(`/request/${request.request_id}`),
                         }))}
                     />
                 )}

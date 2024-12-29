@@ -7,6 +7,8 @@ import {
     Typography,
     Grid2 as Grid,
     Modal,
+    Card,
+    CardContent,
 } from "@mui/material";
 import {
     CorpIndexCard,
@@ -254,9 +256,25 @@ const CorpMypage = () => {
                     top: { md: "50%" }, // 중간 위치 (데스크톱만)
                     transform: { md: "translateY(-50%)" }, // 중간 위치 조정 (데스크톱만)
                     order: { xs: -1, md: 1 }, // 모바일에서 위로 이동
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "24px",
                 }}
             >
                 <CorpIndexCard />
+                <Card
+                    sx={{
+                        borderRadius: "16px",
+                        backgroundColor: "#ff7961",
+                    }}
+                    onClick={() => navigate(`/requestinput`)}
+                >
+                    <CardContent
+                        sx={{ textAlign: "center", padding: "8px !important" }}
+                    >
+                        <Typography>의뢰하기</Typography>
+                    </CardContent>
+                </Card>
             </Container>
         </Box>
     );
