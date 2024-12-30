@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { APIType } from "api_spec";
 
-export const useFetchCorpData = () => {
-    const [corpData, setCorpData] =
-        useState<APIType.CorporationType.ResGetCorpProfile | null>(null);
+export const useFetchStudentData = () => {
+    const [studentData, setStudentData] =
+        useState<APIType.StudentType.ResGetStudentProfile | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -11,9 +11,9 @@ export const useFetchCorpData = () => {
                 const response = await fetch(`/api/corporations/`, {
                     method: "GET",
                 });
-                const data: APIType.CorporationType.ResGetCorpProfile =
+                const data: APIType.StudentType.ResGetStudentProfile =
                     await response.json();
-                setCorpData(data);
+                setStudentData(data);
             } catch (error) {
                 console.error("Error fetching corporation data", error);
             }
@@ -21,5 +21,5 @@ export const useFetchCorpData = () => {
         fetchData(); // eslint-disable-line
     }, []);
 
-    return corpData;
+    return studentData;
 };

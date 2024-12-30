@@ -12,6 +12,7 @@ import {
     StudentIndexCard,
     RequestCard,
     ReviewOfStudentCard,
+    AcademicHistoryCard,
 } from "web_component";
 import { APIType } from "api_spec";
 import { useParams } from "react-router-dom";
@@ -104,29 +105,54 @@ const StudentProfilePage: React.FC = () => {
                 </Box>
 
                 {tabIndex === 0 && (
-                    <Box sx={{ marginTop: "24px" }}>
-                        <Typography
-                            variant="h6"
-                            sx={{ fontWeight: "bold", marginBottom: "16px" }}
-                        >
-                            과거 요청
-                        </Typography>
-                        {pastRequests?.map((request, index) => (
-                            <Box key={index} sx={{ marginTop: "16px" }}>
-                                <RequestCard
-                                    address={request.address ?? ""}
-                                    request_status={request.request_status ?? 4}
-                                    {...request}
-                                    renderLogo={true}
-                                    onClick={() =>
-                                        navigate(
-                                            `/request/${request.request_id}`,
-                                        )
-                                    }
-                                />
-                            </Box>
-                        ))}
-                    </Box>
+                    <>
+                        <Box sx={{ marginTop: "24px" }}>
+                            <Typography
+                                variant="h6"
+                                sx={{
+                                    fontWeight: "bold",
+                                    marginBottom: "16px",
+                                }}
+                            >
+                                학력
+                            </Typography>
+                            {studentData?.profile.academic_history?.map(
+                                (history, index) => (
+                                    <Box key={index} sx={{ marginTop: "16px" }}>
+                                        <AcademicHistoryCard {...history} />
+                                    </Box>
+                                ),
+                            )}
+                        </Box>
+                        <Box sx={{ marginTop: "24px" }}>
+                            <Typography
+                                variant="h6"
+                                sx={{
+                                    fontWeight: "bold",
+                                    marginBottom: "16px",
+                                }}
+                            >
+                                과거 요청
+                            </Typography>
+                            {pastRequests?.map((request, index) => (
+                                <Box key={index} sx={{ marginTop: "16px" }}>
+                                    <RequestCard
+                                        address={request.address ?? ""}
+                                        request_status={
+                                            request.request_status ?? 4
+                                        }
+                                        {...request}
+                                        renderLogo={true}
+                                        onClick={() =>
+                                            navigate(
+                                                `/request/${request.request_id}`,
+                                            )
+                                        }
+                                    />
+                                </Box>
+                            ))}
+                        </Box>
+                    </>
                 )}
 
                 {tabIndex === 1 && (

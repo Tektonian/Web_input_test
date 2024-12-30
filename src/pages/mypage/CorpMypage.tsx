@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
     Box,
     Container,
@@ -6,7 +6,6 @@ import {
     Tabs,
     Typography,
     Grid2 as Grid,
-    Modal,
     Card,
     CardContent,
 } from "@mui/material";
@@ -15,21 +14,27 @@ import {
     RequestCard,
     CorpProfileCard,
     ReviewOfCorpCard,
-    ReviewOfCorpInput,
 } from "web_component";
 import { APIType } from "api_spec";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useSession } from "src/hooks/Session";
+import { useFetchCorpData } from "src/hooks/useCorporation";
+import { useFilteredRequests } from "src/hooks/useRequest";
+import { CorpReviewModal } from "./component/ReviewModal";
+import { RequestListSection } from "src/components/RequestListSection";
 
 const CorpMypage = () => {
     const navigate = useNavigate();
-    const [corpData, setCorpData] =
-        useState<APIType.CorporationType.ResGetCorpProfile | null>(null);
+    const corpData = useFetchCorpData();
+    const { ongoingRequests, openRequests, pastRequests } = useFilteredRequests(
+        corpData?.requests || [],
+    );
+
     const [open, setOpen] = React.useState(false);
     const [tabIndex, setTabIndex] = useState(0);
 
-    const { data: session, status } = useSession();
+    const { data: session } = useSession();
     const name = session?.user?.name || "";
 
     const { control, handleSubmit } =
@@ -44,59 +49,6 @@ const CorpMypage = () => {
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabIndex(newValue);
-    };
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`/api/corporations/`, {
-                    method: "GET",
-                });
-
-                const data: APIType.CorporationType.ResGetCorpProfile =
-                    await response.json();
-
-                console.log(data);
-
-                setCorpData(data);
-            } catch (error) {
-                console.error("Error fetching corporation data", error);
-            }
-        };
-        fetchData(); // eslint-disable-line
-    }, []);
-
-    const ongoingRequests = corpData?.requests.filter(
-        (req) => req.request_status === 3,
-    );
-    const openRequests = corpData?.requests.filter(
-        (req) => req.request_status === 0,
-    );
-    const pastRequests = corpData?.requests.filter(
-        (req) => req.request_status === 4 || req.request_status === 5,
-    );
-
-    const onSubmit = async (
-        data: APIType.CorpReviewType.ReqCreateCorpReview,
-    ) => {
-        try {
-            const corpRevRes = await fetch(
-                "http://localhost:8080/api/student-reviews",
-                {
-                    method: "POST",
-                    credentials: "include",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data),
-                },
-            );
-
-            if (corpRevRes.ok) {
-                console.log("Review about Corporation submitted successfully.");
-                setOpen(false);
-            }
-        } catch (e) {
-            console.error(e);
-        }
     };
 
     const sections = ["0", "1", "2", "3", "4"];
@@ -138,100 +90,36 @@ const CorpMypage = () => {
 
                 {tabIndex === 0 && (
                     <>
-                        <Box sx={{ marginTop: "24px" }} id={sections[1]}>
-                            <Typography
-                                variant="h6"
-                                sx={{
-                                    fontWeight: "bold",
-                                    marginBottom: "16px",
-                                }}
-                            >
-                                진행 중인 요청
-                            </Typography>
-                            {ongoingRequests?.map((request, index) => (
-                                <Box key={index} sx={{ marginTop: "16px" }}>
-                                    <RequestCard
-                                        {...request}
-                                        address={request.address ?? ""}
-                                        request_status={
-                                            request.request_status ?? 3
-                                        }
-                                        renderLogo={false}
-                                        onClick={() =>
-                                            alert("ongoing request clicked")
-                                        }
-                                    />
-                                </Box>
-                            ))}
-                        </Box>
+                        <RequestListSection
+                            id={sections[1]}
+                            title="진행 중인 요청"
+                            requests={ongoingRequests}
+                            onClickRequest={() =>
+                                alert("ongoing request clicked")
+                            }
+                        />
 
-                        <Box sx={{ marginTop: "24px" }} id={sections[4]}>
-                            <Typography
-                                variant="h6"
-                                sx={{
-                                    fontWeight: "bold",
-                                    marginBottom: "16px",
-                                }}
-                            >
-                                신청 요청
-                            </Typography>
-                            {openRequests?.map((request, index) => (
-                                <Box key={index} sx={{ marginTop: "16px" }}>
-                                    <RequestCard
-                                        {...request}
-                                        address={request.address ?? ""}
-                                        request_status={
-                                            request.request_status ?? 0
-                                        }
-                                        renderLogo={false}
-                                        onClick={() =>
-                                            navigate(
-                                                `/request/${request.request_id}`,
-                                            )
-                                        }
-                                    />
-                                </Box>
-                            ))}
-                        </Box>
+                        <RequestListSection
+                            id={sections[4]}
+                            title="신청 요청"
+                            requests={openRequests}
+                            onClickRequest={(request) =>
+                                navigate(`/request/${request.request_id}`)
+                            }
+                        />
 
-                        <Box sx={{ marginTop: "24px" }}>
-                            <Typography
-                                variant="h6"
-                                sx={{
-                                    fontWeight: "bold",
-                                    marginBottom: "16px",
-                                }}
-                            >
-                                과거 요청
-                            </Typography>
-                            {pastRequests?.map((request, index) => (
-                                <>
-                                    <Box key={index} sx={{ marginTop: "16px" }}>
-                                        <RequestCard
-                                            {...request}
-                                            address={request.address ?? ""}
-                                            request_status={
-                                                request.request_status ?? 4
-                                            }
-                                            renderLogo={false}
-                                            onClick={() => setOpen(true)}
-                                        />
-                                    </Box>
-                                    <Modal
-                                        open={open}
-                                        onClose={() => setOpen(false)}
-                                        aria-labelledby="modal-modal-title"
-                                        aria-describedby="modal-modal-description"
-                                    >
-                                        <ReviewOfCorpInput
-                                            control={control}
-                                            onSubmit={handleSubmit(onSubmit)}
-                                            onCancel={() => setOpen(false)}
-                                        />
-                                    </Modal>
-                                </>
-                            ))}
-                        </Box>
+                        <RequestListSection
+                            id={sections[2]}
+                            title="과거 요청"
+                            requests={pastRequests}
+                            onClickRequest={() => setOpen(true)}
+                        />
+                        <CorpReviewModal
+                            open={open}
+                            setOpen={setOpen}
+                            control={control}
+                            handleSubmit={handleSubmit}
+                        />
                     </>
                 )}
 
@@ -250,12 +138,12 @@ const CorpMypage = () => {
 
             <Container
                 sx={{
-                    width: { xs: "100%", md: "344px" }, // 작은 화면에서는 100% 폭
+                    width: { xs: "100%", md: "344px" },
                     padding: "0 !important",
-                    position: { xs: "relative", md: "sticky" }, // 작은 화면에서는 위치 고정 해제
-                    top: { md: "50%" }, // 중간 위치 (데스크톱만)
-                    transform: { md: "translateY(-50%)" }, // 중간 위치 조정 (데스크톱만)
-                    order: { xs: -1, md: 1 }, // 모바일에서 위로 이동
+                    position: { xs: "relative", md: "sticky" },
+                    top: { md: "50%" },
+                    transform: { md: "translateY(-50%)" },
+                    order: { xs: -1, md: 1 },
                     display: "flex",
                     flexDirection: "column",
                     gap: "24px",
