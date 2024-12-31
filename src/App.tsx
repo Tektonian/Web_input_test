@@ -7,15 +7,12 @@ import ProfileSetup from "./pages/ProfileSetup";
 import ChatPage from "./pages/chat/ChatPage";
 import RequestInput from "./pages/request/RequestInput";
 import "./App.css";
-//import StudentProfilePage from "./pages/student/StudentProfilePage";
+import StudentProfilePage from "./pages/student/StudentProfilePage";
 import CorpProfilePage from "./pages/corporation/CorpProfilePage";
-import PageCorporationReview from "./pages/corporation/CorpReviewInput";
 import StudentListPage from "./pages/student/StudentListPage";
 import Header from "./pages/home/components/Header";
 import HomePage from "./pages/home/HomePage";
 import RequestListPage from "./pages/request/RequestListPage";
-import CorpReviewInput from "./pages/corporation/CorpReviewInput";
-import StudentReviewInput from "./pages/student/StudentReviewInput";
 import StudentMypage from "./pages/mypage/StudentMypage";
 
 const queryClient = new QueryClient();
@@ -35,16 +32,8 @@ function App() {
                                 element={<CorpProfilePage />}
                             />
                             <Route
-                                path="/corporationreview/"
-                                element={<CorpReviewInput />}
-                            />
-                            {/**<Route
                                 path="/student/:student_id"
                                 element={<StudentProfilePage />}
-                            />*/}
-                            <Route
-                                path="/studentreview/"
-                                element={<StudentReviewInput />}
                             />
                             <Route
                                 path="/request/:request_id"
@@ -61,10 +50,6 @@ function App() {
                             <Route
                                 path="/requestinput"
                                 element={<RequestInput />}
-                            />
-                            <Route
-                                path="/corporation-review/:request_id"
-                                element={<PageCorporationReview />}
                             />
                             <Route path="/home" element={<HomePage />} />
                             <Route path="/chat" element={<ChatPage />} />

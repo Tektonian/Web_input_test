@@ -87,14 +87,14 @@ const StudentListPage = () => {
                     fontWeight="bold"
                     gutterBottom
                 >
-                    학생 리스트
+                    추천 학생 리스트
                 </Typography>
                 <Divider sx={{ my: 3 }} />
 
                 {isSuccess ? (
                     <Grid container spacing={2}>
                         {data.map((card: any, idx: number) => (
-                            <Grid size={12} key={idx}>
+                            <Grid size={4} key={idx}>
                                 <StudentCard
                                     student_id={card.student_id}
                                     name={card.name_glb.kr}

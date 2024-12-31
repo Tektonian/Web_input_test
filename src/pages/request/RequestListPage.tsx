@@ -9,17 +9,8 @@ import {
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { RequestCard } from "web_component";
-
-export interface RequestCardProps {
-    request_id: number;
-    title: string;
-    reward_price: number;
-    currency: "USD" | "KRW" | "JPY" | "";
-    address: string;
-    start_date: Date;
-    logo_image?: string;
-    link: string;
-}
+import { useNavigate } from "react-router-dom";
+import { APIType } from "api_spec";
 
 const useRequestList = () => {
     const { mutate, data, isSuccess } = useMutation({
@@ -37,6 +28,7 @@ const useRequestList = () => {
             }
 
             const json = await res.json();
+            console.log("json:", json);
             return json.hits;
         },
     });
@@ -51,6 +43,7 @@ const useRequestList = () => {
 const RequestListPage: React.FC = () => {
     const [selectedRequests, setSelectedRequests] = useState<number[]>([]);
     const { fetchRequestList, data, isSuccess } = useRequestList();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const student_id = 1457;
@@ -78,27 +71,36 @@ const RequestListPage: React.FC = () => {
                     <Divider />
                 </Box>
 
-                {isSuccess ? (
+                {!isSuccess ? (
                     <Box display="flex" justifyContent="center" py={4}>
                         <CircularProgress />
                     </Box>
                 ) : isSuccess ? (
                     <Grid container spacing={2}>
-                        {data.map((request: RequestCardProps, idx: number) => (
-                            <Grid size={12} key={idx}>
-                                <RequestCard
-                                    title={request.title}
-                                    reward_price={request.reward_price}
-                                    currency={request.currency}
-                                    address={request.address}
-                                    start_date={new Date(request.start_date)}
-                                    logo_image={request.logo_image}
-                                    onClick={() => {}}
-                                    renderLogo={true}
-                                    request_status={1}
-                                />
-                            </Grid>
-                        ))}
+                        {data.map(
+                            (
+                                request: APIType.RequestType.RequestCard,
+                                idx: number,
+                            ) => (
+                                <Grid size={12} key={idx}>
+                                    <RequestCard
+                                        title={request.title}
+                                        reward_price={request.reward_price}
+                                        currency={request.currency}
+                                        address={request.address ?? ""}
+                                        start_date={request.start_date}
+                                        logo_image={request.logo_image}
+                                        onClick={() =>
+                                            navigate(
+                                                `/request/${request.request_id}`,
+                                            )
+                                        }
+                                        renderLogo={true}
+                                        request_status={1}
+                                    />
+                                </Grid>
+                            ),
+                        )}
                     </Grid>
                 ) : (
                     <Typography color="error" variant="body1">
