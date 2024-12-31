@@ -1,47 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { Box, Container, Typography } from "@mui/material";
-import { StudentProfileCard, IndexCard, RequestCard } from "web_component";
-import { APIType } from "api_spec/dist/esm";
-import { useNavigate, useParams } from "react-router-dom";
-
+import React, { useState } from "react";
+import { Box, Container, Tab, Tabs, Grid2 as Grid } from "@mui/material";
+import { StudentIndexCard, ReviewOfStudentCard } from "web_component";
+import StudentProfileContainer from "./container/StudentProfileContainer";
+import RequestListContainer from "./container/RequestListContainer";
+import StudentReviewContainer from "./container/StudentReviewContainer";
 const StudentMypage = () => {
-    const [
-        studentData,
-        setStudentData,
-    ] = useState<APIType.StudentType.ResGetStudentProfile | null>(null);
-    const student_id = useParams();
-    const navigate = useNavigate();
+    const [tabIndex, setTabIndex] = useState(0);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`api/students/${student_id}`, {
-                    method: "GET",
-                });
-                const data: APIType.StudentType.ResGetStudentProfile = await response.json();
-
-                console.log(data);
-
-                setStudentData(data);
-            } catch (error) {
-                console.error("Error fetching student data", error);
-            }
-        };
-    }, []);
-
-    const handleSendingAlarm = () => {};
-
-    const handleRenderReview = () => {};
-
-    const ongoingRequests = studentData?.requests.filter(
-        (req) => req.request_status === 3,
-    );
-    const openRequests = studentData?.requests.filter(
-        (req) => req.request_status === 0,
-    );
-    const pastRequests = studentData?.requests.filter(
-        (req) => req.request_status === 4 || req.request_status === 5,
-    );
+    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+        setTabIndex(newValue);
+    };
 
     const sections = ["0", "1", "2", "3", "4"];
 
@@ -56,87 +24,45 @@ const StudentMypage = () => {
                 maxWidth: "1080px",
                 margin: "auto",
                 padding: "16px",
+                minHeight: "100vh",
             }}
             id={sections[0]}
         >
-            <Container sx={{ width: "712px", padding: "0 !important" }}>
-                {studentData && (
-                    <StudentProfileCard
-                        {...studentData.profile}
-                        student_name={JSON.stringify(
-                            studentData?.profile.name_glb,
-                        )}
-                    />
-                )}
-
-                <Box sx={{ marginTop: "24px" }} id={sections[1]}>
-                    <Typography
-                        variant="h6"
-                        sx={{ fontWeight: "bold", marginBottom: "16px" }}
-                    >
-                        도착 알람을 보내세요!
-                    </Typography>
-                    {ongoingRequests?.map((request, index) => (
-                        <Box key={index} sx={{ marginTop: "16px" }}>
-                            <RequestCard
-                                {...request}
-                                renderLogo={true}
-                                onClick={handleSendingAlarm}
-                            />
-                        </Box>
-                    ))}
-                </Box>
-
-                <Box sx={{ marginTop: "24px" }} id={sections[4]}>
-                    <Typography
-                        variant="h6"
-                        sx={{ fontWeight: "bold", marginBottom: "16px" }}
-                    >
-                        신청 요청
-                    </Typography>
-                    {openRequests?.map((request, index) => (
-                        <Box key={index} sx={{ marginTop: "16px" }}>
-                            <RequestCard
-                                {...request}
-                                renderLogo={true}
-                                onClick={() =>
-                                    navigate(`/request/${request.request_id}`)
-                                }
-                            />
-                        </Box>
-                    ))}
-                </Box>
+            <Container
+                sx={{
+                    width: { xs: "100%", md: "712px" },
+                    padding: "0 !important",
+                }}
+            >
+                <StudentProfileContainer />
 
                 <Box sx={{ marginTop: "24px" }}>
-                    <Typography
-                        variant="h6"
-                        sx={{ fontWeight: "bold", marginBottom: "16px" }}
+                    <Tabs
+                        value={tabIndex}
+                        onChange={handleTabChange}
+                        centered
+                        variant="fullWidth"
                     >
-                        과거 요청
-                    </Typography>
-                    {pastRequests?.map((request, index) => (
-                        <Box key={index} sx={{ marginTop: "16px" }}>
-                            <RequestCard
-                                {...request}
-                                renderLogo={true}
-                                onClick={handleRenderReview}
-                            />
-                        </Box>
-                    ))}
+                        <Tab label="의뢰" />
+                        <Tab label="리뷰" />
+                    </Tabs>
                 </Box>
+
+                {tabIndex === 0 && <RequestListContainer />}
+                {tabIndex === 1 && <StudentReviewContainer />}
             </Container>
 
             <Container
                 sx={{
-                    width: { xs: "100%", md: "344px" }, // 작은 화면에서는 100% 폭
+                    width: { xs: "100%", md: "344px" },
                     padding: "0 !important",
-                    position: { xs: "relative", md: "sticky" }, // 작은 화면에서는 위치 고정 해제
-                    top: { md: "50%" }, // 중간 위치 (데스크톱만)
-                    transform: { md: "translateY(-50%)" }, // 중간 위치 조정 (데스크톱만)
-                    order: { xs: -1, md: 1 }, // 모바일에서 위로 이동
+                    position: { xs: "relative", md: "sticky" },
+                    top: { md: "50%" },
+                    transform: { md: "translateY(-50%)" },
+                    order: { xs: -1, md: 1 },
                 }}
             >
-                <IndexCard roles="student" sections={sections} />
+                <StudentIndexCard sections={sections} />
             </Container>
         </Box>
     );

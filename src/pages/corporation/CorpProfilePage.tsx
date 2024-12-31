@@ -1,40 +1,56 @@
 import React, { useState, useEffect } from "react";
-import { Box, Container, Typography } from "@mui/material";
-import { IndexCard, RequestCard, CorpProfileCard } from "web_component";
-import { APIType } from "api_spec/dist/esm";
+import {
+    Box,
+    Container,
+    Tab,
+    Tabs,
+    Typography,
+    Grid2 as Grid,
+} from "@mui/material";
+import {
+    CorpIndexCard,
+    RequestCard,
+    CorpProfileCard,
+    ReviewOfCorpCard,
+} from "web_component";
+import { APIType } from "api_spec";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const CorpProfilePage = () => {
-    const [
-        corpData,
-        setCorpData,
-    ] = useState<APIType.CorporationType.ResGetCorpProfile | null>(null);
-    const corp_id = useParams();
+const CorpProfilePage: React.FC = () => {
+    const [corpData, setCorpData] =
+        useState<APIType.CorporationType.ResGetCorpProfile | null>(null);
+    const { corp_id } = useParams();
+    const navigate = useNavigate();
+
+    const [tabIndex, setTabIndex] = useState(0);
+    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+        setTabIndex(newValue);
+    };
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`/api/corporations/${corp_id}`, {
-                    method: "GET",
-                });
+                const response = await fetch(
+                    `http://localhost:8080/api/corporations/${corp_id}`,
+                    {
+                        method: "GET",
+                    },
+                );
 
-                const data: APIType.CorporationType.ResGetCorpProfile = await response.json();
+                const data: APIType.CorporationType.ResGetCorpProfile =
+                    await response.json();
 
-                console.log(data);
+                console.log("data:", data);
 
                 setCorpData(data);
             } catch (error) {
                 console.error("Error fetching corporation data", error);
             }
         };
+        fetchData(); //eslint-disable-line
     }, []);
 
-    const ongoingRequests = corpData?.requests.filter(
-        (req) => req.request_status === 3,
-    );
-    const openRequests = corpData?.requests.filter(
-        (req) => req.request_status === 0,
-    );
     const pastRequests = corpData?.requests.filter(
         (req) => req.request_status === 4 || req.request_status === 5,
     );
@@ -52,6 +68,7 @@ const CorpProfilePage = () => {
                 maxWidth: "1080px",
                 margin: "auto",
                 padding: "16px",
+                minHeight: "100vh",
             }}
             id={sections[0]}
         >
@@ -63,59 +80,55 @@ const CorpProfilePage = () => {
             >
                 {corpData && <CorpProfileCard {...corpData?.corp} />}
 
-                <Box sx={{ marginTop: "24px" }} id={sections[1]}>
-                    <Typography
-                        variant="h6"
-                        sx={{ fontWeight: "bold", marginBottom: "16px" }}
-                    >
-                        진행 중인 요청
-                    </Typography>
-                    {ongoingRequests?.map((request, index) => (
-                        <Box key={index} sx={{ marginTop: "16px" }}>
-                            <RequestCard
-                                {...request}
-                                renderLogo={false}
-                                onClick={() => alert("ongoing request clicked")}
-                            />
-                        </Box>
-                    ))}
-                </Box>
-
-                <Box sx={{ marginTop: "24px" }} id={sections[4]}>
-                    <Typography
-                        variant="h6"
-                        sx={{ fontWeight: "bold", marginBottom: "16px" }}
-                    >
-                        신청 요청
-                    </Typography>
-                    {openRequests?.map((request, index) => (
-                        <Box key={index} sx={{ marginTop: "16px" }}>
-                            <RequestCard
-                                {...request}
-                                renderLogo={false}
-                                onClick={() => alert("open request clicked")}
-                            />
-                        </Box>
-                    ))}
-                </Box>
-
                 <Box sx={{ marginTop: "24px" }}>
-                    <Typography
-                        variant="h6"
-                        sx={{ fontWeight: "bold", marginBottom: "16px" }}
+                    <Tabs
+                        value={tabIndex}
+                        onChange={handleTabChange}
+                        centered
+                        variant="fullWidth"
                     >
-                        과거 요청
-                    </Typography>
-                    {pastRequests?.map((request, index) => (
-                        <Box key={index} sx={{ marginTop: "16px" }}>
-                            <RequestCard
-                                {...request}
-                                renderLogo={false}
-                                onClick={() => alert("past request clicked")}
-                            />
-                        </Box>
-                    ))}
+                        <Tab label="의뢰" />
+                        <Tab label="리뷰" />
+                    </Tabs>
                 </Box>
+
+                {tabIndex === 0 && (
+                    <Box sx={{ marginTop: "24px" }}>
+                        <Typography
+                            variant="h6"
+                            sx={{ fontWeight: "bold", marginBottom: "16px" }}
+                        >
+                            과거 요청
+                        </Typography>
+                        {pastRequests?.map((request, index) => (
+                            <Box key={index} sx={{ marginTop: "16px" }}>
+                                <RequestCard
+                                    {...request}
+                                    address={request.address ?? ""}
+                                    request_status={request.request_status ?? 4}
+                                    renderLogo={false}
+                                    onClick={() =>
+                                        navigate(
+                                            `/request/${request.request_id}`,
+                                        )
+                                    }
+                                />
+                            </Box>
+                        ))}
+                    </Box>
+                )}
+
+                {tabIndex === 1 && (
+                    <Box sx={{ marginTop: "16px" }}>
+                        <Grid container spacing={3}>
+                            {corpData?.reviews.map((review, index) => (
+                                <Grid size={6} key={index}>
+                                    <ReviewOfCorpCard {...review} />
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </Box>
+                )}
             </Container>
 
             <Container
@@ -128,7 +141,7 @@ const CorpProfilePage = () => {
                     order: { xs: -1, md: 1 }, // 모바일에서 위로 이동
                 }}
             >
-                <IndexCard roles="corp" sections={sections} />
+                <CorpIndexCard />
             </Container>
         </Box>
     );

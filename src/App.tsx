@@ -2,22 +2,17 @@ import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SessionProvider } from "./hooks/Session";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Government } from "./components/Government";
 import RequestPage from "./pages/request/RequestPage";
 import ProfileSetup from "./pages/ProfileSetup";
 import ChatPage from "./pages/chat/ChatPage";
-import { Consumer } from "./components/Consumer";
 import RequestInput from "./pages/request/RequestInput";
 import "./App.css";
-//import StudentProfilePage from "./pages/student/StudentProfilePage";
+import StudentProfilePage from "./pages/student/StudentProfilePage";
 import CorpProfilePage from "./pages/corporation/CorpProfilePage";
-import PageCorporationReview from "./pages/corporation/CorpReviewInput";
 import StudentListPage from "./pages/student/StudentListPage";
 import Header from "./pages/home/components/Header";
 import HomePage from "./pages/home/HomePage";
 import RequestListPage from "./pages/request/RequestListPage";
-import CorpReviewInput from "./pages/corporation/CorpReviewInput";
-import StudentReviewInput from "./pages/student/StudentReviewInput";
 import StudentMypage from "./pages/mypage/StudentMypage";
 
 const queryClient = new QueryClient();
@@ -37,20 +32,8 @@ function App() {
                                 element={<CorpProfilePage />}
                             />
                             <Route
-                                path="/corporationreview/"
-                                element={<CorpReviewInput />}
-                            />
-                            {/**<Route
                                 path="/student/:student_id"
                                 element={<StudentProfilePage />}
-                            />*/}
-                            <Route
-                                path="/studentreview/"
-                                element={<StudentReviewInput />}
-                            />
-                            <Route
-                                path="/government"
-                                element={<Government />}
                             />
                             <Route
                                 path="/request/:request_id"
@@ -60,7 +43,6 @@ function App() {
                                 path="/request-list"
                                 element={<RequestListPage />}
                             />
-                            <Route path="/consumer" element={<Consumer />} />
                             <Route
                                 path="/profileinput"
                                 element={<ProfileSetup />}
@@ -68,10 +50,6 @@ function App() {
                             <Route
                                 path="/requestinput"
                                 element={<RequestInput />}
-                            />
-                            <Route
-                                path="/corporation-review/:request_id"
-                                element={<PageCorporationReview />}
                             />
                             <Route path="/home" element={<HomePage />} />
                             <Route path="/chat" element={<ChatPage />} />

@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { SelectInput } from "web_component";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import { APIType } from "api_spec/dist/esm";
+import { APIType } from "api_spec";
 import NationalityInput from "../../../components/input/NationalityInput";
 import "@fontsource/noto-sans-kr";
 

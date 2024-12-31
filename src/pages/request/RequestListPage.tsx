@@ -1,26 +1,16 @@
 import React, { useEffect, useState } from "react";
 import {
-    Theme,
     Container,
-    Separator,
-    Text,
+    Typography,
     Box,
-    Flex,
-    Grid,
-} from "@radix-ui/themes";
+    Grid2 as Grid,
+    Divider,
+    CircularProgress,
+} from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { RequestCard } from "web_component";
-
-export interface RequestCardProps {
-    request_id: number;
-    title: string;
-    reward_price: number;
-    currency: "USD" | "KRW" | "JPY" | "";
-    address: string;
-    start_date: Date;
-    logo_image?: string;
-    link: string;
-}
+import { useNavigate } from "react-router-dom";
+import { APIType } from "api_spec";
 
 const useRequestList = () => {
     const { mutate, data, isSuccess } = useMutation({
@@ -38,6 +28,7 @@ const useRequestList = () => {
             }
 
             const json = await res.json();
+            console.log("json:", json);
             return json.hits;
         },
     });
@@ -52,6 +43,7 @@ const useRequestList = () => {
 const RequestListPage: React.FC = () => {
     const [selectedRequests, setSelectedRequests] = useState<number[]>([]);
     const { fetchRequestList, data, isSuccess } = useRequestList();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const student_id = 1457;
@@ -59,70 +51,64 @@ const RequestListPage: React.FC = () => {
     }, []);
 
     return (
-        <Theme>
-            <Flex direction="column" align="center" justify="center" gap="3">
-                <Container>
-                    <Box
-                        width={{
-                            initial: "300px",
-                            xs: "520px",
-                            sm: "768px",
-                            md: "1024px",
-                        }}
+        <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            py={4}
+        >
+            <Container maxWidth="md">
+                <Box mb={3}>
+                    <Typography
+                        variant="h4"
+                        component="div"
+                        fontWeight="bold"
+                        gutterBottom
                     >
-                        <Text as="div" size="6" weight="bold">
-                            요청 리스트
-                        </Text>
-                        <Separator my="3" size="4" />
+                        요청 리스트
+                    </Typography>
+                    <Divider />
+                </Box>
 
-                        <Grid
-                            columns={{
-                                initial: "1",
-                                md: "2",
-                            }}
-                            gap="4"
-                            rows="auto"
-                            width="auto"
-                        >
-                            {isSuccess ? (
-                                data.map(
-                                    (
-                                        request: RequestCardProps,
-                                        idx: number,
-                                    ) => (
-                                        <Flex
-                                            key={idx}
-                                            justify="center"
-                                            align="center"
-                                            width="100%"
-                                            height="100%"
-                                        >
-                                            <RequestCard
-                                                title={request.title}
-                                                reward_price={
-                                                    request.reward_price
-                                                }
-                                                currency={request.currency}
-                                                address={request.address}
-                                                start_date={
-                                                    new Date(request.start_date)
-                                                }
-                                                logo_image={request.logo_image}
-                                                onClick={() => {}}
-                                                renderLogo={true}
-                                                request_status={1}
-                                            />
-                                        </Flex>
-                                    ),
-                                )
-                            ) : (
-                                <Text>데이터를 불러올 수 없습니다.</Text>
-                            )}
-                        </Grid>
+                {!isSuccess ? (
+                    <Box display="flex" justifyContent="center" py={4}>
+                        <CircularProgress />
                     </Box>
-                </Container>
-            </Flex>
-        </Theme>
+                ) : isSuccess ? (
+                    <Grid container spacing={2}>
+                        {data.map(
+                            (
+                                request: APIType.RequestType.RequestCard,
+                                idx: number,
+                            ) => (
+                                <Grid size={12} key={idx}>
+                                    <RequestCard
+                                        title={request.title}
+                                        reward_price={request.reward_price}
+                                        currency={request.currency}
+                                        address={request.address ?? ""}
+                                        start_date={request.start_date}
+                                        logo_image={request.logo_image}
+                                        onClick={() =>
+                                            navigate(
+                                                `/request/${request.request_id}`,
+                                            )
+                                        }
+                                        renderLogo={true}
+                                        request_status={1}
+                                    />
+                                </Grid>
+                            ),
+                        )}
+                    </Grid>
+                ) : (
+                    <Typography color="error" variant="body1">
+                        데이터를 불러올 수 없습니다.
+                    </Typography>
+                )}
+            </Container>
+        </Box>
     );
 };
 

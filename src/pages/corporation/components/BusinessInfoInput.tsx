@@ -36,7 +36,7 @@ const CorpProfileInput: React.FC<CorpProfileProps> = ({
                     <Grid size={12}>
                         <ShortTextInput
                             control={control}
-                            name="name"
+                            name="corp_name"
                             label="Company Name"
                         />
                     </Grid>
@@ -68,14 +68,6 @@ const CorpProfileInput: React.FC<CorpProfileProps> = ({
                     <Grid size={12}>
                         <ShortTextInput
                             control={control}
-                            name="review_count"
-                            label="Review Count"
-                        />
-                    </Grid>
-
-                    <Grid size={12}>
-                        <ShortTextInput
-                            control={control}
                             name="biz_type"
                             label="Business Type"
                         />
@@ -92,7 +84,7 @@ const CorpProfileInput: React.FC<CorpProfileProps> = ({
                     <Grid size={12}>
                         <ShortTextInput
                             control={control}
-                            name="homepage_url"
+                            name="site_url"
                             label="Homepage URL"
                         />
                     </Grid>
