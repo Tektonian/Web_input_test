@@ -4,19 +4,17 @@ import { RequestCard } from "web_component";
 import { APIType } from "api_spec";
 
 interface RequestListProps {
-    id: string;
     title: string;
     requests: APIType.RequestType.RequestCard[];
     onClickRequest: (request: APIType.RequestType.RequestCard) => void;
 }
 
 export const RequestListSection: React.FC<RequestListProps> = ({
-    id,
     title,
     requests,
     onClickRequest,
 }) => (
-    <Box sx={{ marginTop: "24px" }} id={id}>
+    <Box sx={{ marginTop: "24px" }}>
         <Typography
             variant="h6"
             sx={{

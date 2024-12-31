@@ -5,47 +5,19 @@ import {
     Tab,
     Tabs,
     Typography,
-    Grid2 as Grid,
     Card,
     CardContent,
 } from "@mui/material";
-import {
-    CorpIndexCard,
-    RequestCard,
-    CorpProfileCard,
-    ReviewOfCorpCard,
-} from "web_component";
-import { APIType } from "api_spec";
+import { CorpIndexCard } from "web_component";
+
+import RequestListContainer from "./container/RequestListContainer";
+import CorporationReviewContainer from "./container/CorporationReviewContainer";
+import CorporationProfileContainer from "./container/CorpProfileContainer";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { useSession } from "src/hooks/Session";
-import { useFetchCorpData } from "src/hooks/useCorporation";
-import { useFilteredRequests } from "src/hooks/useRequest";
-import { CorpReviewModal } from "./component/ReviewModal";
-import { RequestListSection } from "src/components/RequestListSection";
 
 const CorpMypage = () => {
     const navigate = useNavigate();
-    const corpData = useFetchCorpData();
-    const { ongoingRequests, openRequests, pastRequests } = useFilteredRequests(
-        corpData?.requests || [],
-    );
-
-    const [open, setOpen] = React.useState(false);
     const [tabIndex, setTabIndex] = useState(0);
-
-    const { data: session } = useSession();
-    const name = session?.user?.name || "";
-
-    const { control, handleSubmit } =
-        useForm<APIType.CorpReviewType.ReqCreateCorpReview>({
-            defaultValues: {
-                review_text: "",
-                prep_requirement: "",
-                work_atmosphere: "",
-                sense_of_achive: -1,
-            },
-        });
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabIndex(newValue);
@@ -74,7 +46,7 @@ const CorpMypage = () => {
                     padding: "0 !important",
                 }}
             >
-                {corpData && <CorpProfileCard {...corpData?.corp} />}
+                <CorporationProfileContainer />
 
                 <Box sx={{ marginTop: "24px" }}>
                     <Tabs
@@ -88,52 +60,9 @@ const CorpMypage = () => {
                     </Tabs>
                 </Box>
 
-                {tabIndex === 0 && (
-                    <>
-                        <RequestListSection
-                            id={sections[1]}
-                            title="진행 중인 요청"
-                            requests={ongoingRequests}
-                            onClickRequest={() =>
-                                alert("ongoing request clicked")
-                            }
-                        />
+                {tabIndex === 0 && <RequestListContainer />}
 
-                        <RequestListSection
-                            id={sections[4]}
-                            title="신청 요청"
-                            requests={openRequests}
-                            onClickRequest={(request) =>
-                                navigate(`/request/${request.request_id}`)
-                            }
-                        />
-
-                        <RequestListSection
-                            id={sections[2]}
-                            title="과거 요청"
-                            requests={pastRequests}
-                            onClickRequest={() => setOpen(true)}
-                        />
-                        <CorpReviewModal
-                            open={open}
-                            setOpen={setOpen}
-                            control={control}
-                            handleSubmit={handleSubmit}
-                        />
-                    </>
-                )}
-
-                {tabIndex === 1 && (
-                    <Box sx={{ marginTop: "16px" }}>
-                        <Grid container spacing={3}>
-                            {corpData?.reviews.map((review, index) => (
-                                <Grid size={6} key={index}>
-                                    <ReviewOfCorpCard {...review} />
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </Box>
-                )}
+                {tabIndex === 1 && <CorporationReviewContainer />}
             </Container>
 
             <Container

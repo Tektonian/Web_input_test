@@ -7,18 +7,23 @@ import { APIType } from "api_spec";
 interface ReviewModalProps {
     open: boolean;
     setOpen: (value: boolean) => void;
-    control: Control<any>;
-    handleSubmit: UseFormHandleSubmit<APIType.CorpReviewType.ReqCreateCorpReview>;
 }
 
 export const CorpReviewModal: React.FC<ReviewModalProps> = ({
     open,
     setOpen,
-    control,
-    handleSubmit,
 }) => {
+    const { control, handleSubmit } =
+        useForm<APIType.CorporationReviewType.ReqCreateCorpReview>({
+            defaultValues: {
+                review_text: "",
+                prep_requirement: "",
+                work_atmosphere: "",
+                sense_of_achive: -1,
+            },
+        });
     const onSubmit = async (
-        data: APIType.CorpReviewType.ReqCreateCorpReview,
+        data: APIType.CorporationReviewType.ReqCreateCorpReview,
     ) => {
         try {
             const response = await fetch(
@@ -59,9 +64,25 @@ export const CorpReviewModal: React.FC<ReviewModalProps> = ({
 export const StudentReviewModal: React.FC<ReviewModalProps> = ({
     open,
     setOpen,
-    control,
-    handleSubmit,
 }) => {
+    const { control, handleSubmit } =
+        useForm<APIType.StudentReviewType.ReqCreateStudentReveiw>({
+            defaultValues: {
+                consumer_id: -1,
+                student_id: -1,
+                request_id: -1,
+                was_late: -1,
+                was_proactive: -1,
+                was_diligent: -1,
+                commu_ability: -1,
+                lang_fluent: -1,
+                goal_fulfillment: -1,
+                want_cowork: -1,
+                praise: "",
+                need_improve: "",
+            },
+        });
+
     const onSubmit = async (
         data: APIType.StudentReviewType.ReqCreateStudentReveiw,
     ) => {
