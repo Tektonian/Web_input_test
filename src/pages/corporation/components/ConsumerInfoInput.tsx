@@ -7,6 +7,8 @@ import {
     Typography,
     Container,
     Box,
+    Card,
+    CardContent,
 } from "@mui/material";
 
 interface ConsumerInfoInputProps {
@@ -21,58 +23,70 @@ const ConsumerInfoInput: React.FC<ConsumerInfoInputProps> = ({
     onPrevious,
 }) => {
     return (
-        <Container>
-            <Typography variant="h4" gutterBottom>
-                Phone Number
-            </Typography>
+        <Card
+            sx={{
+                maxWidth: 1080,
+                margin: "auto",
+                borderRadius: "16px",
+                fontFamily: "Noto Sans KR",
+                backgroundColor: "#ffffff",
+                border: "1px solid #d3d3d3",
+                boxShadow: "none",
+            }}
+        >
+            <CardContent sx={{ padding: 3 }}>
+                <Typography variant="h4" gutterBottom>
+                    Phone Number
+                </Typography>
 
-            <Box
-                component="form"
-                noValidate
-                sx={{
-                    mt: 3,
-                }}
-            >
-                <Grid container spacing={3}>
-                    <Grid size={12}>
-                        <Controller
-                            name="phone_number"
-                            control={control}
-                            defaultValue=""
-                            render={({ field }) => (
-                                <TextField
-                                    {...field}
-                                    label="Phone Number"
-                                    fullWidth
-                                    variant="outlined"
-                                />
-                            )}
-                        />
-                    </Grid>
+                <Box
+                    component="form"
+                    noValidate
+                    sx={{
+                        mt: 3,
+                    }}
+                >
+                    <Grid container spacing={3}>
+                        <Grid size={12}>
+                            <Controller
+                                name="phone_number"
+                                control={control}
+                                defaultValue=""
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        label="Phone Number"
+                                        fullWidth
+                                        variant="outlined"
+                                    />
+                                )}
+                            />
+                        </Grid>
 
-                    <Grid
-                        size={12}
-                        display="flex"
-                        justifyContent="space-between"
-                    >
-                        <Button
-                            variant="outlined"
-                            color="secondary"
-                            onClick={onPrevious}
+                        <Grid
+                            size={12}
+                            display="flex"
+                            justifyContent="space-between"
                         >
-                            Previous
-                        </Button>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={onNext}
-                        >
-                            Next
-                        </Button>
+                            <Button
+                                variant="outlined"
+                                color="secondary"
+                                onClick={onPrevious}
+                            >
+                                Previous
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={onNext}
+                            >
+                                Next
+                            </Button>
+                        </Grid>
                     </Grid>
-                </Grid>
-            </Box>
-        </Container>
+                </Box>
+            </CardContent>
+        </Card>
     );
 };
 

@@ -2,18 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useFunnel } from "../hooks/useFunnel";
 import {
-    UserTypeInput,
     EmailTokenInput,
     PageContainer,
     StudentProfileInput,
     StudentStepperCard,
 } from "web_component";
+import UserTypeInput from "../components/input/UserTypeInput";
 import EmailInput from "../components/input/EmailInput";
 import TokenInput from "../components/input/TokenInput";
-import BasicInfoInput from "./student/components/BasicInfoInput";
 import AcademicHistoryListInput from "./student/components/AcademicHistoryListInput";
 import LanguageHistoryListInput from "./student/components/LanguageHistoryListInput";
-import { ProfileImageInput } from "web_component";
 import BusinessNumberInput from "./corporation/components/BusinessNumberInput";
 import BusinessInfoInput from "./corporation/components/BusinessInfoInput";
 import ConsumerInfoInput from "./corporation/components/ConsumerInfoInput";
@@ -90,65 +88,7 @@ const ProfileSetup: React.FC = () => {
     const userType = watch("userType");
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const getDefaultValues = (): ProfileProps => {
-            if (userType === "student") {
-                return {
-                    name_glb: {},
-                    nationality: "",
-                    birth_date: new Date(),
-                    phone_number: "",
-                    emergency_contact: "",
-                    gender: -1,
-                    image: "",
-                    has_car: false,
-                    keyword_list: {},
-                    academicHistory: [],
-                    examHistory: [],
-                    userType: "",
-                    mail_address: "",
-                    token: "",
-                };
-            } else if (userType === "corp") {
-                return {
-                    corp_id: -1,
-                    consumer_type: "corp",
-                    phone_number: "",
-                    userType: "",
-                    mail_address: "",
-                    token: "",
-                };
-            } else if (userType === "orgn") {
-                return {
-                    orgn_id: -1,
-                    consumer_type: "orgn",
-                    phone_number: "",
-                    userType: "",
-                    mail_address: "",
-                    token: "",
-                };
-            } else {
-                return {
-                    name_glb: {},
-                    nationality: "",
-                    birth_date: new Date(),
-                    phone_number: "",
-                    emergency_contact: "",
-                    gender: -1,
-                    image: "",
-                    has_car: false,
-                    keyword_list: {},
-                    academicHistory: [],
-                    examHistory: [],
-                    userType: "",
-                    mail_address: "",
-                    token: "",
-                };
-            }
-        };
-
-        reset(getDefaultValues());
-    }, [userType, reset]);
+    useEffect(() => {}, [userType, reset]);
 
     const onSubmit = async (data: ProfileProps) => {
         const url = "/api/verification/callback/identity-verify";
