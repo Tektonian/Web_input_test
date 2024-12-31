@@ -1,26 +1,36 @@
 import { ChatContentHeader } from "../components/ChatContentHeader";
 import { ChatContentItemList } from "../components/ChatContentItemList";
 import { InputItem } from "../components/InputItem";
-import { useSocket } from "../use-chat/useSocket";
 import { useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";
-import { Container } from "@mui/material";
-import { useEffect } from "react";
+import { Stack, Box } from "@mui/material";
+
 export const ChatContainer = () => {
-    const { onSending } = useSocket();
     const activeRoom = useChatRoomStore((state) => state.activeRoom);
-    const activeRequest = useChatRoomStore((state) => state.activeRequest);
 
     return (
-        <Container maxWidth="lg">
-            <ChatContentHeader
-                activeRoom={activeRoom}
-                activeRequest={activeRequest}
-            />
-            <ChatContentItemList
-                activeRoom={activeRoom}
-                activeRequest={activeRequest}
-            />
-            <InputItem onSending={onSending} activeRoom={activeRoom} />
-        </Container>
+        <Stack
+            flex={1}
+            minWidth="200px"
+            minHeight="300px"
+            width="100%"
+            height="auto"
+            flexDirection="column"
+            sx={{
+                display: {
+                    xs: activeRoom === undefined ? "none" : "flex",
+                    md: "flex",
+                },
+            }}
+        >
+            {activeRoom === undefined ? (
+                <Box width="100%" height="100%"></Box>
+            ) : (
+                <>
+                    <ChatContentHeader activeRoom={activeRoom} />
+                    <ChatContentItemList activeRoom={activeRoom} />
+                    <InputItem activeRoom={activeRoom} />
+                </>
+            )}
+        </Stack>
     );
 };
