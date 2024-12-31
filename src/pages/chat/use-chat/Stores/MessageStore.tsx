@@ -9,7 +9,7 @@ type MessageContent = APIType.ContentType.MessageContent;
 type ResMessage = APIType.WebSocketType.ResMessage;
 
 interface ISentMessageSchema extends DBSchema {
-    [chatRoomId: string]: {
+    sentMessages: {
         key: number;
         value: MessageContent;
         indexes: { bySeq: number };
@@ -19,40 +19,40 @@ interface ISentMessageSchema extends DBSchema {
 class MessageStorage {
     private storage:
         | TypedStorage<IMessageStorage>
-        | IDBPDatabase<ISentMessageSchema | string>
+        | IDBPDatabase<ISentMessageSchema>
         | undefined;
 
     public async initStorage(chatRoomId: string) {
-        console.log("Init storage", parseInt("0x" + chatRoomId, 16));
+        console.log("Init storage", parseInt(chatRoomId.slice(0, 10), 16));
         try {
-            this.storage = await openDB<ISentMessageSchema | string>(
-                "sentMessages",
-                2,
-                {
-                    upgrade(db: IDBPDatabase<ISentMessageSchema | string>) {
-                        if (process.env.NODE_ENV === "development") {
-                            /*
+            this.storage = await openDB<ISentMessageSchema>(chatRoomId, 1, {
+                upgrade(db: IDBPDatabase<ISentMessageSchema>) {
+                    if (process.env.NODE_ENV === "development") {
+                        /*
                         for (const storeName of db.objectStoreNames) {
                             // db.deleteObjectStore(storeName);
                         }
                         */
-                        }
-                        if (db.objectStoreNames.contains(chatRoomId)) {
-                            console.log("COntain", chatRoomId);
-                            return;
-                        }
-                        const sentMessageStore = db.createObjectStore(
-                            chatRoomId,
-                            { keyPath: "seq" },
-                        );
-                        sentMessageStore.createIndex("bySeq", "seq", {
-                            unique: true,
-                        });
-                        console.log("snetMessageStore", sentMessageStore);
+                    }
+                    /*
+                    if (db.objectStoreNames.contains("sentMessages")) {
+                        console.log("COntain", chatRoomId);
                         return;
-                    },
+                    }
+                    */
+                    const sentMessageStore = db.createObjectStore(
+                        "sentMessages",
+                        {
+                            keyPath: "seq",
+                        },
+                    );
+                    sentMessageStore.createIndex("bySeq", "seq", {
+                        unique: true,
+                    });
+                    console.log("snetMessageStore", sentMessageStore);
+                    return;
                 },
-            );
+            });
         } catch (error) {
             console.log("Failed to open db", error);
             this.storage = new TypedStorage<IMessageStorage>(
@@ -63,11 +63,7 @@ class MessageStorage {
         return;
     }
 
-    public async getMessagesBySeq(
-        chatRoomId: string,
-        beginSeq: number,
-        endSeq: number,
-    ) {
+    public async getMessagesBySeq(beginSeq: number, endSeq: number) {
         if (this.storage === undefined) {
             return [];
         } else if (this.storage instanceof TypedStorage) {
@@ -79,7 +75,7 @@ class MessageStorage {
         } else {
             const messages: MessageContent[] | undefined =
                 await this.storage.getAllFromIndex(
-                    chatRoomId,
+                    "sentMessages",
                     "bySeq",
                     IDBKeyRange.bound(beginSeq, endSeq),
                 );
@@ -92,7 +88,7 @@ class MessageStorage {
         }
     }
 
-    public async getMessageLength(chatRoomId: string) {
+    public async getMessageLength() {
         if (this.storage === undefined) {
             return 0;
         } else if (this.storage instanceof TypedStorage) {
@@ -102,20 +98,16 @@ class MessageStorage {
             }
             return chatRooms.messages.length;
         } else {
-            return await this.storage.count(chatRoomId);
+            return await this.storage.count("sentMessages");
         }
     }
 
-    public async getAllMessages(chatRoomId: string) {
-        const length = await this.getMessageLength(chatRoomId);
-        return this.getMessagesBySeq(chatRoomId, 0, length);
+    public async getAllMessages() {
+        const length = await this.getMessageLength();
+        return this.getMessagesBySeq(0, length);
     }
 
-    public async setMessagesByIdx(
-        chatRoomId: string,
-        newMessages: MessageContent[],
-        idx: number,
-    ) {
+    public async setMessagesByIdx(newMessages: MessageContent[], idx: number) {
         if (this.storage === undefined) {
             return [];
         } else if (this.storage instanceof TypedStorage) {
@@ -130,21 +122,21 @@ class MessageStorage {
                 return newMessages;
             }
         } else {
-            const tx = this.storage.transaction(chatRoomId, "readwrite");
+            const tx = this.storage.transaction("sentMessages", "readwrite");
             await Promise.all(newMessages.map((val) => tx.store.put(val)));
             await tx.done;
-            return await this.storage.getAll(chatRoomId);
+            return await this.storage.getAll("sentMessages");
         }
     }
 
-    public async setMessages(chatRoomId: string, messages: MessageContent[]) {
+    public async setMessages(messages: MessageContent[]) {
         if (this.storage === undefined) {
             return undefined;
         } else if (this.storage instanceof TypedStorage) {
             this.storage.set({ messages: messages });
         } else {
-            await this.storage.clear(chatRoomId);
-            const tx = this.storage.transaction(chatRoomId, "readwrite");
+            await this.storage.clear("sentMessages");
+            const tx = this.storage.transaction("sentMessages", "readwrite");
             await Promise.all(
                 messages.map((val) => {
                     return tx.store.add(val);
@@ -154,7 +146,7 @@ class MessageStorage {
         }
     }
 
-    public async push(chatRoomId: string, message: MessageContent) {
+    public async push(message: MessageContent) {
         if (this.storage === undefined) {
             return undefined;
         } else if (this.storage instanceof TypedStorage) {
@@ -165,11 +157,11 @@ class MessageStorage {
                 this.storage.set({ messages: [...oldMessages, message] });
             }
         } else {
-            await this.storage.add(chatRoomId, message);
+            await this.storage.add("sentMessages", message);
         }
     }
 
-    public async updateUnread(chatRoomId: string, lastReadSeqList: number[]) {
+    public async updateUnread(lastReadSeqList: number[]) {
         if (this.storage === undefined) {
             return [];
         } else if (this.storage instanceof TypedStorage) {
@@ -208,11 +200,7 @@ class MessageStorage {
         } else {
             const minSeq = Math.max(Math.min(...lastReadSeqList), 0);
             const maxSeq = Math.max(...lastReadSeqList);
-            const oldMessages = await this.getMessagesBySeq(
-                chatRoomId,
-                minSeq,
-                maxSeq,
-            );
+            const oldMessages = await this.getMessagesBySeq(minSeq, maxSeq);
 
             const newUnreadList: number[] = [];
             for (let i = minSeq; i < maxSeq; i++) {
@@ -223,13 +211,13 @@ class MessageStorage {
                 newUnreadList.push(unread);
             }
             console.log(oldMessages, newUnreadList);
-            const all = await this.getAllMessages(chatRoomId);
+            const all = await this.getAllMessages();
             console.log(minSeq, maxSeq, all);
             oldMessages.map(
                 (message, idx) => (message.unreadCount = newUnreadList[idx]),
             );
 
-            await this.setMessagesByIdx(chatRoomId, oldMessages, minSeq);
+            await this.setMessagesByIdx(oldMessages, minSeq);
             return oldMessages;
         }
     }
@@ -363,14 +351,14 @@ export const useSentMessages: UseBoundStore<StoreApi<sentMessages>> =
             const storage = get().storage;
             await storage.initStorage(chatRoomId);
 
-            const messages = await storage.getAllMessages(chatRoomId);
+            const messages = await storage.getAllMessages();
             set({ messages: messages });
             return;
         },
         push: async (chatRoomId, message) => {
             const storage = get().storage;
             try {
-                await storage.push(chatRoomId, message);
+                await storage.push(message);
                 set({ messages: [...get().messages, message] });
             } catch (error) {
                 console.log("Push failed", error);
@@ -380,10 +368,7 @@ export const useSentMessages: UseBoundStore<StoreApi<sentMessages>> =
         updateUnread: async (chatRoomId, lastReadSeqList) => {
             const storage = get().storage;
             try {
-                const newMessages = await storage.updateUnread(
-                    chatRoomId,
-                    lastReadSeqList,
-                );
+                const newMessages = await storage.updateUnread(lastReadSeqList);
                 set({ messages: newMessages });
             } catch (error) {
                 console.log("Update unread failed", error);
@@ -393,7 +378,7 @@ export const useSentMessages: UseBoundStore<StoreApi<sentMessages>> =
         setMessages: async (chatRoomId, newMessages) => {
             const storage = get().storage;
             try {
-                await storage.setMessages(chatRoomId, newMessages);
+                await storage.setMessages(newMessages);
                 set({ messages: newMessages });
             } catch (error) {
                 console.log("Failed set message", error);
@@ -404,7 +389,6 @@ export const useSentMessages: UseBoundStore<StoreApi<sentMessages>> =
             const storage = get().storage;
             try {
                 const storedMessages = await storage.setMessagesByIdx(
-                    chatRoomId,
                     newMessages,
                     idx,
                 );
