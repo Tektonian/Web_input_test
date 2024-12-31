@@ -17,39 +17,57 @@ interface ISentMessageSchema extends DBSchema {
 }
 
 class MessageStorage {
-    private storage: TypedStorage<IMessageStorage> | IDBPDatabase<ISentMessageSchema> | undefined;
+    private storage:
+        | TypedStorage<IMessageStorage>
+        | IDBPDatabase<ISentMessageSchema | string>
+        | undefined;
 
     public async initStorage(chatRoomId: string) {
         console.log("Init storage", parseInt("0x" + chatRoomId, 16));
         try {
-            this.storage = await openDB<ISentMessageSchema>("sentMessages", 2, {
-                upgrade(db: IDBPDatabase<ISentMessageSchema>) {
-                    if (process.env.NODE_ENV === "development") {
+            this.storage = await openDB<ISentMessageSchema | string>(
+                "sentMessages",
+                2,
+                {
+                    upgrade(db: IDBPDatabase<ISentMessageSchema | string>) {
+                        if (process.env.NODE_ENV === "development") {
+                            /*
                         for (const storeName of db.objectStoreNames) {
                             // db.deleteObjectStore(storeName);
                         }
-                    }
-                    if (db.objectStoreNames.contains(chatRoomId)) {
-                        console.log("COntain", chatRoomId);
+                        */
+                        }
+                        if (db.objectStoreNames.contains(chatRoomId)) {
+                            console.log("COntain", chatRoomId);
+                            return;
+                        }
+                        const sentMessageStore = db.createObjectStore(
+                            chatRoomId,
+                            { keyPath: "seq" },
+                        );
+                        sentMessageStore.createIndex("bySeq", "seq", {
+                            unique: true,
+                        });
+                        console.log("snetMessageStore", sentMessageStore);
                         return;
-                    }
-                    const sentMessageStore = db.createObjectStore(chatRoomId, { keyPath: "seq" });
-                    sentMessageStore.createIndex("bySeq", "seq", {
-                        unique: true,
-                    });
-                    console.log("snetMessageStore", sentMessageStore);
-                    return;
+                    },
                 },
-            });
+            );
         } catch (error) {
             console.log("Failed to open db", error);
-            this.storage = new TypedStorage<IMessageStorage>(`sentMessages-${chatRoomId}`);
+            this.storage = new TypedStorage<IMessageStorage>(
+                `sentMessages-${chatRoomId}`,
+            );
         }
         console.log(this.storage);
         return;
     }
 
-    public async getMessagesBySeq(chatRoomId: string, beginSeq: number, endSeq: number) {
+    public async getMessagesBySeq(
+        chatRoomId: string,
+        beginSeq: number,
+        endSeq: number,
+    ) {
         if (this.storage === undefined) {
             return [];
         } else if (this.storage instanceof TypedStorage) {
@@ -59,11 +77,12 @@ class MessageStorage {
             }
             return chatRooms.messages.slice(beginSeq, endSeq);
         } else {
-            const messages: MessageContent[] | undefined = await this.storage.getAllFromIndex(
-                chatRoomId,
-                "bySeq",
-                IDBKeyRange.bound(beginSeq, endSeq),
-            );
+            const messages: MessageContent[] | undefined =
+                await this.storage.getAllFromIndex(
+                    chatRoomId,
+                    "bySeq",
+                    IDBKeyRange.bound(beginSeq, endSeq),
+                );
             //const messages = await this.storage.getAllFromIndex(chatRoomId,'bySeq', IDBKeyRange.bound(beginSeq, endSeq));
             console.log("getAllfROmIndex", messages);
             if (messages === undefined) {
@@ -92,7 +111,11 @@ class MessageStorage {
         return this.getMessagesBySeq(chatRoomId, 0, length);
     }
 
-    public async setMessagesByIdx(chatRoomId: string, newMessages: MessageContent[], idx: number) {
+    public async setMessagesByIdx(
+        chatRoomId: string,
+        newMessages: MessageContent[],
+        idx: number,
+    ) {
         if (this.storage === undefined) {
             return [];
         } else if (this.storage instanceof TypedStorage) {
@@ -185,7 +208,11 @@ class MessageStorage {
         } else {
             const minSeq = Math.max(Math.min(...lastReadSeqList), 0);
             const maxSeq = Math.max(...lastReadSeqList);
-            const oldMessages = await this.getMessagesBySeq(chatRoomId, minSeq, maxSeq);
+            const oldMessages = await this.getMessagesBySeq(
+                chatRoomId,
+                minSeq,
+                maxSeq,
+            );
 
             const newUnreadList: number[] = [];
             for (let i = minSeq; i < maxSeq; i++) {
@@ -198,7 +225,9 @@ class MessageStorage {
             console.log(oldMessages, newUnreadList);
             const all = await this.getAllMessages(chatRoomId);
             console.log(minSeq, maxSeq, all);
-            oldMessages.map((message, idx) => (message.unreadCount = newUnreadList[idx]));
+            oldMessages.map(
+                (message, idx) => (message.unreadCount = newUnreadList[idx]),
+            );
 
             await this.setMessagesByIdx(chatRoomId, oldMessages, minSeq);
             return oldMessages;
@@ -224,13 +253,29 @@ interface sentMessages {
     storage: MessageStorage;
     init: (chatRoomId: string) => Promise<void>;
     push: (chatRoomId: string, message: MessageContent) => Promise<void>;
-    updateUnread: (chatRoomId: string, lastReadSeqList: number[]) => Promise<void>;
-    setMessages: (chatRoomId: string, messages: MessageContent[]) => Promise<void>;
-    setMessageByIdx: (chatRoomId: string, messages: MessageContent[], idx: number) => Promise<void>;
+    updateUnread: (
+        chatRoomId: string,
+        lastReadSeqList: number[],
+    ) => Promise<void>;
+    setMessages: (
+        chatRoomId: string,
+        messages: MessageContent[],
+    ) => Promise<void>;
+    setMessageByIdx: (
+        chatRoomId: string,
+        messages: MessageContent[],
+        idx: number,
+    ) => Promise<void>;
 }
-
-const PushMessage = (chatRoomId: string, oldMessages: MessageContent[], newMessage: MessageContent) => {
-    const SentMessageStorage = new TypedStorage<IMessageStorage>(`sentMessages-${chatRoomId}`);
+/*
+const PushMessage = (
+    chatRoomId: string,
+    oldMessages: MessageContent[],
+    newMessage: MessageContent,
+) => {
+    const SentMessageStorage = new TypedStorage<IMessageStorage>(
+        `sentMessages-${chatRoomId}`,
+    );
 
     oldMessages = [...oldMessages, newMessage];
 
@@ -246,7 +291,9 @@ const SetMessageByIdx = (
     idx: number,
 ) => {
     console.log("setmessages ", [oldMessages.slice(0, idx), ...newMessages]);
-    const SentMessageStorage = new TypedStorage<IMessageStorage>(`sentMessages-${chatRoomId}`);
+    const SentMessageStorage = new TypedStorage<IMessageStorage>(
+        `sentMessages-${chatRoomId}`,
+    );
     if (oldMessages !== null && oldMessages.length >= idx) {
         const ret = [...oldMessages.slice(0, idx), ...newMessages];
         SentMessageStorage.set({ messages: ret });
@@ -257,12 +304,18 @@ const SetMessageByIdx = (
     }
 };
 
-const UpdateUnread = (chatRoomId: string, lastReadSeqList: number[], oldMessages: MessageContent[]) => {
+const UpdateUnread = (
+    chatRoomId: string,
+    lastReadSeqList: number[],
+    oldMessages: MessageContent[],
+) => {
     // Sequence of -1 means that user never participated in a chatroom and read messages;
     // So if minSeq is -1 we should set it as 0
     const minSeq = Math.max(Math.min(...lastReadSeqList), 0);
     const maxSeq = Math.max(...lastReadSeqList);
-    const SentMessageStorage = new TypedStorage<IMessageStorage>(`sentMessages-${chatRoomId}`);
+    const SentMessageStorage = new TypedStorage<IMessageStorage>(
+        `sentMessages-${chatRoomId}`,
+    );
 
     // We will not directly modify oldMessages unread count
     // Because there could be contraint that one of the lastReadSeqList could be bigger than length of oldMessages;
@@ -295,73 +348,91 @@ const InitChat = async (chatRoomId?: string) => {
         return [];
     }
 
-    const messages = safeExtract(new TypedStorage<IMessageStorage>(`sentMessages-${chatRoomId}`));
+    const messages = safeExtract(
+        new TypedStorage<IMessageStorage>(`sentMessages-${chatRoomId}`),
+    );
     return messages;
 };
+*/
 
-export const useSentMessages: UseBoundStore<StoreApi<sentMessages>> = create<sentMessages>((set, get) => ({
-    messages: [],
-    storage: new MessageStorage(),
-    init: async (chatRoomId) => {
-        const storage = get().storage;
-        await storage.initStorage(chatRoomId);
+export const useSentMessages: UseBoundStore<StoreApi<sentMessages>> =
+    create<sentMessages>((set, get) => ({
+        messages: [],
+        storage: new MessageStorage(),
+        init: async (chatRoomId) => {
+            const storage = get().storage;
+            await storage.initStorage(chatRoomId);
 
-        const messages = await storage.getAllMessages(chatRoomId);
-        set({ messages: messages });
-        return;
-    },
-    push: async (chatRoomId, message) => {
-        const storage = get().storage;
-        try {
-            await storage.push(chatRoomId, message);
-            set({ messages: [...get().messages, message] });
-        } catch (error) {
-            console.log("Push failed", error);
-        }
-        return;
-    },
-    updateUnread: async (chatRoomId, lastReadSeqList) => {
-        const storage = get().storage;
-        try {
-            const newMessages = await storage.updateUnread(chatRoomId, lastReadSeqList);
-            set({ messages: newMessages });
-        } catch (error) {
-            console.log("Update unread failed", error);
-        }
-        return;
-    },
-    setMessages: async (chatRoomId, newMessages) => {
-        const storage = get().storage;
-        try {
-            await storage.setMessages(chatRoomId, newMessages);
-            set({ messages: newMessages });
-        } catch (error) {
-            console.log("Failed set message", error);
-        }
-        return;
-    },
-    setMessageByIdx: async (chatRoomId, newMessages, idx) => {
-        const storage = get().storage;
-        try {
-            const storedMessages = await storage.setMessagesByIdx(chatRoomId, newMessages, idx);
-            set({ messages: storedMessages });
-        } catch (error) {
-            console.log("Set message by idx failed", error);
-        }
-        return;
-    },
-}));
+            const messages = await storage.getAllMessages(chatRoomId);
+            set({ messages: messages });
+            return;
+        },
+        push: async (chatRoomId, message) => {
+            const storage = get().storage;
+            try {
+                await storage.push(chatRoomId, message);
+                set({ messages: [...get().messages, message] });
+            } catch (error) {
+                console.log("Push failed", error);
+            }
+            return;
+        },
+        updateUnread: async (chatRoomId, lastReadSeqList) => {
+            const storage = get().storage;
+            try {
+                const newMessages = await storage.updateUnread(
+                    chatRoomId,
+                    lastReadSeqList,
+                );
+                set({ messages: newMessages });
+            } catch (error) {
+                console.log("Update unread failed", error);
+            }
+            return;
+        },
+        setMessages: async (chatRoomId, newMessages) => {
+            const storage = get().storage;
+            try {
+                await storage.setMessages(chatRoomId, newMessages);
+                set({ messages: newMessages });
+            } catch (error) {
+                console.log("Failed set message", error);
+            }
+            return;
+        },
+        setMessageByIdx: async (chatRoomId, newMessages, idx) => {
+            const storage = get().storage;
+            try {
+                const storedMessages = await storage.setMessagesByIdx(
+                    chatRoomId,
+                    newMessages,
+                    idx,
+                );
+                set({ messages: storedMessages });
+            } catch (error) {
+                console.log("Set message by idx failed", error);
+            }
+            return;
+        },
+    }));
 
 interface middleStateMessages {
     chatRoomId: string;
     messages: MessageContent[];
     init: (chatRoomId: string) => void;
     push: (chatRoomId: string, message: MessageContent) => void;
-    getMessage: (chatRoomId: string, messageId: string) => MessageContent | undefined;
+    getMessage: (
+        chatRoomId: string,
+        messageId: string,
+    ) => MessageContent | undefined;
     removeMessage: (chatRoomId: string, messageId: string) => void;
 }
 
-const FilterMessage = (chatRoomId: string, messages: MessageContent[] | null, messageId: string) => {
+const FilterMessage = (
+    chatRoomId: string,
+    messages: MessageContent[] | null,
+    messageId: string,
+) => {
     if (messages !== null) {
         return messages.filter((val) => val._id === messageId)[0]; //TODO: Id should be unique!!
     } else {
@@ -369,7 +440,11 @@ const FilterMessage = (chatRoomId: string, messages: MessageContent[] | null, me
     }
 };
 
-const SpliceMessage = (chatRoomId: string, messages: MessageContent[] | null, messageId: string) => {
+const SpliceMessage = (
+    chatRoomId: string,
+    messages: MessageContent[] | null,
+    messageId: string,
+) => {
     if (messages !== null) {
         console.log("Remove message", messages[0], messageId);
         messages.splice(
@@ -386,14 +461,19 @@ export const useSendingMessages = create<middleStateMessages>((set, get) => ({
     messages: [],
     init: (chatRoomId) =>
         set(() => ({
-            messages: safeExtract(new TypedStorage<IMessageStorage>(`sendingMessages-${chatRoomId}`)),
+            messages: safeExtract(
+                new TypedStorage<IMessageStorage>(
+                    `sendingMessages-${chatRoomId}`,
+                ),
+            ),
         })),
     push: (chatRoomId, message) =>
         set((state) => ({
             chatRoomId: chatRoomId,
             messages: [...state.messages, message],
         })),
-    getMessage: (chatRoomId, messageId) => FilterMessage(chatRoomId, get().messages, messageId),
+    getMessage: (chatRoomId, messageId) =>
+        FilterMessage(chatRoomId, get().messages, messageId),
     removeMessage: (chatRoomId, messageId) =>
         set((state) => ({
             chatRoomId: chatRoomId,
@@ -406,14 +486,19 @@ export const useFailedMessages = create<middleStateMessages>((set, get) => ({
     messages: [],
     init: (chatRoomId) =>
         set(() => ({
-            messages: safeExtract(new TypedStorage<IMessageStorage>(`failedMessages-${chatRoomId}`)),
+            messages: safeExtract(
+                new TypedStorage<IMessageStorage>(
+                    `failedMessages-${chatRoomId}`,
+                ),
+            ),
         })),
     push: (chatRoomId, message) =>
         set((state) => ({
             chatRoomId: chatRoomId,
             messages: [...state.messages, message],
         })),
-    getMessage: (chatRoomId, messageId) => FilterMessage(chatRoomId, get().messages, messageId),
+    getMessage: (chatRoomId, messageId) =>
+        FilterMessage(chatRoomId, get().messages, messageId),
     removeMessage: (chatRoomId, messageId) =>
         set((state) => ({
             chatRoomId: chatRoomId,

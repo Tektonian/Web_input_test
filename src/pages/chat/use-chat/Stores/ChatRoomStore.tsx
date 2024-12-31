@@ -9,6 +9,7 @@ import type { APIType } from "api_spec";
 
 type ResMessage = APIType.WebSocketType.ResMessage;
 type ResRefreshChatRoom = APIType.WebSocketType.ResRefreshChatRoom;
+type ResChatRoom = APIType.WebSocketType.ResChatRoom;
 
 export interface ChatUserProfile {
     user_name: string;
@@ -70,21 +71,29 @@ const SetActiveRequest = (
     requestId?: number,
 ): ChatRoomStore => {
     const allChatRooms = chatRoomStorage.get()?.chatRooms;
-    const allRequests = requestStorage.get()?.requests
-    if (!allChatRooms || allChatRooms.filter((val) => val).length === 0|| !allRequests || allRequests.filter((val) => val).length === 0 || !requestId) {
+    const allRequests = requestStorage.get()?.requests;
+    if (
+        !allChatRooms ||
+        allChatRooms.filter((val) => val).length === 0 ||
+        !allRequests ||
+        allRequests.filter((val) => val).length === 0 ||
+        !requestId
+    ) {
         return state;
     }
-    console.log(allChatRooms)
+    console.log(allChatRooms);
     const renderChatRoom = allChatRooms.filter(
         (room) => room.requestId === requestId,
     );
 
-    const activeRequest = allRequests.find((req) => req.requestId === requestId)
+    const activeRequest = allRequests.find(
+        (req) => req.requestId === requestId,
+    );
 
-    if(!activeRequest){
+    if (!activeRequest) {
         return state;
     }
-    console.log("Set active request", activeRequest, renderChatRoom)
+    console.log("Set active request", activeRequest, renderChatRoom);
     return {
         ...state,
         renderChatRoom: renderChatRoom,
@@ -97,7 +106,7 @@ const InitOnLoad = (state: ChatRoomStore): ChatRoomStore => {
     if (!allRequest || allRequest.requests.length === 0) {
         return state;
     }
-    console.log(allRequest.requests.at(0))
+    console.log(allRequest.requests.at(0));
     // Ahead request
     const request = allRequest.requests.at(0);
 
@@ -108,11 +117,11 @@ const SetActiveRoom = (
     state: ChatRoomStore,
     chatRoomId?: string,
 ): ChatRoomStore => {
-    if(chatRoomId === undefined){
+    if (chatRoomId === undefined) {
         return {
             ...state,
-            activeRoom: undefined
-        }
+            activeRoom: undefined,
+        };
     }
     const allChatRooms = chatRoomStorage.get()?.chatRooms ?? [];
 
@@ -162,27 +171,22 @@ const __UpdateOnReceived = (
         msgInRoom.unreadCount = message.seq - msgInRoom.lastReadSeq;
         request!.hasUnread = true;
         requestStorage.set({ requests: allRequest });
-        chatRoomStorage.set({chatRooms: allChatRooms})
+        chatRoomStorage.set({ chatRooms: allChatRooms });
         return {
             ...state,
             renderRequest: allRequest,
         };
     }
     // Not activated chatroom
-    else if (
-        msgInRenderChatRoom.chatRoomId !== state.activeRoom?.chatRoomId
-    ) {
+    else if (msgInRenderChatRoom.chatRoomId !== state.activeRoom?.chatRoomId) {
         msgInRoom.messageSeq = message.seq;
-        msgInRoom.unreadCount =
-            message.seq - msgInRenderChatRoom.lastReadSeq;
+        msgInRoom.unreadCount = message.seq - msgInRenderChatRoom.lastReadSeq;
 
         msgInRoom.lastMessage = message.content;
         msgInRoom.lastSentTime = new Date(message.createdAt);
-    } 
+    }
     // When participated in
-    else if (
-        msgInRenderChatRoom.chatRoomId === state.activeRoom?.chatRoomId
-    ) {
+    else if (msgInRenderChatRoom.chatRoomId === state.activeRoom?.chatRoomId) {
         msgInRoom.messageSeq = message.seq;
         msgInRoom.lastReadSeq = message.seq;
         msgInRoom.unreadCount = 0;
@@ -191,8 +195,8 @@ const __UpdateOnReceived = (
     }
 
     allChatRooms = allChatRooms.sort((a, b) => {
-        const l = a.lastSentTime 
-        const r = b.lastSentTime 
+        const l = a.lastSentTime;
+        const r = b.lastSentTime;
 
         return Number(r) - Number(l);
     });
@@ -202,72 +206,78 @@ const __UpdateOnReceived = (
     const renderChatRoom = allChatRooms.filter(
         (room) => room.requestId === state.activeRequest?.requestId,
     );
-    console.log("Render", renderChatRoom)
-    console.log("Change", msgInRoom)
+    console.log("Render", renderChatRoom);
+    console.log("Change", msgInRoom);
     return {
         ...state,
         renderChatRoom: renderChatRoom,
     };
 };
 
-const UpdateOnRefresh = (state: ChatRoomStore, res: ResRefreshChatRoom): ChatRoomStore=>{
-    console.log("Refresh", res)
+const UpdateOnRefresh = (
+    state: ChatRoomStore,
+    res: ResRefreshChatRoom,
+): ChatRoomStore => {
+    console.log("Refresh", res);
     const requests = res.requests;
     const chatRooms = res.chatRooms;
 
     const prevReqeusts = requestStorage.get();
     const prevChatRooms = chatRoomStorage.get();
 
-    const storedRequests: Request[] = requests.map((req) => ({
+    const storedRequests: Request[] = requests.map((req: Request) => ({
         ...req,
         hasUnread: true,
-    }))
+    }));
 
-
-    const storedChatRooms: ChatRoom[] = chatRooms.map((room) => {
-        const prevChatRoom = prevChatRooms?.chatRooms.find((prev) => prev.chatRoomId === room.chatRoomId)
-        if(!prevChatRoom){
+    const storedChatRooms: ChatRoom[] = chatRooms
+        .map((room: ChatRoom) => {
+            const prevChatRoom = prevChatRooms?.chatRooms.find(
+                (prev) => prev.chatRoomId === room.chatRoomId,
+            );
+            if (!prevChatRoom) {
+                return {
+                    ...room,
+                    unreadCount: room.messageSeq,
+                    lastReadSeq: 0,
+                };
+            }
             return {
                 ...room,
-                unreadCount: room.messageSeq,
-                lastReadSeq: 0,
-            }
-        }
-        return {
-            ...room,
-            unreadCount: prevChatRoom.messageSeq - prevChatRoom.lastReadSeq,
-            lastReadSeq: prevChatRoom.lastReadSeq
-        }
-    }).filter((val) => val) // remove falsy value
-    requestStorage.set({requests: storedRequests});
-    chatRoomStorage.set({chatRooms: storedChatRooms})
+                unreadCount: prevChatRoom.messageSeq - prevChatRoom.lastReadSeq,
+                lastReadSeq: prevChatRoom.lastReadSeq,
+            };
+        })
+        .filter((val: ChatRoom | null) => val); // remove falsy value
+    requestStorage.set({ requests: storedRequests });
+    chatRoomStorage.set({ chatRooms: storedChatRooms });
 
-    const renderChatRooms = storedChatRooms.filter((room) => room.requestId === state.activeRequest?.requestId)
-    const refreshedRequest = storedRequests.find((req) => req.requestId === state.activeRequest?.requestId);
-    if(!state.activeRequest && storedRequests.length === 0){
+    const renderChatRooms = storedChatRooms.filter(
+        (room) => room.requestId === state.activeRequest?.requestId,
+    );
+    const refreshedRequest = storedRequests.find(
+        (req) => req.requestId === state.activeRequest?.requestId,
+    );
+    if (!state.activeRequest && storedRequests.length === 0) {
         return {
             ...state,
-        }
-    }
-    else if(state.activeRequest && refreshedRequest){
+        };
+    } else if (state.activeRequest && refreshedRequest) {
         return {
             ...state,
             activeRequest: refreshedRequest,
             renderRequest: [...storedRequests],
             renderChatRoom: renderChatRooms,
-        }
-    }
-    else{
+        };
+    } else {
         return {
             ...state,
             activeRequest: storedRequests.at(0),
             renderRequest: [...storedRequests],
             renderChatRoom: renderChatRooms,
-        }
+        };
     }
-}
-
-
+};
 
 export const useChatRoomStore: UseBoundStore<StoreApi<ChatRoomStore>> =
     create<ChatRoomStore>((set) => ({
@@ -290,6 +300,5 @@ export const useChatRoomStore: UseBoundStore<StoreApi<ChatRoomStore>> =
         setChatRooms: (chatRooms) => set(() => ({ renderChatRoom: chatRooms })),
         updateOnReceive: (message) =>
             set((state) => __UpdateOnReceived(state, message)),
-        updateOnRefresh: (res) => 
-            set((state) => UpdateOnRefresh(state, res))
+        updateOnRefresh: (res) => set((state) => UpdateOnRefresh(state, res)),
     }));

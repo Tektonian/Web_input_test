@@ -3,6 +3,8 @@ import { List } from "@mui/material";
 import { useCheckBoxStore } from "../use-chat/Stores/CheckBoxStore";
 import { useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";
 import { useRequest } from "../use-chat/useRequest";
+
+import type { ChatRoom as ChatRoomType } from "../use-chat/Stores/ChatRoomStore";
 export const ChatRooms = () => {
     const { setCheckBoxMode } = useRequest();
     const { flip, checkBoxMode } = useCheckBoxStore((state) => state);
@@ -11,7 +13,7 @@ export const ChatRooms = () => {
         (state) => state,
     );
 
-    const getProviderName = (chatRoom: any) => {
+    const getProviderName = (chatRoom: ChatRoomType) => {
         const consumer = chatRoom?.consumer;
         const providers = chatRoom?.participants;
         if (chatRoom.participants.length === 2) {

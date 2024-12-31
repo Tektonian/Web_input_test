@@ -1,6 +1,10 @@
 import { useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useSentMessages, useFailedMessages, useSendingMessages } from "./Stores/MessageStore";
+import {
+    useSentMessages,
+    useFailedMessages,
+    useSendingMessages,
+} from "./Stores/MessageStore";
 import { useChatRoomStore } from "./Stores/ChatRoomStore";
 import { Socket } from "socket.io-client";
 import { APIType } from "api_spec";
@@ -43,13 +47,22 @@ const resMsgToContent = (message: ResMessage): MessageContent => {
 };
 
 export const useSocket = () => {
-    const { socket, tempId, activeRoom, activeRequest, setTempId, setActiveRoom, updateOnReceive, updateOnRefresh } =
-        useChatRoomStore((state) => state);
+    const {
+        socket,
+        tempId,
+        activeRoom,
+        activeRequest,
+        setTempId,
+        setActiveRoom,
+        updateOnReceive,
+        updateOnRefresh,
+    } = useChatRoomStore((state) => state);
 
     const pushToSent = useSentMessages((state) => state.push);
     const initSentStorage = useSentMessages((state) => state.init);
-    const setSentMessageByIdx = useSentMessages((state) => state.setMessageByIdx);
-    const getSentMessageLength = useSentMessages((state) => state.getMessageLength);
+    const setSentMessageByIdx = useSentMessages(
+        (state) => state.setMessageByIdx,
+    );
     const updateSentUnread = useSentMessages((state) => state.updateUnread);
 
     const onJoin = async (chatRoomId: string) => {
@@ -61,22 +74,34 @@ export const useSocket = () => {
 
         socket.on("someoneSent", (res, callback) => {
             const message: ResMessage = JSON.parse(res);
-            console.log("Someone sent message: ", message, " - ", res, " - ", socket.id);
+            console.log(
+                "Someone sent message: ",
+                message,
+                " - ",
+                res,
+                " - ",
+                socket.id,
+            );
 
             const data: MessageContent = resMsgToContent(message);
 
-            pushToSent(chatRoomId, data);
-            updateOnReceive(message);
+            pushToSent(chatRoomId, data)
+                .then(() => {
+                    updateOnReceive(message);
+                })
+                .catch((error) => {
+                    console.log("Sending failed", error);
+                });
             callback({
                 id: tempId,
                 lastReadSeq: data.seq,
                 status: "ok",
             });
         });
-        socket.on("updateUnread", (res) => {
+        socket.on("updateUnread", async (res) => {
             const lastReadSequences = res;
             console.log("Updateunread", res);
-            updateSentUnread(chatRoomId, lastReadSequences);
+            await updateSentUnread(chatRoomId, lastReadSequences);
         });
 
         try {
@@ -88,7 +113,7 @@ export const useSocket = () => {
             console.log("User try join", res);
             await initSentStorage(chatRoomId);
             const { messages, lastReadSequences }: ResTryJoin = JSON.parse(res);
-            const data = messages.map((m) => resMsgToContent(m));
+            const data = messages.map((m: ResMessage) => resMsgToContent(m));
             await setSentMessageByIdx(chatRoomId, data, 0); // TODO: fix index
 
             await updateSentUnread(chatRoomId, lastReadSequences);
@@ -185,7 +210,13 @@ export const useSocketTextMutation = () => {
     const pushToFailed = useFailedMessages((state) => state.push);
 
     const { mutate, isError, isSuccess } = useMutation({
-        mutationFn: async ({ socket, req }: { socket: Socket | null; req: ReqSendMessage }) => {
+        mutationFn: async ({
+            socket,
+            req,
+        }: {
+            socket: Socket | null;
+            req: ReqSendMessage;
+        }) => {
             if (socket === null) return new Promise(() => null);
 
             // pushToSending(chatRoomId, req);
