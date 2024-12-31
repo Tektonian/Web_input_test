@@ -2,18 +2,10 @@ import { ChatContentHeader } from "../components/ChatContentHeader";
 import { ChatContentItemList } from "../components/ChatContentItemList";
 import { InputItem } from "../components/InputItem";
 import { useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";
-import { useSentMessages } from "../use-chat/Stores/MessageStore";
 import { Stack, Box } from "@mui/material";
-import { useEffect } from "react";
 
 export const ChatContainer = () => {
     const activeRoom = useChatRoomStore((state) => state.activeRoom);
-
-    const initSent = useSentMessages((state) => state.init);
-
-    useEffect(() => {
-        initSent(activeRoom?.chatRoomId);
-    }, [activeRoom]);
 
     return (
         <Stack
