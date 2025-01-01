@@ -1,29 +1,44 @@
 import { useSocket } from "./use-chat/useSocket";
 import { ChatContainer } from "./container/ChatContainer";
-import { Container, Flex, Box } from "@radix-ui/themes";
 import { ChatRoomContainer } from "./container/ChatRoomContainer";
 import { useChatRoomStore } from "./use-chat/Stores/ChatRoomStore";
 import { useEffect } from "react";
+import { Container, Stack } from "@mui/material";
 import { RequestContainer } from "./container/RequestContainer";
+
 const ChatPage = () => {
-    const { onConnecting, onDestroying } = useSocket();
+    const { onConnecting, onDisconnecting } = useSocket();
     const initChatRoom = useChatRoomStore((state) => state.initOnLoad);
+
     useEffect(() => {
-        initChatRoom();
         onConnecting();
+        initChatRoom();
         return () => {
-            onDestroying();
+            onDisconnecting();
         };
     }, []);
 
     return (
-        <Box height="100vh" overflow="hidden">
-            <Flex direction="row">
-                <RequestContainer />
-                <ChatRoomContainer />
-                <ChatContainer />
-            </Flex>
-        </Box>
+        <Container
+            fixed
+            disableGutters
+            sx={{
+                width: "100%",
+                height: {
+                    xs: "100vh",
+                    md: "70vh",
+                },
+                overflow: "hidden",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                gap: "2px",
+            }}
+        >
+            <RequestContainer />
+            <ChatRoomContainer />
+            <ChatContainer />
+        </Container>
     );
 };
 

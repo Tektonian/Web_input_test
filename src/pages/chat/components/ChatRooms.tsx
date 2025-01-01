@@ -1,69 +1,19 @@
-import { useEffect, useState } from "react";
 import { ChatRoom } from "web_component";
 import { List } from "@mui/material";
+import { useCheckBoxStore } from "../use-chat/Stores/CheckBoxStore";
 import { useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";
-import { useSocket } from "../use-chat/useSocket";
+import { useRequest } from "../use-chat/useRequest";
 
-interface CheckBoxInitAction {
-    type: "init";
-    initChatRoomIds: string[];
-}
-interface CheckBoxResetAction {
-    type: "reset";
-}
-interface CheckBoxAction {
-    type: "check";
-    chatRoomId: string;
-    checked: boolean;
-}
+import type { ChatRoom as ChatRoomType } from "../use-chat/Stores/ChatRoomStore";
+export const ChatRooms = () => {
+    const { setCheckBoxMode } = useRequest();
+    const { flip, checkBoxMode } = useCheckBoxStore((state) => state);
 
-export const ChatRooms = ({
-    dispatch,
-}: {
-    dispatch: React.Dispatch<
-        CheckBoxAction | CheckBoxInitAction | CheckBoxResetAction
-    >;
-}) => {
-    const {
-        renderChatRoom,
-        activeRequest,
-        activeRoom,
-        setActiveRoom,
-    } = useChatRoomStore((state) => state);
-    const { onJoin, onUnjoin } = useSocket();
+    const { renderChatRoom, setActiveRoom, activeRequest } = useChatRoomStore(
+        (state) => state,
+    );
 
-    const [checkBoxMode, setCheckBoxMode] = useState(false);
-
-    useEffect(() => {
-        if (checkBoxMode === true) {
-            window.history.pushState(null, "/", window.location.href);
-            window.addEventListener("popstate", () => {
-                setCheckBoxMode(false);
-            });
-        }
-    }, [checkBoxMode]);
-
-    useEffect(() => {
-        const chatRoomIds = renderChatRoom.map((room) => room.chatRoomId);
-        dispatch({ type: "init", initChatRoomIds: chatRoomIds });
-        setCheckBoxMode(false);
-        return () => {
-            dispatch({ type: "reset" });
-        };
-    }, [renderChatRoom]);
-
-    useEffect(() => {
-        if (activeRoom !== undefined) {
-            onJoin(activeRoom.chatRoomId);
-        }
-
-        return () => {
-            console.log("unjoin", activeRoom);
-            onUnjoin();
-        };
-    }, [activeRoom]);
-
-    const getProviderName = (chatRoom: typeof renderChatRoom[0]) => {
+    const getProviderName = (chatRoom: ChatRoomType) => {
         const consumer = chatRoom?.consumer;
         const providers = chatRoom?.participants;
         if (chatRoom.participants.length === 2) {
@@ -75,11 +25,23 @@ export const ChatRooms = ({
         return `단체방: ${chatRoom.title}`;
     };
     return (
-        <List dense>
+        <List
+            dense
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                height: "100%",
+                minWidth: "200px",
+                flexShrink: "1",
+            }}
+        >
             {renderChatRoom.map((chatRoom, idx) => (
                 <ChatRoom
+                    defaultValue={activeRequest?.selected?.includes(
+                        chatRoom.chatRoomId,
+                    )}
                     onClick={(e) => {
-                        console.log("Clicked chatroom");
+                        console.log("Clicked chatroom", chatRoom);
                         setActiveRoom(chatRoom.chatRoomId);
                     }}
                     selected={activeRequest?.selected?.includes(
@@ -88,13 +50,9 @@ export const ChatRooms = ({
                     onContextMenu={() => 0}
                     onCheckboxToggle={(event, checked) => {
                         console.log("Checkbox toggle", chatRoom, checked);
-                        dispatch({
-                            type: "check",
-                            chatRoomId: chatRoom.chatRoomId,
-                            checked: checked,
-                        });
+                        flip(chatRoom.chatRoomId);
                     }}
-                    onLongPress={() => setCheckBoxMode(true)}
+                    onLongPress={() => setCheckBoxMode()}
                     checkBoxMode={checkBoxMode}
                     key={chatRoom.chatRoomId}
                     title={`${getProviderName(chatRoom)}`}
