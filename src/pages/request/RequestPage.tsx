@@ -14,9 +14,9 @@ import { APIType } from "api_spec";
 import { useNavigate } from "react-router-dom";
 import RequestContentContainer from "./container/RequestContentContainer";
 import ConsumerContainer from "./container/ConsumerContainer";
+import OtherRequestContainer from "./container/OtherRequestContainer";
 
 const RequestPage = () => {
-    const navigate = useNavigate();
     const [tabIndex, setTabIndex] = useState(0);
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabIndex(newValue);
@@ -116,19 +116,24 @@ const RequestPage = () => {
                         {tabIndex === 0 && data && (
                             <RequestContentContainer {...data} />
                         )}
-                        {tabIndex === 1 && data && <ConsumerContainer />}
+                        {tabIndex === 1 && data && (
+                            <>
+                                <ConsumerContainer corp_id={data.corp_id} />
+                                <OtherRequestContainer corp_id={data.corp_id} />
+                            </>
+                        )}
                     </CardContent>
                 </Card>
             </Container>
 
             <Container
                 sx={{
-                    width: { xs: "100%", md: "344px" }, // 작은 화면에서는 100% 폭
+                    width: { xs: "100%", md: "344px" },
                     padding: "0 !important",
-                    position: { xs: "relative", md: "sticky" }, // 작은 화면에서는 위치 고정 해제
-                    top: { md: "50%" }, // 중간 위치 (데스크톱만)
-                    transform: { md: "translateY(-50%)" }, // 중간 위치 조정 (데스크톱만)
-                    order: { xs: -1, md: 1 }, // 모바일에서 위로 이동
+                    position: { xs: "relative", md: "sticky" },
+                    top: { md: "50%" },
+                    transform: { md: "translateY(-50%)" },
+                    order: { xs: -1, md: 1 },
                     display: "flex",
                     flexDirection: "column",
                     gap: "24px",

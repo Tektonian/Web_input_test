@@ -26,7 +26,7 @@ const RequestInput = () => {
     const { control, setValue, handleSubmit } =
         useForm<APIType.RequestType.ReqCreateRequest>({
             defaultValues: {
-                role: "",
+                role: undefined,
                 data: {
                     consumer_id: -1,
                     title: "",
@@ -42,8 +42,8 @@ const RequestInput = () => {
                     end_time: dayjs().format("HH:mm"),
                     address: "",
                     address_coordinate: {
-                        type: "Point",
-                        coordinates: [0, 0],
+                        lat: 0,
+                        lng: 0,
                     },
                     prep_material: [],
                     created_at: new Date(),

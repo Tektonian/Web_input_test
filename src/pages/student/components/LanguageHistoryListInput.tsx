@@ -2,18 +2,13 @@ import React from "react";
 import { useFieldArray } from "react-hook-form";
 import LanguageHistoryInput from "./LanguageHistoryInput";
 import { Box, Button, Card } from "@mui/material";
-import { NavigationButton } from "web_component";
 
 interface LanguageHistoryListInputProps {
     control: any;
-    onNext: () => void;
-    onPrevious: () => void;
 }
 
 const LanguageHistoryListInput: React.FC<LanguageHistoryListInputProps> = ({
     control,
-    onNext,
-    onPrevious,
 }) => {
     const { fields, append, remove } = useFieldArray({
         control,
@@ -60,11 +55,6 @@ const LanguageHistoryListInput: React.FC<LanguageHistoryListInputProps> = ({
                 >
                     Add Language History
                 </Button>
-            </Box>
-
-            <Box display="flex" justifyContent="space-between" mt={3}>
-                <NavigationButton label="previous" onClick={onPrevious} />
-                <NavigationButton label="next" onClick={onNext} />
             </Box>
         </Card>
     );

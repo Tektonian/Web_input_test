@@ -6,20 +6,16 @@ import { useNavigate } from "react-router-dom";
 
 interface ConsumerContainerProps {
     corp_id?: number;
-    orgn_id?: number;
 }
 
-const ConsumerContainer: React.FC<ConsumerContainerProps> = (
-    corp_id,
-    orgn_id,
-) => {
+const ConsumerContainer: React.FC<ConsumerContainerProps> = (corp_id) => {
     const [data, setData] =
         useState<APIType.CorporationType.ResGetCorpProfile>();
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:8080/api/requests/${corp_id ?? orgn_id}`,
+                    `http://localhost:8080/api/corporations/${corp_id}`,
                     {
                         method: "GET",
                     },
