@@ -2,90 +2,39 @@ import { MouseEvent, MouseEventHandler, useEffect, useState } from "react";
 import { useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";
 import type { Request, ChatRoom } from "../use-chat/Stores/ChatRoomStore";
 import { Box } from "@mui/material";
-import { Button } from "@mui/joy";
-import Modal from "@mui/joy/Modal";
-import ModalDialog from "@mui/joy/ModalDialog";
 import { MessageHeader } from "web_component";
 
-interface ModalButtonProps {
-    onExist: MouseEventHandler;
-    onApprove: MouseEventHandler;
-    onDone: MouseEventHandler;
-}
-const ModalButton = ({ onExist, onApprove, onDone }: ModalButtonProps) => {
-    const [open, setOpen] = useState(false);
-
-    return (
-        <>
-            <Modal open={open} onClose={() => setOpen(false)}>
-                <ModalDialog>
-                    <Button onClick={onExist}>Exit Room</Button>
-                    <Button onClick={onApprove}>Approve</Button>
-                    <Button onClick={onDone}>Request Done</Button>
-                </ModalDialog>
-            </Modal>
-        </>
-    );
-};
 
 export const ChatContentHeader = ({
-    activeRequest,
     activeRoom,
 }: {
-    activeRequest?: Request;
     activeRoom?: ChatRoom;
 }) => {
     const setActiveRoom = useChatRoomStore((state) => state.setActiveRoom);
-    const handleClick = () => {
-        // setActiveRoom("");
-    };
-    const handleAlert = () => {
-        if (activeRoom === undefined) {
-            return;
+
+    const getProviderName = (chatRoom: typeof activeRoom) => {
+        if(!chatRoom){
+            return ""
         }
-        alert("a");
-    };
-    const handleExit = () => {
-        if (activeRoom === undefined) {
-            return;
+        const consumer = chatRoom?.consumer;
+        const providers = chatRoom?.participants;
+        if (chatRoom.participants.length === 2) {
+            return (
+                providers.find((p) => p.user_id !== consumer.user_id)
+                    ?.user_name ?? "U"
+            );
         }
-    };
-    const handleApprove = () => {
-        if (activeRoom === undefined) {
-            return;
-        }
-        fetch("/api/message/request", {
-            headers: {
-                "Content-Type": "application/json",
-            },
-            method: "PUT",
-            credentials: "include",
-            body: JSON.stringify({ chatRoomId: activeRoom.chatRoomId }),
-        })
-            .then((val) => val)
-            .catch((e) => e);
-    };
-    const handleDone = () => {
-        if (activeRoom === undefined) {
-            return;
-        }
+        return `단체방: ${chatRoom.title}`;
     };
 
-    useEffect(() => {}, [activeRoom?.chatRoomId, activeRequest?.requestId]);
-    
     // <MessageHeader key={activeRoom?.chatRoomId ?? "empty"} onClickArrow={(e: MouseEvent) =>{handleAlert()}} onClickMenu={() => handleClick()} username={activeRoom === undefined ? "" : activeRoom.consumerName}/>
     return (
-        <Box>
+        <Box flexGrow="0">
             <MessageHeader
-                username={`${activeRequest?.title}-${activeRoom?.title}`}
-                onClickArrow={() => 1}
+                username={getProviderName(activeRoom)}
+                onClickArrow={() => setActiveRoom(undefined)}
                 onClickUser={() => 1}
             ></MessageHeader>
-            <ModalButton
-                onApprove={handleApprove}
-                onDone={handleDone}
-                onExist={handleExit}
-            />
         </Box>
     );
 };

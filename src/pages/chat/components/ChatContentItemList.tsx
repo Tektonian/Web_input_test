@@ -3,7 +3,7 @@ import {
     useSentMessages,
 } from "../use-chat/Stores/MessageStore";
 
-import { Container, List } from "@mui/material";
+import { Box, List } from "@mui/material";
 import type { ChatRoom, Request } from "../use-chat/Stores/ChatRoomStore";
 import { Message } from "web_component";
 
@@ -23,7 +23,7 @@ const MessageRender = ({
                 const sender = activeRoom.participants.find(
                     (parti) => parti.user_id === val.senderId,
                 );
-                console.log("Render message", activeRoom, sender, val);
+                // console.log("Render message", activeRoom, sender, val);
                 if (val.contentType === "text") {
                     return (
                         <Message
@@ -78,41 +78,41 @@ const MessageRender = ({
 };
 
 export const ChatContentItemList = ({
-    activeRequest,
     activeRoom,
 }: {
-    activeRequest?: Request;
     activeRoom?: ChatRoom;
 }) => {
-    const scroll = useRef<HTMLUListElement>(null);
+    const scroll = useRef<HTMLDivElement>(null);
     const sentMessages = useSentMessages((state) => state.messages);
-    const sentInit = useSentMessages((state) => state.init);
 
     const scrollToBottom = () => {
+        console.log("Scroll", scroll.current?.scrollHeight)
         scroll.current?.scrollTo({
             top: scroll.current?.scrollHeight,
         });
     };
 
-    useEffect(() => {
-        sentInit(activeRoom?.chatRoomId ?? undefined);
-    }, [activeRoom, activeRequest, sentInit]);
 
     useEffect(() => {
         scrollToBottom();
     }, [sentMessages]);
 
     return (
-        <Container sx={{height: "500px"}}>
-            <List
+            <Box
                 sx={{
+                flex: '1',
                 position: 'relative',
-                overflow: 'auto',
-                maxHeight: '100%',
-                '& ul': { padding: 0 },
+                overflowY: 'scroll',
+                scrollbarWidth: 'none',
+                width: "100%",
+                height: "100%",
+                display: 'flex',
+                flexDirection: "column",
+                flexWrap: 'nowrap',
+
                 }}
                 key={activeRoom?.chatRoomId ?? "empty"}
-                ref={scroll}
+                ref={scroll}                
             >
                 {activeRoom === undefined ? (
                     <></>
@@ -122,7 +122,6 @@ export const ChatContentItemList = ({
                         activeRoom: activeRoom,
                     })
                 )}
-            </List>
-        </Container>
+            </Box>
     );
 };

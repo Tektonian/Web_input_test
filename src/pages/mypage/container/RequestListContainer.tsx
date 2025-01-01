@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { RequestListSection } from "src/components/RequestListSection";
+import { RequestListSection } from "../../../components/RequestListSection";
 import { APIType } from "api_spec";
 import { useNavigate } from "react-router-dom";
 import { StudentReviewModal } from "../component/ReviewModal";
