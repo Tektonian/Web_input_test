@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Box, Container, Tab, Tabs, Grid2 as Grid } from "@mui/material";
-import { StudentIndexCard, ReviewOfStudentCard } from "web_component";
+import { Box, Container, Tab, Tabs } from "@mui/material";
+import { StudentIndexCard } from "web_component";
 import StudentProfileContainer from "./container/StudentProfileContainer";
-import RequestListContainer from "./container/RequestListContainer";
+import RequestListContainer from "../request/container/RequestListContainer";
 import StudentReviewContainer from "./container/StudentReviewContainer";
 const StudentMypage = () => {
     const [tabIndex, setTabIndex] = useState(0);

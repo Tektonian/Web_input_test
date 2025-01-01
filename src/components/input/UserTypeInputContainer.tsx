@@ -1,12 +1,11 @@
 import React from "react";
-import { Box, Card, Container } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import { Control } from "react-hook-form";
 import {
     BarNavigationCard,
     StudentStepperCard,
     UserTypeInput,
 } from "web_component";
-import NavigationButtons from "src/pages/student/components/NavigationButtons";
 
 interface UserTypeInputProps {
     onNext: () => void;

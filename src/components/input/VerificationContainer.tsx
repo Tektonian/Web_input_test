@@ -1,13 +1,10 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import { Box, Container } from "@mui/material";
-import { APIType } from "api_spec";
 import {
     BarNavigationCard,
-    CorpProfileInput,
     EmailTokenInput,
     StudentStepperCard,
 } from "web_component";
-import NavigationButtons from "src/pages/student/components/NavigationButtons";
 import { useForm, useWatch } from "react-hook-form";
 import { handleSendVerificationEmail } from "src/hooks/useEmail";
 

@@ -1,15 +1,14 @@
 import React from "react";
 import { Box, Container } from "@mui/material";
 import { useForm } from "react-hook-form";
-import StudentProfileInput from "../components/StudentProfileInput";
-import StudentStepperCard from "../components/StudentStepperCard";
-import NavigationButtons from "../components/NavigationButtons";
-import { useNavigate } from "react-router-dom";
-import { useSession } from "../../../hooks/Session";
+import {
+    StudentProfileInput,
+    StudentStepperCard,
+    BarNavigationCard,
+} from "web_component";
 import { APIType } from "api_spec";
 import AcademicHistoryListInput from "../components/AcademicHistoryListInput";
 import LanguageHistoryListInput from "../components/LanguageHistoryListInput";
-import { BarNavigationCard } from "web_component";
 
 interface StudentInfoInputProps {
     onNext: () => void;

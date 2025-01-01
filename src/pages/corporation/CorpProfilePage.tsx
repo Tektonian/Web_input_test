@@ -1,59 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
     Box,
     Container,
     Tab,
     Tabs,
     Typography,
-    Grid2 as Grid,
+    Card,
+    CardContent,
 } from "@mui/material";
-import {
-    CorpIndexCard,
-    RequestCard,
-    CorpProfileCard,
-    ReviewOfCorpCard,
-} from "web_component";
-import { APIType } from "api_spec";
-import { useParams } from "react-router-dom";
+import { CorpIndexCard } from "web_component";
+
+import RequestListContainer from "../request/container/RequestListContainer";
+import CorporationReviewContainer from "./container/CorporationReviewContainer";
+import CorporationProfileContainer from "./container/CorpProfileContainer";
 import { useNavigate } from "react-router-dom";
 
-const CorpProfilePage: React.FC = () => {
-    const [corpData, setCorpData] =
-        useState<APIType.CorporationType.ResGetCorpProfile | null>(null);
-    const { corp_id } = useParams();
+const CorpMypage = () => {
     const navigate = useNavigate();
-
     const [tabIndex, setTabIndex] = useState(0);
+
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabIndex(newValue);
     };
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(
-                    `http://localhost:8080/api/corporations/${corp_id}`,
-                    {
-                        method: "GET",
-                    },
-                );
-
-                const data: APIType.CorporationType.ResGetCorpProfile =
-                    await response.json();
-
-                console.log("data:", data);
-
-                setCorpData(data);
-            } catch (error) {
-                console.error("Error fetching corporation data", error);
-            }
-        };
-        fetchData(); //eslint-disable-line
-    }, []);
-
-    const pastRequests = corpData?.requests.filter(
-        (req) => req.request_status === 4 || req.request_status === 5,
-    );
 
     const sections = ["0", "1", "2", "3", "4"];
 
@@ -78,7 +46,7 @@ const CorpProfilePage: React.FC = () => {
                     padding: "0 !important",
                 }}
             >
-                {corpData && <CorpProfileCard {...corpData?.corp} />}
+                <CorporationProfileContainer />
 
                 <Box sx={{ marginTop: "24px" }}>
                     <Tabs
@@ -92,59 +60,41 @@ const CorpProfilePage: React.FC = () => {
                     </Tabs>
                 </Box>
 
-                {tabIndex === 0 && (
-                    <Box sx={{ marginTop: "24px" }}>
-                        <Typography
-                            variant="h6"
-                            sx={{ fontWeight: "bold", marginBottom: "16px" }}
-                        >
-                            과거 요청
-                        </Typography>
-                        {pastRequests?.map((request, index) => (
-                            <Box key={index} sx={{ marginTop: "16px" }}>
-                                <RequestCard
-                                    {...request}
-                                    address={request.address ?? ""}
-                                    request_status={request.request_status ?? 4}
-                                    renderLogo={false}
-                                    onClick={() =>
-                                        navigate(
-                                            `/request/${request.request_id}`,
-                                        )
-                                    }
-                                />
-                            </Box>
-                        ))}
-                    </Box>
-                )}
+                {tabIndex === 0 && <RequestListContainer />}
 
-                {tabIndex === 1 && (
-                    <Box sx={{ marginTop: "16px" }}>
-                        <Grid container spacing={3}>
-                            {corpData?.reviews.map((review, index) => (
-                                <Grid size={6} key={index}>
-                                    <ReviewOfCorpCard {...review} />
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </Box>
-                )}
+                {tabIndex === 1 && <CorporationReviewContainer />}
             </Container>
 
             <Container
                 sx={{
-                    width: { xs: "100%", md: "344px" }, // 작은 화면에서는 100% 폭
+                    width: { xs: "100%", md: "344px" },
                     padding: "0 !important",
-                    position: { xs: "relative", md: "sticky" }, // 작은 화면에서는 위치 고정 해제
-                    top: { md: "50%" }, // 중간 위치 (데스크톱만)
-                    transform: { md: "translateY(-50%)" }, // 중간 위치 조정 (데스크톱만)
-                    order: { xs: -1, md: 1 }, // 모바일에서 위로 이동
+                    position: { xs: "relative", md: "sticky" },
+                    top: { md: "50%" },
+                    transform: { md: "translateY(-50%)" },
+                    order: { xs: -1, md: 1 },
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "24px",
                 }}
             >
                 <CorpIndexCard />
+                <Card
+                    sx={{
+                        borderRadius: "16px",
+                        backgroundColor: "#ff7961",
+                    }}
+                    onClick={() => navigate(`/requestinput`)}
+                >
+                    <CardContent
+                        sx={{ textAlign: "center", padding: "8px !important" }}
+                    >
+                        <Typography>의뢰하기</Typography>
+                    </CardContent>
+                </Card>
             </Container>
         </Box>
     );
 };
 
-export default CorpProfilePage;
+export default CorpMypage;

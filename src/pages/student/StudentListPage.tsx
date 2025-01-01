@@ -102,7 +102,6 @@ const StudentListPage = () => {
                                     school={card.school_name}
                                     major={card.faculty}
                                     imageUrl=""
-                                    link={`http://localhost:3000/student/${card.student_id}`}
                                     languageWithLevel={[
                                         {
                                             language: "jp",

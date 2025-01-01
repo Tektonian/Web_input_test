@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { CorpIndexCard } from "web_component";
 
-import RequestListContainer from "./container/RequestListContainer";
+import RequestListContainer from "../request/container/RequestListContainer";
 import CorporationReviewContainer from "./container/CorporationReviewContainer";
 import CorporationProfileContainer from "./container/CorpProfileContainer";
 import { useNavigate } from "react-router-dom";

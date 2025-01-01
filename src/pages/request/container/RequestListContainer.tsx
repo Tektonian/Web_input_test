@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { RequestListSection } from "../../../components/RequestListSection";
 import { APIType } from "api_spec";
 import { useNavigate } from "react-router-dom";
-import { StudentReviewModal } from "../component/ReviewModal";
+import { StudentReviewModal } from "../../../components/ReviewModal";
 
 const RequestListContainer = () => {
     const [cardsData, setCardsData] =
