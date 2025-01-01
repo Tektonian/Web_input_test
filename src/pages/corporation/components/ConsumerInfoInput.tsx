@@ -1,27 +1,19 @@
 import React from "react";
-import { Controller } from "react-hook-form";
+import { Control, Controller } from "react-hook-form";
 import {
     TextField,
-    Button,
     Grid2 as Grid,
     Typography,
-    Container,
     Box,
     Card,
     CardContent,
 } from "@mui/material";
 
 interface ConsumerInfoInputProps {
-    control: any;
-    onNext: () => void;
-    onPrevious: () => void;
+    control: Control;
 }
 
-const ConsumerInfoInput: React.FC<ConsumerInfoInputProps> = ({
-    control,
-    onNext,
-    onPrevious,
-}) => {
+const ConsumerInfoInput: React.FC<ConsumerInfoInputProps> = ({ control }) => {
     return (
         <Card
             sx={{
@@ -49,7 +41,7 @@ const ConsumerInfoInput: React.FC<ConsumerInfoInputProps> = ({
                     <Grid container spacing={3}>
                         <Grid size={12}>
                             <Controller
-                                name="phone_number"
+                                name="phoneNumber"
                                 control={control}
                                 defaultValue=""
                                 render={({ field }) => (
@@ -61,27 +53,6 @@ const ConsumerInfoInput: React.FC<ConsumerInfoInputProps> = ({
                                     />
                                 )}
                             />
-                        </Grid>
-
-                        <Grid
-                            size={12}
-                            display="flex"
-                            justifyContent="space-between"
-                        >
-                            <Button
-                                variant="outlined"
-                                color="secondary"
-                                onClick={onPrevious}
-                            >
-                                Previous
-                            </Button>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={onNext}
-                            >
-                                Next
-                            </Button>
                         </Grid>
                     </Grid>
                 </Box>

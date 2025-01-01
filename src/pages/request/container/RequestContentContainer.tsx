@@ -1,16 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {
-    Box,
-    Container,
-    Typography,
-    Card,
-    CardContent,
-    Divider,
-} from "@mui/material";
-import { RequestDataCard, RequestSideCard } from "web_component";
-import { useParams } from "react-router-dom";
-import { APIType } from "api_spec";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { Box, Typography, Divider } from "@mui/material";
 
 interface RequestDataProps {
     title?: string;

@@ -2,18 +2,13 @@ import React from "react";
 import { useFieldArray } from "react-hook-form";
 import AcademicHistoryInput from "./AcademicHistoryInput";
 import { Box, Button, Card, CardContent } from "@mui/material";
-import { NavigationButton } from "web_component";
 
 interface AcademicHistoryListInputProps {
     control: any;
-    onNext: () => void;
-    onPrevious: () => void;
 }
 
 const AcademicHistoryListInput: React.FC<AcademicHistoryListInputProps> = ({
     control,
-    onNext,
-    onPrevious,
 }) => {
     const { fields, append, remove } = useFieldArray({
         control,
@@ -63,11 +58,6 @@ const AcademicHistoryListInput: React.FC<AcademicHistoryListInputProps> = ({
                     >
                         Add Academic History
                     </Button>
-                </Box>
-
-                <Box display="flex" justifyContent="space-between" mt={3}>
-                    <NavigationButton label="previous" onClick={onPrevious} />
-                    <NavigationButton label="next" onClick={onNext} />
                 </Box>
             </CardContent>
         </Card>
