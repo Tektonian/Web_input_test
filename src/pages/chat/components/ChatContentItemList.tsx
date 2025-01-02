@@ -5,7 +5,7 @@ import { Box, List } from "@mui/material";
 import type { ChatRoom, Request } from "../use-chat/Stores/ChatRoomStore";
 import { Message } from "web_component";
 
-import type { APIType } from "api_spec";
+import type { APIType } from "api_spec/types";
 type MessageContent = APIType.ContentType.MessageContent;
 
 const MessageRender = ({

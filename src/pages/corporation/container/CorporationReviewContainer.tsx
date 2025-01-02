@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Grid2 as Grid, useMediaQuery, useTheme } from "@mui/material";
 import { ReviewOfCorpCard } from "web_component";
-import { APIType } from "api_spec";
+import type { APIType } from "api_spec/types";
 
 interface CorporationReviewContainerProps {
     corp_id: number;

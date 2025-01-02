@@ -8,7 +8,6 @@ import { useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";
 import type { Request, ChatRoom } from "../use-chat/Stores/ChatRoomStore";
 import { Box } from "@mui/material";
 import { MessageHeader } from "web_component";
-import APIType from "api_spec";
 /**
  * For modal component
  */

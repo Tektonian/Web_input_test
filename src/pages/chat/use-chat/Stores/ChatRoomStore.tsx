@@ -5,11 +5,11 @@ import { TypedStorage } from "@toss/storage/typed";
 
 import type { IMessageStorage } from "./MessageStore";
 import type { UseBoundStore, StoreApi } from "zustand";
-import type { APIType } from "api_spec";
+import type { APIType } from "api_spec/types";
 
 type ResMessage = APIType.WebSocketType.ResMessage;
 type ResRefreshChatRoom = APIType.WebSocketType.ResRefreshChatRoom;
-type ResChatRoom = APIType.WebSocketType.ResChatRoom;
+type ResChatRoom = APIType.ChatRoomType.ResChatRoom;
 
 export interface ChatUserProfile {
     user_name: string;

@@ -2,7 +2,7 @@ import React from "react";
 import { Modal } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { ReviewOfCorpInput, ReviewOfStudentInput } from "web_component";
-import { APIType } from "api_spec";
+import type { APIType } from "api_spec/types";
 
 interface ReviewModalProps {
     open: boolean;

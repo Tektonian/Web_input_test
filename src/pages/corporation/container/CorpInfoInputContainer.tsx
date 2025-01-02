@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Container, useMediaQuery, useTheme } from "@mui/material";
-import { APIType } from "api_spec";
+import type { APIType } from "api_spec/types";
 import CorpNumInput from "../components/CorpNumInput";
 import {
     BarNavigationCard,

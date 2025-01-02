@@ -7,7 +7,7 @@ import {
 } from "./Stores/MessageStore";
 import { useChatRoomStore } from "./Stores/ChatRoomStore";
 import { Socket } from "socket.io-client";
-import { APIType } from "api_spec";
+import type { APIType } from "api_spec/types";
 
 type ReqSendMessage = APIType.WebSocketType.ReqSendMessage;
 type MessageContentType = APIType.ContentType.MessageContentType;
@@ -156,6 +156,10 @@ export const useSocket = () => {
         });
 
         socket.on("refreshChatRooms", (res) => {
+            const { requests } = res;
+            if (requests.length === 0) {
+                throw new Error("No request exist");
+            }
             console.log("Refresh chatrooms", res);
             updateOnRefresh(res);
         });

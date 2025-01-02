@@ -43,7 +43,7 @@ export const useRequest = () => {
     const setCheckBoxMode = () => {
         const selected = activeRequest?.selected;
 
-        if (!selected) {
+        if (!selected || !activeRequest || activeRequest.requestStatus >= 3) {
             return;
         }
 

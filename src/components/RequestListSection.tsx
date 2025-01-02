@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import { RequestCard } from "web_component";
-import { APIType } from "api_spec";
+import type { APIType } from "api_spec/types";
 
 interface RequestListProps {
     title: string;

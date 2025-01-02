@@ -6,7 +6,7 @@ import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import { useSocketTextMutation } from "../use-chat/useSocket";
 import { Message } from "web_component";
 
-import type { APIType } from "api_spec";
+import type { APIType } from "api_spec/types";
 type MessageContent = APIType.ContentType.MessageContent;
 type MessageContentType = APIType.ContentType.MessageContentType;
 

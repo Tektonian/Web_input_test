@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { RequestSideCard } from "web_component";
 import { useParams } from "react-router-dom";
-import { APIType } from "api_spec";
+import type { APIType } from "api_spec/types";
 import RequestContentContainer from "./container/RequestContentContainer";
 import ConsumerContainer from "./container/ConsumerContainer";
 import OtherRequestContainer from "./container/OtherRequestContainer";
