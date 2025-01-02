@@ -13,7 +13,6 @@ import StudentListPage from "./pages/student/StudentListPage";
 import Header from "./pages/home/components/Header";
 import HomePage from "./pages/home/HomePage";
 import RequestListPage from "./pages/request/RequestListPage";
-import StudentMypage from "./pages/mypage/StudentMypage";
 
 const queryClient = new QueryClient();
 
@@ -56,10 +55,6 @@ function App() {
                             <Route
                                 path="/student/list/:request_id"
                                 element={<StudentListPage />}
-                            />
-                            <Route
-                                path="/studentmypage"
-                                element={<StudentMypage />}
                             />
                         </Routes>
                     </main>

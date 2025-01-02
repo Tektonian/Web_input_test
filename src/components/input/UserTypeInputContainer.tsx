@@ -1,12 +1,11 @@
 import React from "react";
-import { Box, Card, Container } from "@mui/material";
+import { Box, Container, useMediaQuery, useTheme } from "@mui/material";
 import { Control } from "react-hook-form";
 import {
     BarNavigationCard,
     StudentStepperCard,
     UserTypeInput,
 } from "web_component";
-import NavigationButtons from "src/pages/student/components/NavigationButtons";
 
 interface UserTypeInputProps {
     onNext: () => void;
@@ -16,18 +15,23 @@ const UserTypeInputContainer: React.FC<UserTypeInputProps> = ({
     onNext,
     control,
 }) => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     return (
         <Box
             sx={{
                 display: "flex",
-                flexDirection: "row",
+                flexDirection: { xs: "column", md: "row" },
                 justifyContent: "center",
                 alignItems: "flex-start",
                 gap: "24px",
                 maxWidth: "1080px",
-                margin: "auto",
                 padding: "16px",
-                minHeight: "100vh",
+                overflow: "hidden",
+                width: "100%",
+                height: "100vh",
+                boxSizing: "border-box",
+                margin: "auto",
             }}
         >
             <Container
@@ -46,13 +50,12 @@ const UserTypeInputContainer: React.FC<UserTypeInputProps> = ({
                     position: { xs: "relative", md: "sticky" },
                     top: { md: "50%" },
                     transform: { md: "translateY(-50%)" },
-                    order: { xs: -1, md: 1 },
                     display: "flex",
                     flexDirection: "column",
                     gap: "24px",
                 }}
             >
-                <StudentStepperCard currentStep={1} />
+                {!isMobile && <StudentStepperCard currentStep={1} />}
                 <BarNavigationCard onNext={onNext} onPrevious={() => {}} />
             </Container>
         </Box>

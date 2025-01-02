@@ -11,7 +11,6 @@ import {
 import { RequestSideCard } from "web_component";
 import { useParams } from "react-router-dom";
 import { APIType } from "api_spec";
-import { useNavigate } from "react-router-dom";
 import RequestContentContainer from "./container/RequestContentContainer";
 import ConsumerContainer from "./container/ConsumerContainer";
 import OtherRequestContainer from "./container/OtherRequestContainer";
@@ -51,17 +50,25 @@ const RequestPage = () => {
         <Box
             sx={{
                 display: "flex",
-                flexDirection: "row",
+                flexDirection: { xs: "column", md: "row" },
                 justifyContent: "center",
                 alignItems: "flex-start",
                 gap: "24px",
                 maxWidth: "1080px",
-                margin: "auto",
                 padding: "16px",
-                minHeight: "100vh",
+                overflow: "hidden",
+                width: "100%",
+                height: "100vh",
+                boxSizing: "border-box",
+                margin: "auto",
             }}
         >
-            <Container sx={{ width: "712px", padding: "0 !important" }}>
+            <Container
+                sx={{
+                    width: { xs: "100%", md: "712px" },
+                    padding: "0 !important",
+                }}
+            >
                 <Card
                     sx={{
                         maxWidth: 1080,

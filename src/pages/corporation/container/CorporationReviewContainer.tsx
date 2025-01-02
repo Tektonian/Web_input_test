@@ -1,19 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { Box, Grid2 as Grid } from "@mui/material";
+import { Box, Grid2 as Grid, useMediaQuery, useTheme } from "@mui/material";
 import { ReviewOfCorpCard } from "web_component";
 import { APIType } from "api_spec";
 
-const CorporationReviewContainer = () => {
+interface CorporationReviewContainerProps {
+    corp_id: number;
+}
+
+const CorporationReviewContainer: React.FC<CorporationReviewContainerProps> = ({
+    corp_id,
+}) => {
     const [corpReview, setCorpReviews] =
         useState<APIType.CorporationReviewType.ResGetCorpReview>();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`/api/corporation-review`, {
-                    method: "GET",
-                    credentials: "include",
-                });
+                const response = await fetch(
+                    `/api/corporation-reviews/${corp_id}`,
+                    {
+                        method: "GET",
+                        credentials: "include",
+                    },
+                );
                 const data: APIType.CorporationReviewType.ResGetCorpReview =
                     await response.json();
                 setCorpReviews(data);
@@ -29,7 +40,7 @@ const CorporationReviewContainer = () => {
             <Box sx={{ marginTop: "16px" }}>
                 <Grid container spacing={3}>
                     {corpReview?.review.map((review, index) => (
-                        <Grid size={6} key={index}>
+                        <Grid size={isMobile ? 12 : 6} key={index}>
                             <ReviewOfCorpCard {...review} />
                         </Grid>
                     ))}

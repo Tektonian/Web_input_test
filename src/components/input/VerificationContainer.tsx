@@ -1,13 +1,10 @@
-import React, { useRef, useState } from "react";
-import { Box, Container } from "@mui/material";
-import { APIType } from "api_spec";
+import React from "react";
+import { Box, Container, useMediaQuery, useTheme } from "@mui/material";
 import {
     BarNavigationCard,
-    CorpProfileInput,
     EmailTokenInput,
     StudentStepperCard,
 } from "web_component";
-import NavigationButtons from "src/pages/student/components/NavigationButtons";
 import { useForm, useWatch } from "react-hook-form";
 import { handleSendVerificationEmail } from "src/hooks/useEmail";
 
@@ -24,6 +21,8 @@ const VerificationContainer: React.FC<CorpInfoInputProps> = ({
     consumerData,
 }) => {
     const { control, handleSubmit } = useForm();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
     const verifyEmail = useWatch({
         control,
@@ -67,14 +66,17 @@ const VerificationContainer: React.FC<CorpInfoInputProps> = ({
         <Box
             sx={{
                 display: "flex",
-                flexDirection: "row",
+                flexDirection: { xs: "column", md: "row" },
                 justifyContent: "center",
                 alignItems: "flex-start",
                 gap: "24px",
                 maxWidth: "1080px",
-                margin: "auto",
                 padding: "16px",
-                minHeight: "100vh",
+                overflow: "hidden",
+                width: "100%",
+                height: "100vh",
+                boxSizing: "border-box",
+                margin: "auto",
             }}
         >
             <Container
@@ -97,13 +99,12 @@ const VerificationContainer: React.FC<CorpInfoInputProps> = ({
                     position: { xs: "relative", md: "sticky" },
                     top: { md: "50%" },
                     transform: { md: "translateY(-50%)" },
-                    order: { xs: -1, md: 1 },
                     display: "flex",
                     flexDirection: "column",
                     gap: "24px",
                 }}
             >
-                <StudentStepperCard currentStep={3} />
+                {!isMobile && <StudentStepperCard currentStep={3} />}
                 <BarNavigationCard
                     onNext={handleSubmit(onSubmit)}
                     onPrevious={onPrevious}

@@ -2,28 +2,52 @@ import React, { useState, useEffect } from "react";
 import { RequestListSection } from "../../../components/RequestListSection";
 import { APIType } from "api_spec";
 import { useNavigate } from "react-router-dom";
-import { StudentReviewModal } from "../component/ReviewModal";
+import { StudentReviewModal } from "../../../components/ReviewModal";
 
-const RequestListContainer = () => {
+interface RequestListContainerProps {
+    student_id?: number;
+    corp_id?: number;
+    orgn_id?: number;
+}
+
+const RequestListContainer: React.FC<RequestListContainerProps> = ({
+    student_id,
+    corp_id,
+    orgn_id,
+}) => {
     const [cardsData, setCardsData] =
         useState<APIType.RequestType.ResAllRequestCard>({
             requests: [],
         });
     const [open, setOpen] = useState<boolean>(false);
     const navigate = useNavigate();
+    const body = {
+        student_id: student_id,
+        corp_id: corp_id,
+        orgn_id: orgn_id,
+    };
 
     useEffect(() => {
         const fetchData = async () => {
+            console.log(body);
             try {
-                const response = await fetch(`/api/requests/list`, {
-                    method: "GET",
-                    credentials: "include",
-                });
+                const response = await fetch(
+                    `http://localhost:8080/api/requests/list`,
+                    {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(body),
+                    },
+                );
                 const data: APIType.RequestType.ResAllRequestCard =
                     await response.json();
+                console.log("Request Data:", data);
                 setCardsData(data);
             } catch (error) {
-                console.error("Error fetching corporation data", error);
+                console.error("Error fetching request data", error);
             }
         };
         fetchData(); // eslint-disable-line

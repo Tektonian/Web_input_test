@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Container } from "@mui/material";
+import { Box, Container, useMediaQuery, useTheme } from "@mui/material";
 import { APIType } from "api_spec";
 import CorpNumInput from "../components/CorpNumInput";
 import {
@@ -23,6 +23,8 @@ const CorpInfoInputContainer: React.FC<CorpInfoInputProps> = ({
     const { control, handleSubmit } = useForm();
     const [corpData, setCorpData] =
         useState<APIType.CorporationType.ReqCreateCorpProfile>();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
     const phoneNumber = useWatch({
         control,
@@ -61,14 +63,17 @@ const CorpInfoInputContainer: React.FC<CorpInfoInputProps> = ({
         <Box
             sx={{
                 display: "flex",
-                flexDirection: "row",
+                flexDirection: { xs: "column", md: "row" },
                 justifyContent: "center",
                 alignItems: "flex-start",
                 gap: "24px",
                 maxWidth: "1080px",
-                margin: "auto",
                 padding: "16px",
-                minHeight: "100vh",
+                overflow: "hidden",
+                width: "100%",
+                height: "100vh",
+                boxSizing: "border-box",
+                margin: "auto",
             }}
         >
             <Container
@@ -94,13 +99,12 @@ const CorpInfoInputContainer: React.FC<CorpInfoInputProps> = ({
                     position: { xs: "relative", md: "sticky" },
                     top: { md: "50%" },
                     transform: { md: "translateY(-50%)" },
-                    order: { xs: -1, md: 1 },
                     display: "flex",
                     flexDirection: "column",
                     gap: "24px",
                 }}
             >
-                <StudentStepperCard currentStep={1} />
+                {!isMobile && <StudentStepperCard currentStep={1} />}
                 <BarNavigationCard
                     onNext={handleSubmit(onSubmit)}
                     onPrevious={onPrevious}

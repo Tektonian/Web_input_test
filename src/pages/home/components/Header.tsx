@@ -9,6 +9,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useSession } from "../../../hooks/Session";
 import tektonianLogo from "./tektonian_logo.png";
 import { Container } from "@radix-ui/themes";
+import { useMediaQuery, useTheme } from "@mui/material";
 
 const StyledToolbar = styled(Toolbar)(({ theme }: any) => ({
     display: "flex",
@@ -29,8 +30,11 @@ const Header = () => {
     const roles = session?.user?.roles || [];
     const navigate = useNavigate();
     const location = useLocation();
+    const theme = useTheme();
 
-    if (location.pathname === "/chat") {
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+    if (location.pathname === "/chat" || isMobile) {
         return null;
     }
 

@@ -1,11 +1,25 @@
 import React, { useState } from "react";
-import { Box, Container, Tab, Tabs, Grid2 as Grid } from "@mui/material";
-import { StudentIndexCard, ReviewOfStudentCard } from "web_component";
-import StudentProfileContainer from "./container/StudentProfileContainer";
-import RequestListContainer from "./container/RequestListContainer";
-import StudentReviewContainer from "./container/StudentReviewContainer";
-const StudentMypage = () => {
+import {
+    Box,
+    Container,
+    Tab,
+    Tabs,
+    Typography,
+    Card,
+    CardContent,
+} from "@mui/material";
+import { CorpIndexCard } from "web_component";
+
+import RequestListContainer from "../request/container/RequestListContainer";
+import CorporationReviewContainer from "./container/CorporationReviewContainer";
+import CorporationProfileContainer from "./container/CorpProfileContainer";
+import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
+const CorpMypage = () => {
+    const navigate = useNavigate();
     const [tabIndex, setTabIndex] = useState(0);
+    const { corp_id: corp_id } = useParams();
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabIndex(newValue);
@@ -17,7 +31,7 @@ const StudentMypage = () => {
         <Box
             sx={{
                 display: "flex",
-                flexDirection: "row",
+                flexDirection: { xs: "column", md: "row" },
                 justifyContent: "center",
                 alignItems: "flex-start",
                 gap: "24px",
@@ -34,7 +48,7 @@ const StudentMypage = () => {
                     padding: "0 !important",
                 }}
             >
-                <StudentProfileContainer />
+                <CorporationProfileContainer corp_id={Number(corp_id)} />
 
                 <Box sx={{ marginTop: "24px" }}>
                     <Tabs
@@ -48,8 +62,13 @@ const StudentMypage = () => {
                     </Tabs>
                 </Box>
 
-                {tabIndex === 0 && <RequestListContainer />}
-                {tabIndex === 1 && <StudentReviewContainer />}
+                {tabIndex === 0 && (
+                    <RequestListContainer corp_id={Number(corp_id)} />
+                )}
+
+                {tabIndex === 1 && (
+                    <CorporationReviewContainer corp_id={Number(corp_id)} />
+                )}
             </Container>
 
             <Container
@@ -60,12 +79,28 @@ const StudentMypage = () => {
                     top: { md: "50%" },
                     transform: { md: "translateY(-50%)" },
                     order: { xs: -1, md: 1 },
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "24px",
                 }}
             >
-                <StudentIndexCard sections={sections} />
+                <CorpIndexCard />
+                <Card
+                    sx={{
+                        borderRadius: "16px",
+                        backgroundColor: "#ff7961",
+                    }}
+                    onClick={() => navigate(`/requestinput`)}
+                >
+                    <CardContent
+                        sx={{ textAlign: "center", padding: "8px !important" }}
+                    >
+                        <Typography>의뢰하기</Typography>
+                    </CardContent>
+                </Card>
             </Container>
         </Box>
     );
 };
 
-export default StudentMypage;
+export default CorpMypage;

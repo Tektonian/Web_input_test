@@ -1,20 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { Box, Grid2 as Grid } from "@mui/material";
+import { Box, Grid2 as Grid, useMediaQuery, useTheme } from "@mui/material";
 import { ReviewOfStudentCard } from "web_component";
 import { APIType } from "api_spec";
 
-const StudentReviewContainer = () => {
+interface StudentReviewContainerProps {
+    student_id: number;
+}
+const StudentReviewContainer: React.FC<StudentReviewContainerProps> = ({
+    student_id,
+}) => {
     const [reviews, setReviews] = useState<
         APIType.StudentReviewType.StudentReviewData[]
     >([]);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`/api/student-review`, {
-                    method: "GET",
-                    credentials: "include",
-                });
+                const response = await fetch(
+                    `http://localhost:8080/api/student-reviews/${student_id}`,
+                    {
+                        method: "GET",
+                        credentials: "include",
+                    },
+                );
                 const data: APIType.StudentReviewType.StudentReviewData[] =
                     await response.json();
                 setReviews(data);
@@ -30,7 +40,7 @@ const StudentReviewContainer = () => {
             <Box sx={{ marginTop: "16px" }}>
                 <Grid container spacing={3}>
                     {reviews.map((review, index) => (
-                        <Grid size={6} key={index}>
+                        <Grid size={isMobile ? 12 : 6} key={index}>
                             <ReviewOfStudentCard {...review} />
                         </Grid>
                     ))}

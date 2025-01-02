@@ -3,7 +3,6 @@ import {
     Container,
     Typography,
     Box,
-    Grid2 as Grid,
     Divider,
     CircularProgress,
 } from "@mui/material";
@@ -51,64 +50,55 @@ const RequestListPage: React.FC = () => {
     }, []);
 
     return (
-        <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-            py={4}
+        <Container
+            sx={{
+                py: 4,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                maxWidth: "1080px",
+                width: "100%",
+                height: "100vh",
+            }}
         >
-            <Container maxWidth="md">
-                <Box mb={3}>
-                    <Typography
-                        variant="h4"
-                        component="div"
-                        fontWeight="bold"
-                        gutterBottom
-                    >
-                        요청 리스트
-                    </Typography>
-                    <Divider />
+            {!isSuccess ? (
+                <Box display="flex" justifyContent="center" py={4}>
+                    <CircularProgress />
                 </Box>
-
-                {!isSuccess ? (
-                    <Box display="flex" justifyContent="center" py={4}>
-                        <CircularProgress />
-                    </Box>
-                ) : isSuccess ? (
-                    <Grid container spacing={2}>
-                        {data.map(
-                            (
-                                request: APIType.RequestType.RequestCard,
-                                idx: number,
-                            ) => (
-                                <Grid size={12} key={idx}>
-                                    <RequestCard
-                                        title={request.title}
-                                        reward_price={request.reward_price}
-                                        currency={request.currency}
-                                        address={request.address ?? ""}
-                                        start_date={request.start_date}
-                                        logo_image={request.logo_image}
-                                        onClick={() =>
-                                            navigate(
-                                                `/request/${request.request_id}`,
-                                            )
-                                        }
-                                        renderLogo={true}
-                                        request_status={1}
-                                    />
-                                </Grid>
-                            ),
-                        )}
-                    </Grid>
-                ) : (
-                    <Typography color="error" variant="body1">
-                        데이터를 불러올 수 없습니다.
-                    </Typography>
-                )}
-            </Container>
-        </Box>
+            ) : isSuccess ? (
+                <Box display="flex" flexDirection="column" gap={2} width="100%">
+                    {data.map(
+                        (
+                            request: APIType.RequestType.RequestCard,
+                            idx: number,
+                        ) => (
+                            <Box flex={1}>
+                                <RequestCard
+                                    title={request.title}
+                                    reward_price={request.reward_price}
+                                    currency={request.currency}
+                                    address={request.address ?? ""}
+                                    start_date={request.start_date}
+                                    logo_image={request.logo_image}
+                                    onClick={() =>
+                                        navigate(
+                                            `/request/${request.request_id}`,
+                                        )
+                                    }
+                                    renderLogo={true}
+                                    request_status={1}
+                                />
+                            </Box>
+                        ),
+                    )}
+                </Box>
+            ) : (
+                <Typography color="error" variant="body1">
+                    데이터를 불러올 수 없습니다.
+                </Typography>
+            )}
+        </Container>
     );
 };
 
