@@ -14,10 +14,12 @@ import RequestListContainer from "../request/container/RequestListContainer";
 import CorporationReviewContainer from "./container/CorporationReviewContainer";
 import CorporationProfileContainer from "./container/CorpProfileContainer";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const CorpMypage = () => {
     const navigate = useNavigate();
     const [tabIndex, setTabIndex] = useState(0);
+    const { corp_id: corp_id } = useParams();
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabIndex(newValue);
@@ -46,7 +48,7 @@ const CorpMypage = () => {
                     padding: "0 !important",
                 }}
             >
-                <CorporationProfileContainer />
+                <CorporationProfileContainer corp_id={Number(corp_id)} />
 
                 <Box sx={{ marginTop: "24px" }}>
                     <Tabs
@@ -60,9 +62,13 @@ const CorpMypage = () => {
                     </Tabs>
                 </Box>
 
-                {tabIndex === 0 && <RequestListContainer />}
+                {tabIndex === 0 && (
+                    <RequestListContainer corp_id={Number(corp_id)} />
+                )}
 
-                {tabIndex === 1 && <CorporationReviewContainer />}
+                {tabIndex === 1 && (
+                    <CorporationReviewContainer corp_id={Number(corp_id)} />
+                )}
             </Container>
 
             <Container

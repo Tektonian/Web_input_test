@@ -3,17 +3,26 @@ import { Box, Grid2 as Grid } from "@mui/material";
 import { ReviewOfCorpCard } from "web_component";
 import { APIType } from "api_spec";
 
-const CorporationReviewContainer = () => {
+interface CorporationReviewContainerProps {
+    corp_id: number;
+}
+
+const CorporationReviewContainer: React.FC<CorporationReviewContainerProps> = ({
+    corp_id,
+}) => {
     const [corpReview, setCorpReviews] =
         useState<APIType.CorporationReviewType.ResGetCorpReview>();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`/api/corporation-review`, {
-                    method: "GET",
-                    credentials: "include",
-                });
+                const response = await fetch(
+                    `/api/corporation-reviews/${corp_id}`,
+                    {
+                        method: "GET",
+                        credentials: "include",
+                    },
+                );
                 const data: APIType.CorporationReviewType.ResGetCorpReview =
                     await response.json();
                 setCorpReviews(data);

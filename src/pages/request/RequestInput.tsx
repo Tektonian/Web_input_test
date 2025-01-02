@@ -84,7 +84,18 @@ const RequestInput = () => {
     };
 
     return (
-        <Container>
+        <Container
+            sx={{
+                py: 4,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                maxWidth: "1080px",
+                width: "100%",
+                height: "100vh",
+            }}
+        >
             <Typography variant="h4" gutterBottom>
                 Request Form
             </Typography>

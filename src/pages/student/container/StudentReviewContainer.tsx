@@ -3,7 +3,12 @@ import { Box, Grid2 as Grid } from "@mui/material";
 import { ReviewOfStudentCard } from "web_component";
 import { APIType } from "api_spec";
 
-const StudentReviewContainer = () => {
+interface StudentReviewContainerProps {
+    student_id: number;
+}
+const StudentReviewContainer: React.FC<StudentReviewContainerProps> = ({
+    student_id,
+}) => {
     const [reviews, setReviews] = useState<
         APIType.StudentReviewType.StudentReviewData[]
     >([]);
@@ -11,10 +16,13 @@ const StudentReviewContainer = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`/api/student-review`, {
-                    method: "GET",
-                    credentials: "include",
-                });
+                const response = await fetch(
+                    `http://localhost:8080/api/student-reviews/${student_id}`,
+                    {
+                        method: "GET",
+                        credentials: "include",
+                    },
+                );
                 const data: APIType.StudentReviewType.StudentReviewData[] =
                     await response.json();
                 setReviews(data);

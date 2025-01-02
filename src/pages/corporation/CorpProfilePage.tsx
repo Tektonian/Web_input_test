@@ -7,6 +7,8 @@ import {
     Typography,
     Card,
     CardContent,
+    useMediaQuery,
+    useTheme,
 } from "@mui/material";
 import { CorpIndexCard } from "web_component";
 
@@ -14,10 +16,14 @@ import RequestListContainer from "../request/container/RequestListContainer";
 import CorporationReviewContainer from "./container/CorporationReviewContainer";
 import CorporationProfileContainer from "./container/CorpProfileContainer";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const CorpMypage = () => {
     const navigate = useNavigate();
     const [tabIndex, setTabIndex] = useState(0);
+    const { corp_id: corp_id } = useParams();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabIndex(newValue);
@@ -34,11 +40,13 @@ const CorpMypage = () => {
                 alignItems: "flex-start",
                 gap: "24px",
                 maxWidth: "1080px",
-                margin: "auto",
                 padding: "16px",
-                minHeight: "100vh",
+                overflow: "hidden",
+                width: "100%",
+                height: "100vh",
+                boxSizing: "border-box",
+                margin: "auto",
             }}
-            id={sections[0]}
         >
             <Container
                 sx={{
@@ -46,7 +54,7 @@ const CorpMypage = () => {
                     padding: "0 !important",
                 }}
             >
-                <CorporationProfileContainer />
+                <CorporationProfileContainer corp_id={Number(corp_id)} />
 
                 <Box sx={{ marginTop: "24px" }}>
                     <Tabs
@@ -60,9 +68,13 @@ const CorpMypage = () => {
                     </Tabs>
                 </Box>
 
-                {tabIndex === 0 && <RequestListContainer />}
+                {tabIndex === 0 && (
+                    <RequestListContainer corp_id={Number(corp_id)} />
+                )}
 
-                {tabIndex === 1 && <CorporationReviewContainer />}
+                {tabIndex === 1 && (
+                    <CorporationReviewContainer corp_id={Number(corp_id)} />
+                )}
             </Container>
 
             <Container
@@ -78,7 +90,7 @@ const CorpMypage = () => {
                     gap: "24px",
                 }}
             >
-                <CorpIndexCard />
+                {!isMobile && <CorpIndexCard />}
                 <Card
                     sx={{
                         borderRadius: "16px",

@@ -4,8 +4,11 @@ import { StudentIndexCard } from "web_component";
 import StudentProfileContainer from "./container/StudentProfileContainer";
 import RequestListContainer from "../request/container/RequestListContainer";
 import StudentReviewContainer from "./container/StudentReviewContainer";
+import { useParams } from "react-router-dom";
+
 const StudentMypage = () => {
     const [tabIndex, setTabIndex] = useState(0);
+    const { student_id: student_id } = useParams();
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabIndex(newValue);
@@ -34,7 +37,7 @@ const StudentMypage = () => {
                     padding: "0 !important",
                 }}
             >
-                <StudentProfileContainer />
+                <StudentProfileContainer student_id={Number(student_id)} />
 
                 <Box sx={{ marginTop: "24px" }}>
                     <Tabs
@@ -48,8 +51,12 @@ const StudentMypage = () => {
                     </Tabs>
                 </Box>
 
-                {tabIndex === 0 && <RequestListContainer />}
-                {tabIndex === 1 && <StudentReviewContainer />}
+                {tabIndex === 0 && (
+                    <RequestListContainer student_id={Number(student_id)} />
+                )}
+                {tabIndex === 1 && (
+                    <StudentReviewContainer student_id={Number(student_id)} />
+                )}
             </Container>
 
             <Container

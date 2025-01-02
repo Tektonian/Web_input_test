@@ -2,14 +2,20 @@ import React, { useState, useEffect } from "react";
 import { CorpProfileCard } from "web_component";
 import { APIType } from "api_spec";
 
-const CorporationProfileContainer = () => {
+interface CorporationProfileContainerProps {
+    corp_id: number;
+}
+
+const CorporationProfileContainer: React.FC<
+    CorporationProfileContainerProps
+> = ({ corp_id }) => {
     const [corpData, setCorporationData] =
         useState<APIType.CorporationType.ResGetCorpProfile | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`/api/corporations/`, {
+                const response = await fetch(`/api/corporations/${corp_id}`, {
                     method: "GET",
                     credentials: "include",
                 });
