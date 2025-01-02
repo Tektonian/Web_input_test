@@ -112,8 +112,6 @@ export const InputItem = (props: InputItemProps) => {
             p={2}
             sx={{
                 width: "99%",
-                height: "5vh",
-                overflow: "visible",
                 position: "relative",
             }}
         >

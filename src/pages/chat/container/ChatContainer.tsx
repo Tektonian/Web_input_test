@@ -11,9 +11,9 @@ export const ChatContainer = () => {
         <Stack
             flex={1}
             minWidth="200px"
-            minHeight="300px"
+            minHeight="100%"
             width="100%"
-            height="auto"
+            alignItems="stretch"
             flexDirection="column"
             sx={{
                 display: {
