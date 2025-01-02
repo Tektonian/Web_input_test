@@ -9,7 +9,7 @@ import DeleteButton from "./ChatRoomHeader/DeleteButton";
 import { ChatRoomHeader as ChatRoomHeaderComponent } from "web_component";
 import { MenuButton } from "web_component";
 import RequestApproveDiagram from "./ChatRoomHeader/RequestApprove";
-
+import RequestFinishDiagram from "./ChatRoomHeader/RequestFinish";
 export const ChatRoomHeader = () => {
     const activeRequest = useChatRoomStore((state) => state.activeRequest);
     const checkBoxMode = useCheckBoxStore((state) => state.checkBoxMode);
@@ -38,7 +38,11 @@ export const ChatRoomHeader = () => {
                         ? [
                               <MenuButton.MenuButton trigger={<MenuIcon />}>
                                   <MenuButton.Item>
-                                      {<RequestApproveDiagram />}
+                                      {activeRequest?.requestStatus === 3 ? (
+                                          <RequestFinishDiagram />
+                                      ) : (
+                                          <RequestApproveDiagram />
+                                      )}
                                   </MenuButton.Item>
                               </MenuButton.MenuButton>,
                           ]
