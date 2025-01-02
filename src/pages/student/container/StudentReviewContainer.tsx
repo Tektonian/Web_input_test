@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Grid2 as Grid } from "@mui/material";
+import { Box, Grid2 as Grid, useMediaQuery, useTheme } from "@mui/material";
 import { ReviewOfStudentCard } from "web_component";
 import { APIType } from "api_spec";
 
@@ -12,6 +12,8 @@ const StudentReviewContainer: React.FC<StudentReviewContainerProps> = ({
     const [reviews, setReviews] = useState<
         APIType.StudentReviewType.StudentReviewData[]
     >([]);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
     useEffect(() => {
         const fetchData = async () => {
@@ -38,7 +40,7 @@ const StudentReviewContainer: React.FC<StudentReviewContainerProps> = ({
             <Box sx={{ marginTop: "16px" }}>
                 <Grid container spacing={3}>
                     {reviews.map((review, index) => (
-                        <Grid size={6} key={index}>
+                        <Grid size={isMobile ? 12 : 6} key={index}>
                             <ReviewOfStudentCard {...review} />
                         </Grid>
                     ))}
