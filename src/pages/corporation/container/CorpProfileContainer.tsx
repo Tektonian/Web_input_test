@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { CorpProfileCard } from "web_component";
-import { APIType } from "api_spec";
+import type { APIType } from "api_spec/types";
 
 interface CorporationProfileContainerProps {
     corp_id: number;

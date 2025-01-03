@@ -7,7 +7,7 @@ import {
 } from "./Stores/MessageStore";
 import { useChatRoomStore } from "./Stores/ChatRoomStore";
 import { Socket } from "socket.io-client";
-import { APIType } from "api_spec";
+import type { APIType } from "api_spec/types";
 
 type ReqSendMessage = APIType.WebSocketType.ReqSendMessage;
 type MessageContentType = APIType.ContentType.MessageContentType;
@@ -54,6 +54,7 @@ export const useSocket = () => {
         activeRequest,
         setTempId,
         setActiveRoom,
+        getChatRoom,
         updateOnReceive,
         updateOnRefresh,
     } = useChatRoomStore((state) => state);
@@ -105,16 +106,21 @@ export const useSocket = () => {
         });
 
         try {
+            const chatRoom = getChatRoom(chatRoomId);
             const res = await socket.timeout(500).emitWithAck("userTryJoin", {
                 chatRoomId: chatRoomId,
-                deviceLastSeq: 0, // TODO: fix index
+                deviceLastSeq: chatRoom?.lastReadSeq ?? 0,
                 id: tempId,
             });
             console.log("User try join", res);
             await initSentStorage(chatRoomId);
             const { messages, lastReadSequences }: ResTryJoin = JSON.parse(res);
             const data = messages.map((m: ResMessage) => resMsgToContent(m));
-            await setSentMessageByIdx(chatRoomId, data, 0); // TODO: fix index
+            await setSentMessageByIdx(
+                chatRoomId,
+                data,
+                chatRoom?.lastReadSeq ?? 0,
+            ); // TODO: fix index
 
             await updateSentUnread(chatRoomId, lastReadSequences);
             const lastMsg = messages.at(-1);
@@ -150,6 +156,10 @@ export const useSocket = () => {
         });
 
         socket.on("refreshChatRooms", (res) => {
+            const { requests } = res;
+            if (requests.length === 0) {
+                throw new Error("No request exist");
+            }
             console.log("Refresh chatrooms", res);
             updateOnRefresh(res);
         });

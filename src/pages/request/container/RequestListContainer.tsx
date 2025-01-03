@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { RequestListSection } from "../../../components/RequestListSection";
-import { APIType } from "api_spec";
+import type { APIType } from "api_spec/types";
 import { useNavigate } from "react-router-dom";
 import { StudentReviewModal } from "../../../components/ReviewModal";
 

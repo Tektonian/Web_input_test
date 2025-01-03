@@ -4,7 +4,7 @@ import { useFunnel } from "../hooks/useFunnel";
 import UserTypeInputContainer from "../components/input/UserTypeInputContainer";
 import StudentInfoInputContainer from "./student/container/StudentInfoInputContainer";
 import CorpInfoInputContainer from "./corporation/container/CorpInfoInputContainer";
-import VerificationContainer from "src/components/input/VerificationContainer";
+import VerificationContainer from "../components/input/VerificationContainer";
 import { useNavigate } from "react-router-dom";
 import { InfoBoxF } from "@react-google-maps/api";
 

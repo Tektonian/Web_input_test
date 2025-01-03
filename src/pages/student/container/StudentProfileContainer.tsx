@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StudentProfileCard } from "web_component";
-import { APIType } from "api_spec";
+import type { APIType } from "api_spec/types";
 
 interface StudentProfileContainerProps {
     student_id: number;

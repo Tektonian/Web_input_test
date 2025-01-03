@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { CorpProfileCard } from "web_component";
-import { APIType } from "api_spec";
+import type { APIType } from "api_spec/types";
 import { useNavigate } from "react-router-dom";
 
 interface ConsumerContainerProps {

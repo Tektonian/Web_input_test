@@ -43,7 +43,7 @@ export const useRequest = () => {
     const setCheckBoxMode = () => {
         const selected = activeRequest?.selected;
 
-        if (!selected) {
+        if (!selected || !activeRequest || activeRequest.requestStatus >= 3) {
             return;
         }
 
@@ -104,5 +104,20 @@ export const useRequestQuery = () => {
         },
     });
 
-    return { updateProvider, updateStatusContract };
+    const updateStatusFinish = useMutation({
+        mutationFn: async () => {
+            const res = await fetch("/api/requests/status/finish", {
+                method: "post",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ request_id: activeRequest?.requestId }),
+            });
+
+            return res;
+        },
+    });
+
+    return { updateProvider, updateStatusContract, updateStatusFinish };
 };

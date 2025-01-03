@@ -6,7 +6,7 @@ import {
     StudentStepperCard,
     BarNavigationCard,
 } from "web_component";
-import { APIType } from "api_spec";
+import type { APIType } from "api_spec/types";
 import AcademicHistoryListInput from "../components/AcademicHistoryListInput";
 import LanguageHistoryListInput from "../components/LanguageHistoryListInput";
 

@@ -9,7 +9,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { RequestCard } from "web_component";
 import { useNavigate } from "react-router-dom";
-import { APIType } from "api_spec";
+import type { APIType } from "api_spec/types";
 
 const useRequestList = () => {
     const { mutate, data, isSuccess } = useMutation({

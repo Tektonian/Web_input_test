@@ -5,11 +5,11 @@ import { TypedStorage } from "@toss/storage/typed";
 
 import type { IMessageStorage } from "./MessageStore";
 import type { UseBoundStore, StoreApi } from "zustand";
-import type { APIType } from "api_spec";
+import type { APIType } from "api_spec/types";
 
 type ResMessage = APIType.WebSocketType.ResMessage;
 type ResRefreshChatRoom = APIType.WebSocketType.ResRefreshChatRoom;
-type ResChatRoom = APIType.WebSocketType.ResChatRoom;
+type ResChatRoom = APIType.ChatRoomType.ResChatRoom;
 
 export interface ChatUserProfile {
     user_name: string;
@@ -58,6 +58,7 @@ interface ChatRoomStore {
     setTempId: (id: string) => void;
     socket: Socket;
     setActiveRoom: (chatRoomId?: string) => void;
+    getChatRoom: (chatRoomId: string) => ChatRoom | undefined;
     setChatRooms: (chatRooms: ChatRoom[]) => void;
     updateOnReceive: (message: ResMessage) => void;
     updateOnRefresh: (res: ResRefreshChatRoom) => void;
@@ -279,6 +280,12 @@ const UpdateOnRefresh = (
     }
 };
 
+const GetChatRoom = (chatRoomId: string) => {
+    const chatRooms = chatRoomStorage.get()?.chatRooms ?? [];
+
+    return chatRooms.find((room) => room.chatRoomId === chatRoomId);
+};
+
 export const useChatRoomStore: UseBoundStore<StoreApi<ChatRoomStore>> =
     create<ChatRoomStore>((set) => ({
         renderRequest: [],
@@ -295,6 +302,7 @@ export const useChatRoomStore: UseBoundStore<StoreApi<ChatRoomStore>> =
             path: "/api/chat",
             autoConnect: false,
         }),
+        getChatRoom: (chatRoomId) => GetChatRoom(chatRoomId),
         setActiveRoom: (chatRoomId) =>
             set((state) => SetActiveRoom(state, chatRoomId)),
         setChatRooms: (chatRooms) => set(() => ({ renderChatRoom: chatRooms })),

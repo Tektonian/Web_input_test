@@ -6,7 +6,7 @@ import {
     StudentStepperCard,
 } from "web_component";
 import { useForm, useWatch } from "react-hook-form";
-import { handleSendVerificationEmail } from "src/hooks/useEmail";
+import { handleSendVerificationEmail } from "../../hooks/useEmail";
 
 interface CorpInfoInputProps {
     onNext: () => void;

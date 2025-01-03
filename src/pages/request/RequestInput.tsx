@@ -19,7 +19,7 @@ import {
 import AddressInput from "./components/AddressInput";
 import { useNavigate } from "react-router-dom";
 import { useSession } from "../../hooks/Session";
-import { APIType } from "api_spec";
+import type { APIType } from "api_spec/types";
 import dayjs from "dayjs";
 
 const RequestInput = () => {
