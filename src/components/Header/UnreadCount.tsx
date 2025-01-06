@@ -1,6 +1,6 @@
 import { useState, useEffect, MouseEventHandler } from "react";
-import { Badge, IconButton, Box } from "@mui/joy";
-import { Mail } from "@mui/icons-material";
+import { IconButton, Badge, Box } from "@mui/material";
+import MailIcon from "@mui/icons-material/Mail";
 import { useMutation } from "@tanstack/react-query";
 interface UnreadCountProps {
     onClick: MouseEventHandler<HTMLAnchorElement>;
@@ -43,9 +43,13 @@ const UnreadCount = ({ onClick }: UnreadCountProps) => {
 
     return (
         <Box>
-            <IconButton onClick={onClick}>
-                <Badge badgeContent={unreadCount ?? 0}>
-                    <Mail sx={{ fontSize: "xl" }} />
+            <IconButton
+                onClick={(e) => onClick(e)}
+                size="large"
+                color="inherit"
+            >
+                <Badge badgeContent={unreadCount ?? 0} color="error">
+                    <MailIcon color="action" />
                 </Badge>
             </IconButton>
         </Box>

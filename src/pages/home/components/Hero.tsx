@@ -116,7 +116,7 @@ const Hero = ({
         } else if (userRole === "corp" || userRole === "orgn") {
             navigate("/requestinput");
         } else if (userRole === "student") {
-            navigate("/request-list");
+            navigate("/request/recommend/list");
         }
     };
 
@@ -149,9 +149,9 @@ const Hero = ({
                 <Stack
                     spacing={2}
                     useFlexGap
+                    width="100%"
                     sx={{
                         alignItems: "center",
-                        width: { xs: "100%", sm: "70%" },
                     }}
                 >
                     <Typography
@@ -160,7 +160,6 @@ const Hero = ({
                             display: "flex",
                             flexDirection: { xs: "column", sm: "row" },
                             alignItems: "center",
-                            fontSize: "clamp(3rem, 10vw, 3.5rem)",
                         }}
                     >
                         기업과&nbsp;유학생을&nbsp;
@@ -180,10 +179,10 @@ const Hero = ({
                     </Typography>
                     <Typography
                         variant="h4"
+                        align="center"
+                        whiteSpace="normal"
                         sx={{
-                            textAlign: "center",
                             color: "text.secondary",
-                            width: { sm: "100%", md: "80%" },
                         }}
                     >
                         세상 모든 유학생이 가교가 될 수 있도록 돕습니다.
