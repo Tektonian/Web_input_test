@@ -8,6 +8,8 @@ import ChatPage from "./pages/chat/ChatPage";
 import RequestInput from "./pages/request/RequestInput";
 import "./App.css";
 import StudentProfilePage from "./pages/student/StudentProfilePage";
+import StudentMypage from "./pages/student/StudentMypage";
+import CorpMypage from "./pages/corporation/CorpMypage";
 import CorpProfilePage from "./pages/corporation/CorpProfilePage";
 import StudentListPage from "./pages/student/StudentListPage";
 import Header from "./pages/home/components/Header";
@@ -55,6 +57,14 @@ function App() {
                             <Route
                                 path="/student/list/:request_id"
                                 element={<StudentListPage />}
+                            />
+                            <Route
+                                path="/mypage/student/:student_id"
+                                element={<StudentMypage />}
+                            />
+                            <Route
+                                path="/mypage/corporation/:corp_id"
+                                element={<CorpMypage />}
                             />
                         </Routes>
                     </main>
