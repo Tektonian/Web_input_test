@@ -10,7 +10,7 @@ import "./App.css";
 import StudentProfilePage from "./pages/student/StudentProfilePage";
 import CorpProfilePage from "./pages/corporation/CorpProfilePage";
 import StudentListPage from "./pages/student/StudentListPage";
-import Header from "./pages/home/components/Header";
+import Header from "./components/Header";
 import HomePage from "./pages/home/HomePage";
 import RequestListPage from "./pages/request/RequestListPage";
 
@@ -39,7 +39,7 @@ function App() {
                                 element={<RequestPage />}
                             />
                             <Route
-                                path="/request-list"
+                                path="/request/recommend/list"
                                 element={<RequestListPage />}
                             />
                             <Route
