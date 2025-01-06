@@ -26,7 +26,7 @@ const StyledToolbar = styled(Toolbar)(({ theme }: any) => ({
 
 const Header = () => {
     const [open, setOpen] = useState(false);
-    const { data: session, status } = useSession();
+    const { data: session, status } = useSession({ required: false });
     const roles = session?.user?.roles || [];
     const navigate = useNavigate();
     const location = useLocation();

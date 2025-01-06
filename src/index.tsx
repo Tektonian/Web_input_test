@@ -4,13 +4,41 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
+import {
+    createTheme,
+    responsiveFontSizes,
+    ThemeProvider,
+} from "@mui/material/styles";
+
+const theme = responsiveFontSizes(
+    createTheme({
+        typography: {
+            fontFamily: [
+                '"Noto Sans KR"',
+                "-apple-system",
+                "BlinkMacSystemFont",
+                '"Segoe UI"',
+                "Roboto",
+                '"Helvetica Neue"',
+                "Arial",
+                "sans-serif",
+                '"Apple Color Emoji"',
+                '"Segoe UI Emoji"',
+                '"Segoe UI Symbol"',
+            ].join(","),
+        },
+    }),
+);
+
 const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement,
 );
 root.render(
     <React.StrictMode>
         <meta name="viewport" content="width=device-width, user-scalable=no" />
-        <App />
+        <ThemeProvider theme={theme}>
+            <App />
+        </ThemeProvider>
     </React.StrictMode>,
 );
 

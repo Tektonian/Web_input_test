@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import type { Session } from "../../../hooks/Session";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -9,7 +8,6 @@ import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-
 import { visuallyHidden } from "@mui/utils";
 
 const ButtonDisplayed = ({
@@ -98,7 +96,7 @@ const ButtonDisplayed = ({
                     sx={{ minWidth: "fit-content" }}
                     onClick={onClick}
                 >
-                    Start now
+                    메일로 가입하기
                 </Button>
             </>
         );
@@ -132,10 +130,9 @@ const Hero = ({
             sx={(theme) => ({
                 width: "100%",
                 backgroundRepeat: "no-repeat",
-                backgroundImage:
-                    "radial-gradient(ellipse 80% 50% at 50% -20%, hsl(210, 100%, 90%), transparent)",
+                background: `radial-gradient(ellipse 80% 50% at 50% -20%, hsl(210, 100%, 90%), transparent)`,
                 ...theme.applyStyles("dark", {
-                    backgroundImage:
+                    background:
                         "radial-gradient(ellipse 80% 50% at 50% -20%, hsl(210, 100%, 16%), transparent)",
                 }),
             })}
@@ -158,7 +155,7 @@ const Hero = ({
                     }}
                 >
                     <Typography
-                        variant="h1"
+                        variant="h2"
                         sx={{
                             display: "flex",
                             flexDirection: { xs: "column", sm: "row" },
@@ -166,10 +163,10 @@ const Hero = ({
                             fontSize: "clamp(3rem, 10vw, 3.5rem)",
                         }}
                     >
-                        Our&nbsp;latest&nbsp;
+                        기업과&nbsp;유학생을&nbsp;
                         <Typography
                             component="span"
-                            variant="h1"
+                            variant="h2"
                             sx={(theme) => ({
                                 fontSize: "inherit",
                                 color: "primary.main",
@@ -178,19 +175,18 @@ const Hero = ({
                                 }),
                             })}
                         >
-                            products
+                            잇습니다
                         </Typography>
                     </Typography>
                     <Typography
+                        variant="h4"
                         sx={{
                             textAlign: "center",
                             color: "text.secondary",
                             width: { sm: "100%", md: "80%" },
                         }}
                     >
-                        Explore our cutting-edge dashboard, delivering
-                        high-quality solutions tailored to your needs. Elevate
-                        your experience with top-tier features and services.
+                        세상 모든 유학생이 가교가 될 수 있도록 돕습니다.
                     </Typography>
                     <Stack
                         direction={{ xs: "column", sm: "row" }}
@@ -214,6 +210,11 @@ const Hero = ({
                         </Link>
                         .
                     </Typography>
+                    <Box
+                        component="img"
+                        src="image/homepage.jpg"
+                        sx={{ width: "100%" }}
+                    />
                 </Stack>
             </Container>
         </Box>

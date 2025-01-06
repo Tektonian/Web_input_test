@@ -4,7 +4,7 @@ import Footer from "./components/Footer";
 import Hero from "./components/Hero";
 
 const HomePage = () => {
-    const session = useSession();
+    const session = useSession({ required: false });
 
     const roles = session.data?.user?.roles;
 
