@@ -9,7 +9,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { RequestCard } from "web_component";
 import { useNavigate } from "react-router-dom";
-import type { APIType } from "api_spec/types";
+import { APIType } from "api_spec/types";
 
 const useRequestList = () => {
     const { mutate, data, isSuccess } = useMutation({
@@ -52,14 +52,19 @@ const RequestListPage: React.FC = () => {
     return (
         <Container
             sx={{
-                py: 4,
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
                 justifyContent: "center",
+                alignItems: "center",
+                gap: "24px",
                 maxWidth: "1080px",
+                padding: "16px",
+                overflowX: "hidden",
+                overflowY: { xs: "scroll", md: "hidden" },
                 width: "100%",
-                height: "100vh",
+                minHeight: "100vh",
+                boxSizing: "border-box",
+                margin: "auto",
             }}
         >
             {!isSuccess ? (

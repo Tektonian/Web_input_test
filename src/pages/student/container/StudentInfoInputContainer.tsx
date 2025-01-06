@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Container, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Container, Stack, useMediaQuery, useTheme } from "@mui/material";
 import { useForm } from "react-hook-form";
 import {
     StudentProfileInput,
@@ -53,7 +53,8 @@ const StudentInfoInputContainer: React.FC<StudentInfoInputProps> = ({
                     gap: "24px",
                     maxWidth: "1080px",
                     padding: "16px",
-                    overflow: "hidden",
+                    overflowX: "hidden",
+                    overflowY: "scroll",
                     width: "100%",
                     height: "100vh",
                     boxSizing: "border-box",
@@ -66,9 +67,11 @@ const StudentInfoInputContainer: React.FC<StudentInfoInputProps> = ({
                         padding: "0 !important",
                     }}
                 >
-                    <StudentProfileInput control={control} />
-                    <AcademicHistoryListInput control={control} />
-                    <LanguageHistoryListInput control={control} />
+                    <Stack spacing={3}>
+                        <StudentProfileInput control={control} />
+                        <AcademicHistoryListInput control={control} />
+                        <LanguageHistoryListInput control={control} />
+                    </Stack>
                 </Container>
 
                 <Container

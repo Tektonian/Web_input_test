@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { RequestSideCard } from "web_component";
 import { useParams } from "react-router-dom";
-import type { APIType } from "api_spec/types";
+import { APIType } from "api_spec/types";
 import RequestContentContainer from "./container/RequestContentContainer";
 import ConsumerContainer from "./container/ConsumerContainer";
 import OtherRequestContainer from "./container/OtherRequestContainer";
@@ -23,6 +23,21 @@ const RequestPage = () => {
     const [data, setData] = useState<APIType.RequestType.ResGetRequest>();
 
     const { request_id: request_id } = useParams();
+
+    const handleApply = async () => {
+        try {
+            await fetch("http://localhost:8080/api/message/chatRoom", {
+                method: "POST",
+                body: JSON.stringify({ request_id: request_id }),
+                headers: {
+                    "content-Type": "Application/json",
+                },
+                credentials: "include",
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -52,13 +67,14 @@ const RequestPage = () => {
                 display: "flex",
                 flexDirection: { xs: "column", md: "row" },
                 justifyContent: "center",
-                alignItems: "flex-start",
+                alignItems: "center",
                 gap: "24px",
                 maxWidth: "1080px",
                 padding: "16px",
-                overflow: "hidden",
+                overflowX: "hidden",
+                overflowY: { xs: "scroll", md: "hidden" },
                 width: "100%",
-                height: "100vh",
+                minHeight: "100vh",
                 boxSizing: "border-box",
                 margin: "auto",
             }}
@@ -148,6 +164,7 @@ const RequestPage = () => {
             >
                 {data && <RequestSideCard request={data} />}
                 <Card
+                    onClick={handleApply}
                     sx={{
                         borderRadius: "16px",
                         backgroundColor: "#ff7961",
