@@ -7,6 +7,8 @@ import {
     Typography,
     Card,
     CardContent,
+    useMediaQuery,
+    useTheme,
 } from "@mui/material";
 import { CorpIndexCard } from "web_component";
 
@@ -15,11 +17,14 @@ import CorporationReviewContainer from "./container/CorporationReviewContainer";
 import CorporationProfileContainer from "./container/CorpProfileContainer";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import UserProfileContainer from "../../components/container/UserProfileContainer";
 
 const CorpMypage = () => {
     const navigate = useNavigate();
     const [tabIndex, setTabIndex] = useState(0);
     const { corp_id: corp_id } = useParams();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabIndex(newValue);
@@ -33,21 +38,26 @@ const CorpMypage = () => {
                 display: "flex",
                 flexDirection: { xs: "column", md: "row" },
                 justifyContent: "center",
-                alignItems: "flex-start",
+                alignItems: "center",
                 gap: "24px",
                 maxWidth: "1080px",
-                margin: "auto",
                 padding: "16px",
+                overflowX: "hidden",
+                overflowY: { xs: "scroll", md: "hidden" },
+                width: "100%",
                 minHeight: "100vh",
+                boxSizing: "border-box",
+                margin: "auto",
             }}
-            id={sections[0]}
         >
             <Container
                 sx={{
                     width: { xs: "100%", md: "712px" },
+                    height: "100%",
                     padding: "0 !important",
                 }}
             >
+                <UserProfileContainer />
                 <CorporationProfileContainer corp_id={Number(corp_id)} />
 
                 <Box sx={{ marginTop: "24px" }}>
@@ -74,6 +84,7 @@ const CorpMypage = () => {
             <Container
                 sx={{
                     width: { xs: "100%", md: "344px" },
+                    height: "100%",
                     padding: "0 !important",
                     position: { xs: "relative", md: "sticky" },
                     top: { md: "50%" },
@@ -84,7 +95,7 @@ const CorpMypage = () => {
                     gap: "24px",
                 }}
             >
-                <CorpIndexCard />
+                {!isMobile && <CorpIndexCard />}
                 <Card
                     sx={{
                         borderRadius: "16px",
@@ -93,7 +104,10 @@ const CorpMypage = () => {
                     onClick={() => navigate(`/requestinput`)}
                 >
                     <CardContent
-                        sx={{ textAlign: "center", padding: "8px !important" }}
+                        sx={{
+                            textAlign: "center",
+                            padding: "8px !important",
+                        }}
                     >
                         <Typography>의뢰하기</Typography>
                     </CardContent>

@@ -37,13 +37,14 @@ const CorpMypage = () => {
                 display: "flex",
                 flexDirection: { xs: "column", md: "row" },
                 justifyContent: "center",
-                alignItems: "flex-start",
+                alignItems: "center",
                 gap: "24px",
                 maxWidth: "1080px",
                 padding: "16px",
-                overflow: "hidden",
+                overflowX: "hidden",
+                overflowY: { xs: "scroll", md: "hidden" },
                 width: "100%",
-                height: "100vh",
+                minHeight: "100vh",
                 boxSizing: "border-box",
                 margin: "auto",
             }}
@@ -51,6 +52,7 @@ const CorpMypage = () => {
             <Container
                 sx={{
                     width: { xs: "100%", md: "712px" },
+                    height: "100%",
                     padding: "0 !important",
                 }}
             >
@@ -80,6 +82,7 @@ const CorpMypage = () => {
             <Container
                 sx={{
                     width: { xs: "100%", md: "344px" },
+                    height: "100%",
                     padding: "0 !important",
                     position: { xs: "relative", md: "sticky" },
                     top: { md: "50%" },
@@ -99,7 +102,10 @@ const CorpMypage = () => {
                     onClick={() => navigate(`/requestinput`)}
                 >
                     <CardContent
-                        sx={{ textAlign: "center", padding: "8px !important" }}
+                        sx={{
+                            textAlign: "center",
+                            padding: "8px !important",
+                        }}
                     >
                         <Typography>의뢰하기</Typography>
                     </CardContent>
