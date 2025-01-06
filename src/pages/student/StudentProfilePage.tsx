@@ -1,23 +1,14 @@
 import React, { useState } from "react";
-import {
-    Box,
-    Container,
-    Tab,
-    Tabs,
-    useMediaQuery,
-    useTheme,
-} from "@mui/material";
+import { Box, Container, Tab, Tabs } from "@mui/material";
 import { StudentIndexCard } from "web_component";
 import StudentProfileContainer from "./container/StudentProfileContainer";
-import RequestListContainer from "../request/container/RequestListContainer";
+import StudentRequestListContainer from "./container/StudentRequestLIstContainer";
 import StudentReviewContainer from "./container/StudentReviewContainer";
 import { useParams } from "react-router-dom";
 
-const StudentMypage = () => {
+const StudentProfilePage = () => {
     const [tabIndex, setTabIndex] = useState(0);
     const { student_id: student_id } = useParams();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabIndex(newValue);
@@ -29,18 +20,16 @@ const StudentMypage = () => {
         <Box
             sx={{
                 display: "flex",
-                flexDirection: { xs: "column", md: "row" },
+                flexDirection: "row",
                 justifyContent: "center",
                 alignItems: "flex-start",
                 gap: "24px",
                 maxWidth: "1080px",
-                padding: "16px",
-                overflow: "hidden",
-                width: "100%",
-                height: "100vh",
-                boxSizing: "border-box",
                 margin: "auto",
+                padding: "16px",
+                minHeight: "100vh",
             }}
+            id={sections[0]}
         >
             <Container
                 sx={{
@@ -63,7 +52,9 @@ const StudentMypage = () => {
                 </Box>
 
                 {tabIndex === 0 && (
-                    <RequestListContainer student_id={Number(student_id)} />
+                    <StudentRequestListContainer
+                        student_id={Number(student_id)}
+                    />
                 )}
                 {tabIndex === 1 && (
                     <StudentReviewContainer student_id={Number(student_id)} />
@@ -80,10 +71,10 @@ const StudentMypage = () => {
                     order: { xs: -1, md: 1 },
                 }}
             >
-                {!isMobile && <StudentIndexCard sections={sections} />}
+                <StudentIndexCard sections={sections} />
             </Container>
         </Box>
     );
 };
 
-export default StudentMypage;
+export default StudentProfilePage;

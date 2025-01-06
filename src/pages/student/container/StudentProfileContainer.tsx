@@ -15,10 +15,13 @@ const StudentProfileContainer: React.FC<StudentProfileContainerProps> = ({
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`/api/students/${student_id}`, {
-                    method: "GET",
-                    credentials: "include",
-                });
+                const response = await fetch(
+                    `http://localhost:8080/api/students/${student_id}`,
+                    {
+                        method: "GET",
+                        credentials: "include",
+                    },
+                );
                 const data: APIType.StudentType.ResGetStudentProfile =
                     await response.json();
                 console.log("Student Data:", data);
