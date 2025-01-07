@@ -86,7 +86,6 @@ const RequestListPage: React.FC = () => {
                                             `/request/${request.request_id}`,
                                         )
                                     }
-                                    renderLogo={true}
                                     request_status={1}
                                 />
                             </Box>

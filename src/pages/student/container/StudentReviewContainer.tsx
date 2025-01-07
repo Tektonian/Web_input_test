@@ -19,7 +19,7 @@ const StudentReviewContainer: React.FC<StudentReviewContainerProps> = ({
         const fetchData = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:8080/api/student-reviews/${student_id}`,
+                    `http://localhost:8080/api/student-reviews/list/${student_id}`,
                     {
                         method: "GET",
                         credentials: "include",

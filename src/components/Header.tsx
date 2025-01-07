@@ -81,8 +81,22 @@ const StudentProfile = () => {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}>내 페이지</MenuItem>
-            <MenuItem onClick={handleMenuClose}>추천 요청 보기</MenuItem>
+            <MenuItem
+                onClick={() => {
+                    navigate("/mypage");
+                    handleMenuClose();
+                }}
+            >
+                내 페이지
+            </MenuItem>
+            <MenuItem
+                onClick={() => {
+                    navigate("/request/recommend/list");
+                    handleMenuClose();
+                }}
+            >
+                추천 요청 보기
+            </MenuItem>
         </Menu>
     );
     const renderMobileMenu = (
@@ -302,25 +316,6 @@ const Header = () => {
                         }}
                         onClick={() => navigate("/home")}
                     />
-
-                    {/* Centered Navigation */}
-                    <Box
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            flexGrow: 1,
-                            px: 2,
-                            maxWidth: "lg",
-                            mx: "auto",
-                            width: "100%",
-                        }}
-                    >
-                        <Button
-                            onClick={() => navigate("/request/recommend/list")}
-                        >
-                            Request
-                        </Button>
-                    </Box>
 
                     {/* Right Aligned Content */}
                     <Box

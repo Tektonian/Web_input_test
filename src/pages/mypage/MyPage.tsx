@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { Box, Container, Tab, Tabs } from "@mui/material";
 import { StudentIndexCard } from "web_component";
-import StudentProfileContainer from "./container/StudentProfileContainer";
-import StudentRequestListContainer from "./container/StudentRequestLIstContainer";
-import StudentReviewContainer from "./container/StudentReviewContainer";
+import MyPageRequestList from "./container/MyPageRequestList";
+import MyProfile from "./container/MyProfile";
 import { useParams } from "react-router-dom";
 
-const StudentProfilePage = () => {
+const MyPage = () => {
     const [tabIndex, setTabIndex] = useState(0);
     const { student_id: student_id } = useParams();
 
@@ -27,7 +26,7 @@ const StudentProfilePage = () => {
                 justifyContent: "center",
                 alignItems: "flex-start",
                 gap: "24px",
-                maxWidth: "1080px",
+                maxWidth: "80vw",
                 margin: "auto",
                 padding: "16px",
                 minHeight: "100vh",
@@ -36,32 +35,19 @@ const StudentProfilePage = () => {
         >
             <Container
                 sx={{
+                    width: { xs: "100%", md: "300px" },
+                    padding: "0 !important",
+                }}
+            >
+                <MyProfile />
+            </Container>
+            <Container
+                sx={{
                     width: { xs: "100%", md: "712px" },
                     padding: "0 !important",
                 }}
             >
-                <StudentProfileContainer student_id={Number(student_id)} />
-
-                <Box sx={{ marginTop: "24px" }}>
-                    <Tabs
-                        value={tabIndex}
-                        onChange={handleTabChange}
-                        centered
-                        variant="fullWidth"
-                    >
-                        <Tab label="의뢰" />
-                        <Tab label="리뷰" />
-                    </Tabs>
-                </Box>
-
-                {tabIndex === 0 && (
-                    <StudentRequestListContainer
-                        student_id={Number(student_id)}
-                    />
-                )}
-                {tabIndex === 1 && (
-                    <StudentReviewContainer student_id={Number(student_id)} />
-                )}
+                <MyPageRequestList />
             </Container>
 
             <Container
@@ -80,4 +66,4 @@ const StudentProfilePage = () => {
     );
 };
 
-export default StudentProfilePage;
+export default MyPage;

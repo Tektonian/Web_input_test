@@ -30,7 +30,6 @@ export const RequestListSection: React.FC<RequestListProps> = ({
                     {...request}
                     address={request.address ?? ""}
                     request_status={request.request_status ?? 0}
-                    renderLogo={false}
                     onClick={() => onClickRequest(request)}
                 />
             </Box>

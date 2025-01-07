@@ -48,7 +48,6 @@ const StudentRequestListContainer = ({ student_id }: Props) => {
                             {...request}
                             address={request.address ?? ""}
                             request_status={request.request_status ?? 0}
-                            renderLogo={false}
                             onClick={() =>
                                 navigate(`/request/${request.request_id}`)
                             }

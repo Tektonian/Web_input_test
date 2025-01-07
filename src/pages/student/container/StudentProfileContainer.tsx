@@ -39,7 +39,6 @@ const StudentProfileContainer: React.FC<StudentProfileContainerProps> = ({
                     {...studentData.profile}
                     student_name={JSON.stringify(studentData?.profile.name_glb)}
                     image={studentData?.profile.image ?? ""}
-                    isMypage={true}
                 />
             )}
         </>

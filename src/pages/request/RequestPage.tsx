@@ -9,6 +9,7 @@ import {
     Tab,
 } from "@mui/material";
 import { RequestSideCard } from "web_component";
+import { useMutation } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import type { APIType } from "api_spec/types";
 import RequestContentContainer from "./container/RequestContentContainer";
@@ -45,6 +46,22 @@ const RequestPage = () => {
         };
         fetchData(); //eslint-disable-line
     }, [request_id]);
+
+    const { mutate } = useMutation({
+        mutationFn: async () => {
+            const res = await fetch(
+                "http://localhost:8080/api/message/chatroom",
+                {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ request_id: request_id }),
+                },
+            );
+        },
+    });
 
     return (
         <Box
@@ -148,6 +165,7 @@ const RequestPage = () => {
             >
                 {data && <RequestSideCard request={data} />}
                 <Card
+                    onClick={(e) => mutate()}
                     sx={{
                         borderRadius: "16px",
                         backgroundColor: "#ff7961",
