@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { CorpProfileCard } from "web_component";
-import type { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 import { useNavigate } from "react-router-dom";
 
 interface ConsumerContainerProps {
@@ -15,7 +15,7 @@ const ConsumerContainer: React.FC<ConsumerContainerProps> = (corp_id) => {
         const fetchData = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:8080/api/corporations/${corp_id}`,
+                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/corporations/${corp_id}`,
                     {
                         method: "GET",
                     },
@@ -35,7 +35,14 @@ const ConsumerContainer: React.FC<ConsumerContainerProps> = (corp_id) => {
     return (
         <>
             <Box sx={{ marginBottom: 4 }}>
-                {data && <CorpProfileCard {...data} />}
+                {data && (
+                    <CorpProfileCard
+                        {...data}
+                        isMypage={false}
+                        showEditIcon={false}
+                        editMode={false}
+                    />
+                )}
             </Box>
         </>
     );

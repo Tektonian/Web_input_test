@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { RequestCard } from "web_component";
 
-import { APIType } from "api_spec/types";
+import { APIType } from "api_spec";
 
 interface Props {
     student_id: number;
@@ -17,7 +17,7 @@ const StudentRequestListContainer = ({ student_id }: Props) => {
             queryKey: [student_id],
             queryFn: async () => {
                 const res = await fetch(
-                    "http://localhost:8080/api/requests/list/student",
+                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/requests/list/student`,
                     {
                         method: "POST",
                         credentials: "include",

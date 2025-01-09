@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Container, useMediaQuery, useTheme } from "@mui/material";
-import type { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 import CorpNumInput from "../components/CorpNumInput";
 import {
     BarNavigationCard,
@@ -35,12 +35,15 @@ const CorpInfoInputContainer: React.FC<CorpInfoInputProps> = ({
         corpInfo: APIType.CorporationType.ReqCreateCorpProfile,
     ) => {
         try {
-            const response = await fetch("/api/corporations", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify(corpInfo),
-            });
+            const response = await fetch(
+                `${process.env.REACT_APP_SERVER_BASE_URL}/api/corporations`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify(corpInfo),
+                },
+            );
             const corpId = await response.json();
             handleConsumerInfo(corpId, phoneNumber);
             if (response.ok) {

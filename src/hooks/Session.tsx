@@ -3,7 +3,6 @@ import * as React from "react";
 
 type UserRoleType = "normal" | "corp" | "orgn" | "student";
 interface User {
-    id?: string;
     name?: string | null;
     email?: string | null;
     image?: string | null;
@@ -41,9 +40,9 @@ interface GetSessionParams {
 }
 
 const _AUTHCONFIG: AuthClientConig = {
-    baseUrl: "http://localhost:3000",
+    baseUrl: `${process.env.CLIEENT_BASE_URL}`,
     basePath: "/api/auth",
-    baseUrlServer: "http://localhost:8080",
+    baseUrlServer: `${process.env.REACT_APP_SERVER_BASE_URL}`,
     basePathServer: "/api/auth",
     _lastSync: 0,
     _session: undefined,
@@ -57,7 +56,7 @@ const fetchData = async (
     authConfig: AuthClientConig,
     req: any = {},
 ) => {
-    const url = `http://localhost:8080/api/auth/${path}`;
+    const url = `${process.env.REACT_APP_SERVER_BASE_URL}/api/auth/${path}`;
     try {
         const options: RequestInit = {
             headers: {
@@ -162,12 +161,12 @@ export const useSession = <R extends boolean>(
 
     React.useEffect(() => {
         if (requiredAndNotLoading) {
-            const url = `http://localhost:8080/api/auth/signin?${new URLSearchParams(
-                {
-                    error: "SessionRequired",
-                    callbackUrl: window.location.href,
-                },
-            )}`;
+            const url = `${
+                process.env.REACT_APP_SERVER_BASE_URL
+            }/api/auth/signin?${new URLSearchParams({
+                error: "SessionRequired",
+                callbackUrl: window.location.href,
+            })}`;
             if (onUnauthenticated) onUnauthenticated();
             else window.location.href = url;
         }
@@ -211,7 +210,7 @@ export const signIn = async (
     const { redirect = true } = options ?? {};
     const redirectTo = options?.redirectTo ?? window.location.href;
 
-    const baseUrl = "http://localhost:8080/api/auth";
+    const baseUrl = `${process.env.REACT_APP_SERVER_BASE_URL}/api/auth`;
     const providers = await getProviders();
 
     if (!providers) {
@@ -291,7 +290,7 @@ interface SignOutParams {
 export const signOut = async (options?: SignOutParams) => {
     const redirectTo = options?.redirectTo ?? window.location.href;
 
-    const baseUrl = "http://localhost:8080/api/auth";
+    const baseUrl = `${process.env.REACT_APP_SERVER_BASE_URL}/api/auth`;
     const csrfToken = await getCsrfToken();
     const res = await fetch(`${baseUrl}/signout`, {
         method: "post",

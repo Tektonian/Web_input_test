@@ -96,7 +96,7 @@ const CorpMypage = () => {
                         borderRadius: "16px",
                         backgroundColor: "#ff7961",
                     }}
-                    onClick={() => navigate(`/requestinput`)}
+                    onClick={() => navigate(`/request/write`)}
                 >
                     <CardContent
                         sx={{ textAlign: "center", padding: "8px !important" }}

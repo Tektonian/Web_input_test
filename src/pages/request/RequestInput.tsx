@@ -19,25 +19,24 @@ import {
 import AddressInput from "./components/AddressInput";
 import { useNavigate } from "react-router-dom";
 import { useSession } from "../../hooks/Session";
-import type { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 import dayjs from "dayjs";
 
 const RequestInput = () => {
     const { control, setValue, handleSubmit } =
         useForm<APIType.RequestType.ReqCreateRequest>({
             defaultValues: {
-                role: undefined,
+                role: "normal",
                 data: {
-                    consumer_id: -1,
                     title: "",
                     head_count: 0,
                     reward_price: 0,
-                    currency: "",
+                    currency: "KR",
                     content: "",
                     are_needed: [],
                     are_required: [],
-                    start_date: "",
-                    end_date: "",
+                    start_date: new Date(),
+                    end_date: new Date(),
                     start_time: dayjs().format("HH:mm"),
                     end_time: dayjs().format("HH:mm"),
                     address: "",
@@ -46,7 +45,6 @@ const RequestInput = () => {
                         lng: 0,
                     },
                     prep_material: [],
-                    created_at: new Date(),
                 },
             },
         });
@@ -58,16 +56,19 @@ const RequestInput = () => {
 
     const onSubmit = async (request: APIType.RequestType.ReqCreateRequest) => {
         try {
-            const response = await fetch("/api/requests", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                // TODO: change later of role
-                body: JSON.stringify({
-                    data: request.data,
-                    role: request.role,
-                }),
-            });
+            const response = await fetch(
+                `${process.env.REACT_APP_SERVER_BASE_URL}/api/requests`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    // TODO: change later of role
+                    body: JSON.stringify({
+                        data: request.data,
+                        role: request.role,
+                    }),
+                },
+            );
 
             if (response.ok) {
                 const result = await response.json();
@@ -110,7 +111,7 @@ const RequestInput = () => {
                     <Grid size={12}>
                         <ShortTextInput
                             control={control}
-                            name="title"
+                            name="data.title"
                             label="Title"
                         />
                     </Grid>
@@ -118,7 +119,7 @@ const RequestInput = () => {
                     <Grid size={4}>
                         <ShortTextInput
                             control={control}
-                            name="head_count"
+                            name="data.head_count"
                             label="Head Count"
                         />
                     </Grid>
@@ -126,7 +127,7 @@ const RequestInput = () => {
                     <Grid size={4}>
                         <ShortTextInput
                             control={control}
-                            name="reward_price"
+                            name="data.reward_price"
                             label="Reward Price"
                         />
                     </Grid>

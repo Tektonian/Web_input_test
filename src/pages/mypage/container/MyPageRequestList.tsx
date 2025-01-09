@@ -6,7 +6,7 @@ import { RequestCard } from "web_component";
 import { CorpProfileCard } from "web_component";
 import { StudentProfileCard } from "web_component";
 
-import { APIType } from "api_spec/types";
+import { APIType } from "api_spec";
 import { useEffect } from "react";
 
 const MyPageRequestList = () => {
@@ -16,7 +16,7 @@ const MyPageRequestList = () => {
             queryKey: ["mypage"],
             queryFn: async () => {
                 const res = await fetch(
-                    "http://localhost:8080/api/users/mypage",
+                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/users/mypage`,
                     {
                         method: "GET",
                         credentials: "include",
@@ -63,7 +63,9 @@ const MyPageRequestList = () => {
                                 address={request.address ?? ""}
                                 request_status={request.request_status ?? 0}
                                 onClick={() =>
-                                    navigate(`/request/${request.request_id}`)
+                                    navigate(
+                                        `/student/list/${request.request_id}`,
+                                    )
                                 }
                             />
                         </Box>

@@ -86,7 +86,6 @@ const ChatContentModal = ({
                                     currency={data.currency}
                                     address={data.address}
                                     start_date={data.start_date}
-                                    renderLogo={false}
                                     logo_image={data.logo_image}
                                     request_status={data.request_status}
                                     onClick={() => 0}

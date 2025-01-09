@@ -2,7 +2,7 @@ import React from "react";
 import { Modal } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { ReviewOfCorpInput, ReviewOfStudentInput } from "web_component";
-import type { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 
 interface ReviewModalProps {
     open: boolean;
@@ -27,7 +27,7 @@ export const CorpReviewModal: React.FC<ReviewModalProps> = ({
     ) => {
         try {
             const response = await fetch(
-                "http://localhost:8080/api/student-reviews",
+                `${process.env.REACT_APP_SERVER_BASE_URL}/api/student-reviews`,
                 {
                     method: "POST",
                     credentials: "include",
@@ -88,7 +88,7 @@ export const StudentReviewModal: React.FC<ReviewModalProps> = ({
     ) => {
         try {
             const response = await fetch(
-                "http://localhost:8080/api/student-reviews",
+                `${process.env.CLIEENT_BASE_URL}/api/student-reviews`,
                 {
                     method: "POST",
                     credentials: "include",

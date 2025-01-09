@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useSentMessages } from "../use-chat/Stores/MessageStore";
 
-import { Box, List } from "@mui/material";
-import type { ChatRoom, Request } from "../use-chat/Stores/ChatRoomStore";
+import { Box } from "@mui/material";
+import type { ChatRoom } from "../use-chat/Stores/ChatRoomStore";
 import { Message } from "web_component";
 
-import type { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 type MessageContent = APIType.ContentType.MessageContent;
 
 const MessageRender = ({

@@ -11,7 +11,7 @@ import {
 import { RequestSideCard } from "web_component";
 import { useMutation } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import type { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 import RequestContentContainer from "./container/RequestContentContainer";
 import ConsumerContainer from "./container/ConsumerContainer";
 import OtherRequestContainer from "./container/OtherRequestContainer";
@@ -29,7 +29,7 @@ const RequestPage = () => {
         const fetchData = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:8080/api/requests/${request_id}`,
+                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/requests/${request_id}`,
                     {
                         method: "GET",
                     },
@@ -50,7 +50,7 @@ const RequestPage = () => {
     const { mutate } = useMutation({
         mutationFn: async () => {
             const res = await fetch(
-                "http://localhost:8080/api/message/chatroom",
+                `${process.env.REACT_APP_SERVER_BASE_URL}/api/message/chatroom`,
                 {
                     method: "POST",
                     credentials: "include",

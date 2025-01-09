@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import type { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 
 export const useFetchStudentData = () => {
     const [studentData, setStudentData] =

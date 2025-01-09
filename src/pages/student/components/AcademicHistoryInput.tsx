@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { SelectInput } from "web_component";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import type { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 import NationalityInput from "../../../components/input/NationalityInput";
 import "@fontsource/noto-sans-kr";
 
@@ -59,7 +59,7 @@ const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
             }
             try {
                 const response = await fetch(
-                    `http://localhost:8080/api/search/schools?country_code=${country_code}`,
+                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/search/schools?country_code=${country_code}`,
                     {
                         method: "GET",
                         headers: {

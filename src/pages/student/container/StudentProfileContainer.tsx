@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StudentProfileCard } from "web_component";
-import type { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 
 interface StudentProfileContainerProps {
     student_id: number;
@@ -16,7 +16,7 @@ const StudentProfileContainer: React.FC<StudentProfileContainerProps> = ({
         const fetchData = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:8080/api/students/${student_id}`,
+                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/students/${student_id}`,
                     {
                         method: "GET",
                         credentials: "include",
@@ -36,9 +36,8 @@ const StudentProfileContainer: React.FC<StudentProfileContainerProps> = ({
         <>
             {studentData && (
                 <StudentProfileCard
-                    {...studentData.profile}
-                    student_name={JSON.stringify(studentData?.profile.name_glb)}
-                    image={studentData?.profile.image ?? ""}
+                    {...studentData}
+                    image={studentData?.image ?? ""}
                 />
             )}
         </>

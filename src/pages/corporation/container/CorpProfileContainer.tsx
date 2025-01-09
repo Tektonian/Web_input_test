@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { CorpProfileCard } from "web_component";
-import type { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 
 interface CorporationProfileContainerProps {
     corp_id: number;
@@ -28,7 +28,18 @@ const CorporationProfileContainer: React.FC<
         };
         fetchData(); // eslint-disable-line
     }, []);
-    return <>{corpData && <CorpProfileCard {...corpData} isMypage={true} />}</>;
+    return (
+        <>
+            {corpData && (
+                <CorpProfileCard
+                    {...corpData}
+                    isMypage={true}
+                    showEditIcon={true}
+                    editMode={false}
+                />
+            )}
+        </>
+    );
 };
 
 export default CorporationProfileContainer;

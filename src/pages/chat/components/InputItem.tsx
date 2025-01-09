@@ -6,7 +6,7 @@ import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import { useSocketTextMutation } from "../use-chat/useSocket";
 import { Message } from "web_component";
 
-import type { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 type MessageContent = APIType.ContentType.MessageContent;
 type MessageContentType = APIType.ContentType.MessageContentType;
 
@@ -90,7 +90,7 @@ export const InputItem = (props: InputItemProps) => {
                 console.log("Selected file", selectedFile);
                 setSelectedFile(null);
                 setPreviewmode(false);
-                onSending(activeRoom.chatRoomId, fileContent);
+                // onTextSending(activeRoom.chatRoomId, fileContent);
             };
             reader.readAsArrayBuffer(selectedFile);
         }

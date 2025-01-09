@@ -46,7 +46,7 @@ const LanguageHistoryInput: React.FC<LanguageHistoryInputProps> = ({
         const fetchExams = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:8080/api/search/exams",
+                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/search/exams`,
                     {
                         method: "GET",
                         headers: {

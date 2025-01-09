@@ -2,7 +2,7 @@ import { TypedStorage } from "@toss/storage/typed";
 import { create, StoreApi, UseBoundStore } from "zustand";
 import { openDB } from "idb";
 import type { DBSchema, IDBPDatabase } from "idb";
-import type { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 // Big TODO: move to indexedDB later
 
 type MessageContent = APIType.ContentType.MessageContent;
@@ -190,8 +190,9 @@ class MessageStorage {
             newUnreadList.reverse();
             console.log("seq", newUnreadList);
             for (let i = 0; i < newUnreadList.length; i++) {
-                if (oldMessages.at(-1 * (i + 1)) !== undefined) {
-                    oldMessages.at(-1 * (i + 1)).unreadCount = newUnreadList[i];
+                const lastMsg = oldMessages.at(-1 * (i + 1));
+                if (lastMsg) {
+                    lastMsg.unreadCount = newUnreadList[i];
                 }
             }
             console.log("old after", JSON.parse(JSON.stringify(oldMessages)));

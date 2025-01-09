@@ -43,11 +43,11 @@ function App() {
                                 element={<RequestListPage />}
                             />
                             <Route
-                                path="/profileinput"
+                                path="/profile/setup"
                                 element={<ProfileSetup />}
                             />
                             <Route
-                                path="/requestinput"
+                                path="/request/write"
                                 element={<RequestInput />}
                             />
                             <Route path="/home" element={<HomePage />} />
