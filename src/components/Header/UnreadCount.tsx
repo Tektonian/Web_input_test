@@ -1,13 +1,10 @@
 import { useState, useEffect, MouseEventHandler } from "react";
 import { IconButton, Badge, Box } from "@mui/material";
 import MailIcon from "@mui/icons-material/Mail";
-import { useMutation } from "@tanstack/react-query";
-interface UnreadCountProps {
-    onClick: MouseEventHandler<HTMLAnchorElement>;
-}
-const UnreadCount = ({ onClick }: UnreadCountProps) => {
+import { useNavigate } from "react-router-dom";
+const UnreadCount = () => {
     const [unreadCount, setUnreadCount] = useState(0);
-
+    const navigate = useNavigate();
     /*
     const { mutate, data, isSuccess } = useMutation({
         mutationFn: async () => {
@@ -25,9 +22,12 @@ const UnreadCount = ({ onClick }: UnreadCountProps) => {
     */
 
     useEffect(() => {
-        const eventSource = new EventSource("/api/sse", {
-            withCredentials: true,
-        });
+        const eventSource = new EventSource(
+            `${process.env.REACT_APP_SERVER_BASE_URL}/api/sse`,
+            {
+                withCredentials: true,
+            },
+        );
         console.log("eventSource: ", eventSource);
         eventSource.onmessage = (event) => {
             console.log("onmessage", event);
@@ -44,7 +44,7 @@ const UnreadCount = ({ onClick }: UnreadCountProps) => {
     return (
         <Box>
             <IconButton
-                onClick={(e) => onClick(e)}
+                onClick={() => navigate("/chat")}
                 size="large"
                 color="inherit"
             >
