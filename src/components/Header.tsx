@@ -11,8 +11,6 @@ import {
     MenuItem,
 } from "@mui/material";
 
-import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -156,7 +154,7 @@ const StudentProfile = () => {
     return (
         <>
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                <UnreadCount onClick={() => navigate("/chat")} />
+                <UnreadCount />
 
                 <IconButton
                     size="large"
@@ -241,15 +239,36 @@ const OrgnProfile = () => {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}>내 페이지</MenuItem>
-            <MenuItem onClick={handleMenuClose}>요청 살펴보기</MenuItem>
-            <MenuItem onClick={handleMenuClose}>추천 학생 보기</MenuItem>
+            <MenuItem
+                onClick={() => {
+                    navigate("/mypage");
+                    handleMenuClose();
+                }}
+            >
+                내 페이지
+            </MenuItem>
+            <MenuItem
+                onClick={() => {
+                    navigate("/request/recommend/list");
+                    handleMenuClose();
+                }}
+            >
+                요청 살펴 보기
+            </MenuItem>
+            <MenuItem
+                onClick={() => {
+                    navigate("/request/write");
+                    handleMenuClose();
+                }}
+            >
+                요청 작성 하기
+            </MenuItem>
         </Menu>
     );
     return (
         <>
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
-                <UnreadCount onClick={() => navigate("/chat")} />
+                <UnreadCount />
 
                 <IconButton
                     size="large"
@@ -260,6 +279,83 @@ const OrgnProfile = () => {
                         <NotificationsIcon color="action" />
                     </Badge>
                 </IconButton>
+                <IconButton
+                    size="large"
+                    edge="end"
+                    aria-label="account of current user"
+                    aria-controls={menuId}
+                    aria-haspopup="true"
+                    onClick={handleProfileMenuOpen}
+                    color="inherit"
+                >
+                    <AccountCircle color="action" />
+                </IconButton>
+            </Box>
+            {renderMenu}
+        </>
+    );
+};
+
+const NormalProfile = () => {
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
+        React.useState<null | HTMLElement>(null);
+
+    const navigate = useNavigate();
+
+    const isMenuOpen = Boolean(anchorEl);
+    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+    const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMobileMenuClose = () => {
+        setMobileMoreAnchorEl(null);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+        handleMobileMenuClose();
+    };
+
+    const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setMobileMoreAnchorEl(event.currentTarget);
+    };
+    const mobileMenuId = "primary-search-account-menu-mobile";
+    const menuId = "primary-search-account-menu";
+    const renderMenu = (
+        <Menu
+            anchorEl={anchorEl}
+            anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+            }}
+            id={menuId}
+            keepMounted
+            transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+            }}
+            open={isMenuOpen}
+            onClose={handleMenuClose}
+        >
+            <MenuItem onClick={handleMenuClose}>내 페이지</MenuItem>
+            <MenuItem onClick={handleMenuClose}>요청 살펴보기</MenuItem>
+        </Menu>
+    );
+    return (
+        <>
+            <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                <Button
+                    color="primary"
+                    variant="contained"
+                    size="small"
+                    onClick={() => navigate("/profile/setup")}
+                >
+                    인증하기
+                </Button>
+                <UnreadCount />
                 <IconButton
                     size="large"
                     edge="end"
@@ -333,18 +429,18 @@ const Header = () => {
                             ) : roles.includes("corp") ||
                               roles.includes("orgn") ? (
                                 <OrgnProfile />
-                            ) : null
+                            ) : (
+                                <NormalProfile />
+                            )
                         ) : (
                             <>
                                 <Button
                                     color="primary"
                                     variant="contained"
                                     size="small"
-                                    onClick={() =>
-                                        navigate(
-                                            "http://localhost:8080/api/auth/signin",
-                                        )
-                                    }
+                                    onClick={() => {
+                                        window.location.href = `${process.env.REACT_APP_SERVER_BASE_URL}/api/auth/signin`;
+                                    }}
                                 >
                                     회원가입
                                 </Button>
