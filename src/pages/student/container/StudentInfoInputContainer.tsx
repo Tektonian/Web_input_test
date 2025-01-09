@@ -6,7 +6,7 @@ import {
     StudentStepperCard,
     BarNavigationCard,
 } from "web_component";
-import type { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 import AcademicHistoryListInput from "../components/AcademicHistoryListInput";
 import LanguageHistoryListInput from "../components/LanguageHistoryListInput";
 
@@ -21,18 +21,29 @@ const StudentInfoInputContainer: React.FC<StudentInfoInputProps> = ({
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
     const { control, handleSubmit } =
-        useForm<APIType.StudentType.ReqCreateStudentProfile>();
+        useForm<APIType.StudentType.ReqCreateStudentProfile>({
+            defaultValues: {
+                name_glb: { KR: "", US: "", JP: "" },
+                gender: 0,
+                has_car: 0,
+                birth_date: "",
+                keyword_list: ["", "", ""],
+            },
+        });
 
     const onSubmit = async (
         studentInfo: APIType.StudentType.ReqCreateStudentProfile,
     ) => {
         try {
-            const response = await fetch("/api/students", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify(studentInfo),
-            });
+            const response = await fetch(
+                `${process.env.REACT_APP_SERVER_BASE_URL}/api/students`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify(studentInfo),
+                },
+            );
             if (response.ok) {
                 console.log("Student Data Submitted Successfully");
                 onNext();
@@ -54,8 +65,8 @@ const StudentInfoInputContainer: React.FC<StudentInfoInputProps> = ({
                     maxWidth: "1080px",
                     padding: "16px",
                     overflow: "hidden",
-                    width: "100%",
-                    height: "100vh",
+                    minWidth: "100%",
+                    minHeight: "100%",
                     boxSizing: "border-box",
                     margin: "auto",
                 }}
@@ -66,7 +77,10 @@ const StudentInfoInputContainer: React.FC<StudentInfoInputProps> = ({
                         padding: "0 !important",
                     }}
                 >
-                    <StudentProfileInput control={control} />
+                    <StudentProfileInput
+                        control={control}
+                        {...control._defaultValues}
+                    />
                     <AcademicHistoryListInput control={control} />
                     <LanguageHistoryListInput control={control} />
                 </Container>
