@@ -388,11 +388,15 @@ const Header = () => {
     }
     */
 
+    const display =
+        isMobile && location.pathname.startsWith("/chat") ? "none" : "block";
+
     return (
         <AppBar
             position="sticky"
             enableColorOnDark
             sx={{
+                display: display,
                 boxShadow: "none",
                 bgcolor: "background.default",
                 backgroundImage: "none",

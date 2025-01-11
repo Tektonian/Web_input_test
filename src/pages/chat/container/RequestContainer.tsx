@@ -9,7 +9,7 @@ export const RequestContainer = () => {
 
     useEffect(() => {
         console.log("Request", renderRequest);
-    }, [...renderRequest]);
+    }, [renderRequest]);
 
     return (
         <Box

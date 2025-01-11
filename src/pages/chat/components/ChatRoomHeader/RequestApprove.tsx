@@ -49,7 +49,7 @@ const RequestApproveDiagram = () => {
                 <DialogActions>
                     <Button onClick={handleClose}>미동의</Button>
                     <Button
-                        onClick={() => updateStatusContract.mutate}
+                        onClick={() => updateStatusContract.mutate()}
                         autoFocus
                     >
                         동의

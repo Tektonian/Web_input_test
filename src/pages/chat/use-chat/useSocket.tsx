@@ -258,13 +258,17 @@ export const useSocketTextMutation = () => {
         },
     });
 
-    const onTextSending = (content: MessageContentType) => {
+    const onTextSending = (text: string) => {
+        const content: MessageContentType = {
+            contentType: "text",
+            content: text,
+        };
         if (activeRoom === undefined) {
             console.log("Sending on no activeRoom");
-            return undefined;
+            return { isError: true, isSuccess: false };
         }
         if (tempId === undefined) {
-            return undefined;
+            return { isError: true, isSuccess: false };
         }
         console.log("On sending", content);
         const req: ReqSendMessage = {
