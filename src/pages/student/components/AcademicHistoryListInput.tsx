@@ -26,6 +26,7 @@ const AcademicHistoryListInput: React.FC<AcademicHistoryListInputProps> = ({
                 backgroundColor: "#f5f5f5",
                 boxShadow: "none",
                 display: "flex",
+                flexDirection: "column",
                 position: "relative",
             }}
         >

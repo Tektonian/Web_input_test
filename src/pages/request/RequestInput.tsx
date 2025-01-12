@@ -95,6 +95,7 @@ const RequestInput = () => {
                 maxWidth: "1080px",
                 width: "100%",
                 height: "100vh",
+                height: "100%",
             }}
         >
             <Typography variant="h4" gutterBottom>

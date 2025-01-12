@@ -29,7 +29,7 @@ const MyPage = () => {
                 maxWidth: "80vw",
                 margin: "auto",
                 padding: "16px",
-                minHeight: "100vh",
+                minHeight: "100%",
             }}
             id={sections[0]}
         >
