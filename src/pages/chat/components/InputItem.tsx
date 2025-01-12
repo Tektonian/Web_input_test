@@ -78,7 +78,6 @@ export const InputItem = (props: InputItemProps) => {
                 {/* Text Input */}
                 <TextField
                     onKeyDown={handleKeyDown}
-                    defaultValue={""}
                     {...field}
                     placeholder="Type your message..."
                     fullWidth

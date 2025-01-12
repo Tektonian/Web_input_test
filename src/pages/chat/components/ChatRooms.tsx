@@ -35,32 +35,33 @@ export const ChatRooms = () => {
                 flexShrink: "1",
             }}
         >
-            {renderChatRoom.map((chatRoom, idx) => (
-                <ChatRoom
-                    defaultValue={activeRequest?.selected?.includes(
-                        chatRoom.chatRoomId,
-                    )}
-                    onClick={(e) => {
-                        console.log("Clicked chatroom", chatRoom);
-                        setActiveRoom(chatRoom.chatRoomId);
-                    }}
-                    selected={activeRequest?.selected?.includes(
-                        chatRoom.chatRoomId,
-                    )}
-                    onContextMenu={() => 0}
-                    onCheckboxToggle={(event, checked) => {
-                        console.log("Checkbox toggle", chatRoom, checked);
-                        flip(chatRoom.chatRoomId);
-                    }}
-                    onLongPress={() => setCheckBoxMode()}
-                    checkBoxMode={checkBoxMode}
-                    key={chatRoom.chatRoomId}
-                    title={`${getProviderName(chatRoom)}`}
-                    lastMessage={chatRoom.lastMessage ?? ""}
-                    lastSentAt={new Date()}
-                    unreadCount={chatRoom.unreadCount ?? 0}
-                />
-            ))}
+            {renderChatRoom &&
+                renderChatRoom.map((chatRoom, idx) => (
+                    <ChatRoom
+                        defaultValue={activeRequest?.selected?.includes(
+                            chatRoom.chatRoomId,
+                        )}
+                        onClick={(e) => {
+                            console.log("Clicked chatroom", chatRoom);
+                            setActiveRoom(chatRoom.chatRoomId);
+                        }}
+                        selected={activeRequest?.selected?.includes(
+                            chatRoom.chatRoomId,
+                        )}
+                        onContextMenu={() => 0}
+                        onCheckboxToggle={(event, checked) => {
+                            console.log("Checkbox toggle", chatRoom, checked);
+                            flip(chatRoom.chatRoomId);
+                        }}
+                        onLongPress={() => setCheckBoxMode()}
+                        checkBoxMode={checkBoxMode}
+                        key={chatRoom.chatRoomId}
+                        title={`${getProviderName(chatRoom)}`}
+                        lastMessage={chatRoom.lastMessage ?? ""}
+                        lastSentAt={new Date()}
+                        unreadCount={chatRoom.unreadCount ?? 0}
+                    />
+                ))}
         </List>
     );
 };

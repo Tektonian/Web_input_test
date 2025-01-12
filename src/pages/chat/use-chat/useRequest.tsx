@@ -27,7 +27,8 @@ export const useRequest = () => {
     }, [checkBoxMode, activeRoom]);
 
     useEffect(() => {
-        const chatRoomIds = renderChatRoom.map((room) => room.chatRoomId);
+        const chatRoomIds =
+            renderChatRoom?.map((room) => room.chatRoomId) ?? [];
 
         const checkBoxItems = chatRoomIds.map((id) => {
             return {
@@ -47,7 +48,8 @@ export const useRequest = () => {
             return;
         }
 
-        const chatRoomIds = renderChatRoom.map((room) => room.chatRoomId);
+        const chatRoomIds =
+            renderChatRoom?.map((room) => room.chatRoomId) ?? [];
 
         const checkBoxItems = chatRoomIds.map((id) => {
             return {

@@ -50,7 +50,7 @@ const MessageRender = ({
                         <Message
                             key={val._id}
                             // @ts-ignore
-                            content={"sent: " + val.content}
+                            content={val.content}
                             contentType="text"
                             direction={val.direction}
                             senderName={

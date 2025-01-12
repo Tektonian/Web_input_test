@@ -157,9 +157,6 @@ export const useSocket = () => {
 
         socket.on("refreshChatRooms", (res) => {
             const { requests } = res;
-            if (requests.length === 0) {
-                throw new Error("No request exist");
-            }
             console.log("Refresh chatrooms", res);
             updateOnRefresh(res);
         });

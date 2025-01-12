@@ -266,14 +266,15 @@ export const useSentMessages: UseBoundStore<StoreApi<sentMessages>> =
             await storage.initStorage(chatRoomId);
 
             const messages = await storage.getAllMessages();
-            set({ messages: messages });
+            set({ messages: [...messages] });
             return;
         },
         push: async (chatRoomId, message) => {
             const storage = get().storage;
             try {
                 await storage.push(message);
-                set({ messages: [...get().messages, message] });
+                const messages = await storage.getAllMessages();
+                set({ messages: [...messages] });
             } catch (error) {
                 console.log("Push failed", error);
             }
@@ -283,7 +284,8 @@ export const useSentMessages: UseBoundStore<StoreApi<sentMessages>> =
             const storage = get().storage;
             try {
                 const newMessages = await storage.updateUnread(lastReadSeqList);
-                set({ messages: newMessages });
+                const messages = await storage.getAllMessages();
+                set({ messages: messages });
             } catch (error) {
                 console.log("Update unread failed", error);
             }
@@ -306,7 +308,8 @@ export const useSentMessages: UseBoundStore<StoreApi<sentMessages>> =
                     newMessages,
                     idx,
                 );
-                set({ messages: storedMessages });
+                const messages = await storage.getAllMessages();
+                set({ messages: [...messages] });
             } catch (error) {
                 console.log("Set message by idx failed", error);
             }

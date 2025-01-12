@@ -46,8 +46,8 @@ interface IChatRoomStorage {
 }
 
 interface ChatRoomStore {
-    renderRequest: Request[];
-    renderChatRoom: ChatRoom[];
+    renderRequest?: Request[];
+    renderChatRoom?: ChatRoom[];
     activeRoom?: ChatRoom;
     activeRequest?: Request;
     initOnLoad: () => void;
@@ -151,7 +151,7 @@ const __UpdateOnReceived = (
         return state;
     }
 
-    const msgInRenderChatRoom = state.renderChatRoom.find(
+    const msgInRenderChatRoom = state.renderChatRoom?.find(
         (room) => room.chatRoomId === message.chatRoomId,
     );
 
@@ -286,8 +286,8 @@ const GetChatRoom = (chatRoomId: string) => {
 
 export const useChatRoomStore: UseBoundStore<StoreApi<ChatRoomStore>> =
     create<ChatRoomStore>((set) => ({
-        renderRequest: [],
-        renderChatRoom: [],
+        renderRequest: undefined,
+        renderChatRoom: undefined,
         activeRoom: undefined,
         activeRequest: undefined,
         initOnLoad: () => set((state) => InitOnLoad(state)),

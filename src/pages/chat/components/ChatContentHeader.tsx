@@ -81,6 +81,7 @@ const ChatContentModal = ({
                         <>
                             {isSuccess ? (
                                 <RequestCard
+                                    request_id={data.request_id}
                                     title={data.title}
                                     reward_price={data.reward_price}
                                     currency={data.currency}
