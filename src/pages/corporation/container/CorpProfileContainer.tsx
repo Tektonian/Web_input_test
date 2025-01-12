@@ -15,10 +15,13 @@ const CorporationProfileContainer: React.FC<
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`/api/corporations/${corp_id}`, {
-                    method: "GET",
-                    credentials: "include",
-                });
+                const response = await fetch(
+                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/corporations/${corp_id}`,
+                    {
+                        method: "GET",
+                        credentials: "include",
+                    },
+                );
                 const data: APIType.CorporationType.ResGetCorpProfile =
                     await response.json();
                 setCorporationData(data);
@@ -29,16 +32,7 @@ const CorporationProfileContainer: React.FC<
         fetchData(); // eslint-disable-line
     }, []);
     return (
-        <>
-            {corpData && (
-                <CorpProfileCard
-                    {...corpData}
-                    isMypage={true}
-                    showEditIcon={true}
-                    editMode={false}
-                />
-            )}
-        </>
+        <>{corpData && <CorpProfileCard onClick={undefined} {...corpData} />}</>
     );
 };
 

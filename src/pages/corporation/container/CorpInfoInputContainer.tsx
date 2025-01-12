@@ -4,32 +4,29 @@ import type { APIType } from "api_spec";
 import CorpNumInput from "../components/CorpNumInput";
 import {
     BarNavigationCard,
-    CorpProfileInput,
+    CorpProfileInputCard,
     StudentStepperCard,
 } from "web_component";
-import { useForm, useWatch } from "react-hook-form";
-import ConsumerInfoInput from "../components/ConsumerInfoInput";
+import { useForm } from "react-hook-form";
 
 interface CorpInfoInputProps {
     onNext: () => void;
     onPrevious: () => void;
-    handleConsumerInfo: (corpId: number, phoneNumber: string) => void;
 }
 const CorpInfoInputContainer: React.FC<CorpInfoInputProps> = ({
     onNext,
     onPrevious,
-    handleConsumerInfo,
 }) => {
-    const { control, handleSubmit } = useForm();
+    const { control, handleSubmit } =
+        useForm<APIType.CorporationType.ReqCreateCorpProfile>();
+
     const [corpData, setCorpData] =
         useState<APIType.CorporationType.ReqCreateCorpProfile>();
+
+    const [profileChecked, setProfileChecked] = useState(false);
+
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
-    const phoneNumber = useWatch({
-        control,
-        name: "phoneNumber",
-    });
 
     const onSubmit = async (
         corpInfo: APIType.CorporationType.ReqCreateCorpProfile,
@@ -45,7 +42,6 @@ const CorpInfoInputContainer: React.FC<CorpInfoInputProps> = ({
                 },
             );
             const corpId = await response.json();
-            handleConsumerInfo(corpId, phoneNumber);
             if (response.ok) {
                 console.log("Data Submitted Successfully");
                 onNext();
@@ -74,7 +70,7 @@ const CorpInfoInputContainer: React.FC<CorpInfoInputProps> = ({
                 padding: "16px",
                 overflow: "hidden",
                 width: "100%",
-                height: "100vh",
+                height: "100%",
                 boxSizing: "border-box",
                 margin: "auto",
             }}
@@ -87,12 +83,8 @@ const CorpInfoInputContainer: React.FC<CorpInfoInputProps> = ({
             >
                 <CorpNumInput onCorpNumSubmit={handleCorpNumSubmit} />
                 {corpData && (
-                    <CorpProfileInput
-                        control={control}
-                        initialData={corpData}
-                    />
+                    <CorpProfileInputCard control={control} {...corpData} />
                 )}
-                <ConsumerInfoInput control={control} />
             </Container>
 
             <Container
