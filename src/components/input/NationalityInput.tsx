@@ -3,7 +3,7 @@ import { Controller } from "react-hook-form";
 import { Autocomplete, TextField } from "@mui/material";
 
 const countries = [
-    { code: "kr", name: "Korea" },
+    { code: "ko", name: "Korea" },
     { code: "jp", name: "Japan" },
     { code: "us", name: "United States" },
     { code: "en", name: "England" },
