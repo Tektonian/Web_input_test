@@ -6,10 +6,12 @@ import {
     Grid2 as Grid,
     Button,
     Divider,
+    Stack,
+    Paper,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { StudentCard } from "web_component";
+import { StudentCard, StudentProfileCard } from "web_component";
 
 const StudentListPage = () => {
     const { request_id } = useParams<{ request_id: string }>();
@@ -81,17 +83,24 @@ const StudentListPage = () => {
                     추천 학생 리스트
                 </Typography>
                 <Divider sx={{ my: 3 }} />
-
                 {isSuccess ? (
-                    <Grid container spacing={2}>
-                        {data &&
-                            data.map((card: any, idx: number) => (
+                    <Stack gap={2}>
+                        {data.map((card: any, idx: number) => (
+                            <Box
+                                component="a"
+                                onClick={() =>
+                                    navigate(`/student/${card.student_id}`)
+                                }
+                            >
+                                <StudentProfileCard {...card} />
+                            </Box>
+                            /*
                                 <Grid size={4} key={idx}>
                                     <StudentCard
                                         key={card.student_id}
                                         student_id={card.student_id}
                                         name={card.name_glb.KR}
-                                        nationality={"KR" /*card.nationality*/}
+                                        nationality={"KR" }
                                         school={card.school_name}
                                         major={card.faculty}
                                         imageUrl=""
@@ -114,9 +123,11 @@ const StudentListPage = () => {
                                             );
                                         }}
                                     />
+                                    
                                 </Grid>
-                            ))}
-                    </Grid>
+                                    */
+                        ))}
+                    </Stack>
                 ) : (
                     <Box display="flex" justifyContent="center" py={4}>
                         <Typography variant="body1" color="error">

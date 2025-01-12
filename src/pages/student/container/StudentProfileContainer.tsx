@@ -10,7 +10,7 @@ const StudentProfileContainer: React.FC<StudentProfileContainerProps> = ({
     student_id,
 }) => {
     const [studentData, setStudentData] =
-        useState<APIType.StudentType.ResGetStudentProfile | null>(null);
+        useState<APIType.StudentType.ResGetStudentProfile<false> | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -22,7 +22,7 @@ const StudentProfileContainer: React.FC<StudentProfileContainerProps> = ({
                         credentials: "include",
                     },
                 );
-                const data: APIType.StudentType.ResGetStudentProfile =
+                const data: APIType.StudentType.ResGetStudentProfile<false> =
                     await response.json();
                 console.log("Student Data:", data);
                 setStudentData(data);
@@ -37,7 +37,7 @@ const StudentProfileContainer: React.FC<StudentProfileContainerProps> = ({
             {studentData && (
                 <StudentProfileCard
                     {...studentData}
-                    image={studentData?.image ?? ""}
+                    // image={studentData?.image ?? ""}
                 />
             )}
         </>

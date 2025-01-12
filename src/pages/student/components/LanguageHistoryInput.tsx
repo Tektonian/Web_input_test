@@ -22,7 +22,7 @@ interface LanguageHistoryInputProps {
 
 interface Exam {
     exam_id: number;
-    exam_name_glb: { en: string; kr: string; jp: string };
+    exam_name_glb: { KO: string; US: string; JP: string };
     exam_result_type: string;
     exam_results: { class: string; level: number }[];
     lang_country_code: string;
@@ -56,7 +56,7 @@ const LanguageHistoryInput: React.FC<LanguageHistoryInputProps> = ({
                 );
                 const data = await response.json();
                 console.log("data:", data);
-                setExams(data.ret);
+                setExams(data);
             } catch (error) {
                 console.error("Error fetching exam data:", error);
             }
@@ -110,7 +110,7 @@ const LanguageHistoryInput: React.FC<LanguageHistoryInputProps> = ({
                                     <Autocomplete
                                         options={exams}
                                         getOptionLabel={(option) =>
-                                            option.exam_name_glb.jp
+                                            option.exam_name_glb.KO
                                         }
                                         value={selectedExam}
                                         onChange={(_, newValue) => {
@@ -140,10 +140,10 @@ const LanguageHistoryInput: React.FC<LanguageHistoryInputProps> = ({
                         <SelectInput
                             control={control}
                             name={`examHistory[${index}].exam_result`}
-                            label="Exam Results"
-                            options={examResults.map(
-                                (result) => `${result.class}`,
-                            )}
+                            options={examResults.map((result) => ({
+                                value: result.level,
+                                label: `${result.class}`,
+                            }))}
                         />
                     </Grid>
                 </Grid>

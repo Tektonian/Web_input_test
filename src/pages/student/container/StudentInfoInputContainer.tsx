@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Container, useMediaQuery, useTheme } from "@mui/material";
 import { useForm } from "react-hook-form";
 import {
-    StudentProfileInput,
+    StudentInputCard,
     StudentStepperCard,
     BarNavigationCard,
 } from "web_component";
@@ -20,14 +20,19 @@ const StudentInfoInputContainer: React.FC<StudentInfoInputProps> = ({
 }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
     const { control, handleSubmit } =
         useForm<APIType.StudentType.ReqCreateStudentProfile>({
             defaultValues: {
-                name_glb: { KR: "", US: "", JP: "" },
+                name_glb: { KO: "", US: "", JP: "" },
                 gender: 0,
                 has_car: 0,
-                birth_date: "",
+                birth_date: "2000-01-01",
                 keyword_list: ["", "", ""],
+                phone_number: "",
+                emergency_contact: "",
+                exam_history: [],
+                academic_history: [],
             },
         });
 
@@ -77,9 +82,12 @@ const StudentInfoInputContainer: React.FC<StudentInfoInputProps> = ({
                         padding: "0 !important",
                     }}
                 >
-                    <StudentProfileInput
+                    <StudentInputCard
                         control={control}
-                        {...control._defaultValues}
+                        // ERROR: Default values are Partial type
+                        // TODO: So we have to fix a type of defaultValues
+                        // See: https://github.com/react-hook-form/react-hook-form/issues/8510
+                        {...(control._defaultValues as Required<APIType.StudentType.ReqCreateStudentProfile>)}
                     />
                     <AcademicHistoryListInput control={control} />
                     <LanguageHistoryListInput control={control} />
