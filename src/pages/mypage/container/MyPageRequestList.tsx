@@ -1,10 +1,8 @@
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
-import { RequestCard } from "web_component";
-import { CorpProfileCard } from "web_component";
-import { StudentProfileCard } from "web_component";
+import { CorpProfileCard, RequestCard, StudentMyPageCard } from "web_component";
 
 import { APIType } from "api_spec";
 import { useEffect } from "react";
@@ -37,10 +35,8 @@ const MyPageRequestList = () => {
             <Box sx={{ marginTop: "24px" }}>
                 {data?.corp_profile && (
                     <CorpProfileCard
+                        onClick={undefined}
                         {...data.corp_profile}
-                        isMypage={true}
-                        editMode={false}
-                        showEditIcon={false}
                     />
                 )}
             </Box>
@@ -48,10 +44,7 @@ const MyPageRequestList = () => {
                 {data?.student_profile && (
                     // TODO: Fix later
                     // @ts-ignore
-                    <StudentProfileCard
-                        {...data.student_profile}
-                        isMyPage={true}
-                    />
+                    <StudentMyPageCard {...data.student_profile} />
                 )}
             </Box>
             <Box sx={{ marginTop: "24px" }}>
