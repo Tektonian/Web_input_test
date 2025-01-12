@@ -22,6 +22,8 @@ import { useSession } from "../hooks/Session";
 import { Container } from "@mui/material";
 import { useMediaQuery, useTheme } from "@mui/material";
 
+import { RoleBasedBlocker } from "web_component";
+
 const StyledToolbar = styled(Toolbar)(({ theme }: any) => ({
     display: "flex",
     alignItems: "center",
@@ -253,7 +255,7 @@ const OrgnProfile = () => {
                     handleMenuClose();
                 }}
             >
-                요청 살펴 보기
+                요청 살펴보기
             </MenuItem>
             <MenuItem
                 onClick={() => {
@@ -261,7 +263,7 @@ const OrgnProfile = () => {
                     handleMenuClose();
                 }}
             >
-                요청 작성 하기
+                요청 작성하기
             </MenuItem>
         </Menu>
     );
@@ -340,8 +342,30 @@ const NormalProfile = () => {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}>내 페이지</MenuItem>
-            <MenuItem onClick={handleMenuClose}>요청 살펴보기</MenuItem>
+            <MenuItem
+                onClick={() => {
+                    navigate("/mypage");
+                    handleMenuClose();
+                }}
+            >
+                내 페이지
+            </MenuItem>
+            <MenuItem
+                onClick={() => {
+                    navigate("/request/recommend/list");
+                    handleMenuClose();
+                }}
+            >
+                요청 살펴보기
+            </MenuItem>
+            <MenuItem
+                onClick={() => {
+                    navigate("/request/write");
+                    handleMenuClose();
+                }}
+            >
+                요청 작성하기
+            </MenuItem>
         </Menu>
     );
     return (
@@ -353,7 +377,7 @@ const NormalProfile = () => {
                     size="small"
                     onClick={() => navigate("/profile/setup")}
                 >
-                    인증하기
+                    학생 인증하기
                 </Button>
                 <UnreadCount />
                 <IconButton
@@ -373,8 +397,36 @@ const NormalProfile = () => {
     );
 };
 
+const NoSessionProfile = () => {
+    const navigate = useNavigate();
+    return (
+        <>
+            <Button
+                color="primary"
+                variant="contained"
+                size="small"
+                onClick={() => {
+                    navigate("/request/recommend/list");
+                }}
+            >
+                등록된 요청 확인하기
+            </Button>
+            <Button
+                color="primary"
+                variant="contained"
+                size="small"
+                onClick={() => {
+                    window.location.href = `${process.env.REACT_APP_SERVER_BASE_URL}/api/auth/signin`;
+                }}
+            >
+                회원가입
+            </Button>
+        </>
+    );
+};
+
 const Header = () => {
-    const { data: session, status } = useSession({ required: false });
+    const { data: session } = useSession({ required: false });
     const roles = session?.user?.roles || [];
     const navigate = useNavigate();
     const location = useLocation();
@@ -427,29 +479,20 @@ const Header = () => {
                             flexGrow: 1,
                         }}
                     >
-                        {status === "authenticated" ? (
-                            roles.includes("student") ? (
-                                <StudentProfile />
-                            ) : roles.includes("corp") ||
-                              roles.includes("orgn") ? (
-                                <OrgnProfile />
-                            ) : (
+                        <RoleBasedBlocker.RoleBasedBlocker roles={roles}>
+                            <RoleBasedBlocker.NoSessionItem>
+                                <NoSessionProfile />
+                            </RoleBasedBlocker.NoSessionItem>
+                            <RoleBasedBlocker.NormalItem>
                                 <NormalProfile />
-                            )
-                        ) : (
-                            <>
-                                <Button
-                                    color="primary"
-                                    variant="contained"
-                                    size="small"
-                                    onClick={() => {
-                                        window.location.href = `${process.env.REACT_APP_SERVER_BASE_URL}/api/auth/signin`;
-                                    }}
-                                >
-                                    회원가입
-                                </Button>
-                            </>
-                        )}
+                            </RoleBasedBlocker.NormalItem>
+                            <RoleBasedBlocker.OrgnItem>
+                                <OrgnProfile />
+                            </RoleBasedBlocker.OrgnItem>
+                            <RoleBasedBlocker.StudentItem>
+                                <OrgnProfile />
+                            </RoleBasedBlocker.StudentItem>
+                        </RoleBasedBlocker.RoleBasedBlocker>
                     </Box>
                 </StyledToolbar>
             </Container>
