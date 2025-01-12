@@ -40,9 +40,6 @@ const ButtonDisplayed = ({
     } else if (userRole === "corp" || userRole === "orgn") {
         return (
             <>
-                <InputLabel htmlFor="email-hero" sx={visuallyHidden}>
-                    요청을 등록해보세요
-                </InputLabel>
                 <Button
                     variant="contained"
                     color="primary"
@@ -50,16 +47,13 @@ const ButtonDisplayed = ({
                     sx={{ minWidth: "fit-content" }}
                     onClick={onClick}
                 >
-                    요청 작성하기
+                    유학생에게 요청을 작성해보세요
                 </Button>
             </>
         );
     } else if (userRole === "student") {
         return (
             <>
-                <InputLabel htmlFor="email-hero" sx={visuallyHidden}>
-                    등록된 요청을 확인해보세요
-                </InputLabel>
                 <Button
                     variant="contained"
                     color="primary"
@@ -67,7 +61,7 @@ const ButtonDisplayed = ({
                     sx={{ minWidth: "fit-content" }}
                     onClick={onClick}
                 >
-                    등록된 요청 보기
+                    등록된 요청을 확인해보세요
                 </Button>
             </>
         );
@@ -75,7 +69,7 @@ const ButtonDisplayed = ({
         return (
             <>
                 <InputLabel htmlFor="email-hero" sx={visuallyHidden}>
-                    Email
+                    Email@mail.com
                 </InputLabel>
                 <TextField
                     id="email-hero"
@@ -190,6 +184,8 @@ const Hero = ({
                         direction={{ xs: "column", sm: "row" }}
                         spacing={1}
                         useFlexGap
+                        alignContent="center"
+                        justifyContent="center"
                         sx={{ pt: 2, width: { xs: "100%", sm: "350px" } }}
                     >
                         <ButtonDisplayed
