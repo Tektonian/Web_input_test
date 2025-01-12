@@ -72,6 +72,7 @@ const RequestListPage: React.FC = () => {
                         ) => (
                             <Box flex={1}>
                                 <RequestCard
+                                    request_id={request.request_id}
                                     title={request.title}
                                     reward_price={request.reward_price}
                                     currency={request.currency}

@@ -31,14 +31,16 @@ const RequestInput = () => {
                     title: "",
                     head_count: 0,
                     reward_price: 0,
-                    currency: "KR",
+                    currency: "KO",
                     content: "",
                     are_needed: [],
                     are_required: [],
                     start_date: new Date(),
                     end_date: new Date(),
-                    start_time: dayjs().format("HH:mm"),
-                    end_time: dayjs().format("HH:mm"),
+                    provide_food: false,
+                    provide_trans_exp: false,
+                    start_time: dayjs().format("HH:MM"),
+                    end_time: dayjs().format("HH:MM"),
                     address: "",
                     address_coordinate: {
                         lat: 0,
@@ -94,7 +96,6 @@ const RequestInput = () => {
                 justifyContent: "center",
                 maxWidth: "1080px",
                 width: "100%",
-                height: "100vh",
                 height: "100%",
             }}
         >
@@ -135,16 +136,19 @@ const RequestInput = () => {
                     <Grid size={4}>
                         <SelectInput
                             control={control}
-                            name="currency"
-                            label="Currency"
-                            options={["JPY", "KRW", "USD"]}
+                            name="data.currency"
+                            options={[
+                                { value: "KO", label: "원" },
+                                { value: "JP", label: "엔" },
+                                { value: "US", label: "달러" },
+                            ]}
                         />
                     </Grid>
 
                     <Grid size={6}>
                         <DateInput
                             control={control}
-                            name="start_date"
+                            name="data.start_date"
                             label="Start Date"
                         />
                     </Grid>
@@ -152,7 +156,7 @@ const RequestInput = () => {
                     <Grid size={6}>
                         <DateInput
                             control={control}
-                            name="end_date"
+                            name="data.end_date"
                             label="End Date"
                         />
                     </Grid>
@@ -160,7 +164,7 @@ const RequestInput = () => {
                     <Grid size={12}>
                         <LongTextInput
                             control={control}
-                            name="content"
+                            name="data.content"
                             label="Content"
                         />
                     </Grid>

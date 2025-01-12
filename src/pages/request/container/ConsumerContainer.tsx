@@ -35,14 +35,7 @@ const ConsumerContainer: React.FC<ConsumerContainerProps> = (corp_id) => {
     return (
         <>
             <Box sx={{ marginBottom: 4 }}>
-                {data && (
-                    <CorpProfileCard
-                        {...data}
-                        isMypage={false}
-                        showEditIcon={false}
-                        editMode={false}
-                    />
-                )}
+                {data && <CorpProfileCard onClick={undefined} {...data} />}
             </Box>
         </>
     );
