@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
 import { Box, Grid2 as Grid, useMediaQuery, useTheme } from "@mui/material";
-import { ReviewOfStudentCard } from "web_component";
 import type { APIType } from "api_spec";
+import React, { useEffect, useState } from "react";
+import { ReviewOfStudentCard } from "web_component";
 
 interface StudentReviewContainerProps {
     student_id: number;

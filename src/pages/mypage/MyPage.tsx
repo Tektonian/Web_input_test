@@ -1,17 +1,9 @@
+import { Box, Container, useMediaQuery, useTheme } from "@mui/material";
 import React, { useState } from "react";
-import {
-    Box,
-    Container,
-    Tab,
-    Tabs,
-    useMediaQuery,
-    useTheme,
-} from "@mui/material";
+import { useParams } from "react-router-dom";
 import { StudentIndexCard } from "web_component";
 import MyPageRequestList from "./container/MyPageRequestList";
 import MyProfile from "./container/MyProfile";
-import { useParams } from "react-router-dom";
-import UserProfileContainer from "../../components/container/UserProfileContainer";
 
 const MyPage = () => {
     const [tabIndex, setTabIndex] = useState(0);

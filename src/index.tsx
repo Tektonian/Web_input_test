@@ -3,7 +3,8 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-
+import { SessionProvider } from "./hooks/Session";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
     createTheme,
     responsiveFontSizes,
@@ -30,6 +31,8 @@ const theme = responsiveFontSizes(
     }),
 );
 
+const queryClient = new QueryClient();
+
 const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement,
 );
@@ -37,7 +40,11 @@ root.render(
     <React.StrictMode>
         <meta name="viewport" content="width=device-width, user-scalable=no" />
         <ThemeProvider theme={theme}>
-            <App />
+            <SessionProvider>
+                <QueryClientProvider client={queryClient}>
+                    <App />
+                </QueryClientProvider>
+            </SessionProvider>
         </ThemeProvider>
     </React.StrictMode>,
 );

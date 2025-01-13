@@ -194,14 +194,6 @@ const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
                         />
                     </Grid>
                     <Grid size={{ xs: 6, md: 4 }}>
-                        <SelectInput
-                            control={control}
-                            name={`academicHistory[${index}].status`}
-                            label="Status"
-                            options={["In progress", "Graduated", "Dropout"]}
-                        />
-                    </Grid>
-                    <Grid size={{ xs: 6, md: 4 }}>
                         <YearMonthInput
                             control={control}
                             name={`academic_history[${index}].start_date`}
