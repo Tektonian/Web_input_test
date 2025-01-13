@@ -6,7 +6,11 @@ import {
     StudentStepperCard,
     BarNavigationCard,
 } from "web_component";
-import type { APIType } from "api_spec";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { APIType } from "api_spec";
+import { UserEnum } from "api_spec/enum";
+import type { Control } from "react-hook-form";
+import { ReqCreateStudentProfileSchema } from "api_spec/dist/esm/zod/service/Student";
 import AcademicHistoryListInput from "../components/AcademicHistoryListInput";
 import LanguageHistoryListInput from "../components/LanguageHistoryListInput";
 
@@ -25,8 +29,8 @@ const StudentInfoInputContainer: React.FC<StudentInfoInputProps> = ({
         useForm<APIType.StudentType.ReqCreateStudentProfile>({
             defaultValues: {
                 name_glb: { KO: "", US: "", JP: "" },
-                gender: 0,
-                has_car: 0,
+                gender: UserEnum.USER_GENDER_ENUM.MALE,
+                has_car: UserEnum.USER_GENDER_ENUM.MALE,
                 birth_date: "2000-01-01",
                 keyword_list: ["", "", ""],
                 phone_number: "",
@@ -83,11 +87,24 @@ const StudentInfoInputContainer: React.FC<StudentInfoInputProps> = ({
                     }}
                 >
                     <StudentInputCard
-                        control={control}
+                        control={
+                            control as Control<APIType.StudentType.ReqCreateStudentProfile> &
+                                Control<
+                                    Omit<
+                                        APIType.StudentType.ReqCreateStudentProfile,
+                                        "academic_history" | "exam_history"
+                                    >
+                                >
+                        }
                         // ERROR: Default values are Partial type
                         // TODO: So we have to fix a type of defaultValues
                         // See: https://github.com/react-hook-form/react-hook-form/issues/8510
-                        {...(control._defaultValues as Required<APIType.StudentType.ReqCreateStudentProfile>)}
+                        {...(control._defaultValues as Required<
+                            Omit<
+                                APIType.StudentType.ReqCreateStudentProfile,
+                                "academic_history" | "exam_history"
+                            >
+                        >)}
                     />
                     <AcademicHistoryListInput control={control} />
                     <LanguageHistoryListInput control={control} />

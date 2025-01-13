@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Box, Container, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Button, Container, useMediaQuery, useTheme } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import type { APIType } from "api_spec";
 import CorpNumInput from "../components/CorpNumInput";
 import {
@@ -17,6 +18,8 @@ const CorpInfoInputContainer: React.FC<CorpInfoInputProps> = ({
     onNext,
     onPrevious,
 }) => {
+    const navigate = useNavigate();
+    /*
     const { control, handleSubmit } =
         useForm<APIType.CorporationType.ReqCreateCorpProfile>();
 
@@ -57,6 +60,7 @@ const CorpInfoInputContainer: React.FC<CorpInfoInputProps> = ({
         setCorpData(data);
         console.log("Received Data:", data);
     };
+    */
 
     return (
         <Box
@@ -81,12 +85,22 @@ const CorpInfoInputContainer: React.FC<CorpInfoInputProps> = ({
                     padding: "0 !important",
                 }}
             >
+                아직 구현중이에요.
+                <Button onClick={() => navigate("/mypage")}>마이페이지</Button>
+            </Container>
+            {/*
+            <Container
+                sx={{
+                    width: { xs: "100%", md: "712px" },
+                    padding: "0 !important",
+                }}
+            >
                 <CorpNumInput onCorpNumSubmit={handleCorpNumSubmit} />
                 {corpData && (
                     <CorpProfileInputCard control={control} {...corpData} />
                 )}
             </Container>
-
+            
             <Container
                 sx={{
                     width: { xs: "100%", md: "344px" },
@@ -105,6 +119,7 @@ const CorpInfoInputContainer: React.FC<CorpInfoInputProps> = ({
                     onPrevious={onPrevious}
                 />
             </Container>
+            */}
         </Box>
     );
 };

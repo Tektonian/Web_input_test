@@ -39,7 +39,7 @@ const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
     const [search, setSearch] = useState("");
     const country_code = useWatch({
         control,
-        name: `academicHistory[${index}].country_code`,
+        name: `academic_history[${index}].country_code`,
     });
 
     useEffect(() => {
@@ -111,13 +111,13 @@ const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
                     <Grid size={6}>
                         <NationalityInput
                             control={control}
-                            name={`academicHistory[${index}].country_code`}
+                            name={`academic_history[${index}].country_code`}
                             label="Country"
                         />
                     </Grid>
                     <Grid size={6}>
                         <Controller
-                            name={`academicHistory[${index}].school_id`}
+                            name={`academic_history[${index}].school_id`}
                             control={control}
                             defaultValue=""
                             render={({ field }) => {
@@ -165,14 +165,14 @@ const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
                     <Grid size={6}>
                         <ShortTextInput
                             control={control}
-                            name={`academicHistory[${index}].faculty`}
+                            name={`academic_history[${index}].faculty`}
                             label="Faculty"
                         />
                     </Grid>
                     <Grid size={6}>
                         <SelectInput
                             control={control}
-                            name={`academicHistory[${index}].degree`}
+                            name={`academic_history[${index}].degree`}
                             options={[
                                 {
                                     value: AcademicEnum.ACADEMIC_DEGREE_ENUM
@@ -195,21 +195,21 @@ const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
                     <Grid size={4}>
                         <YearMonthInput
                             control={control}
-                            name={`academicHistory[${index}].start_date`}
+                            name={`academic_history[${index}].start_date`}
                             label="Start Date"
                         />
                     </Grid>
                     <Grid size={4}>
                         <YearMonthInput
                             control={control}
-                            name={`academicHistory[${index}].end_date`}
+                            name={`academic_history[${index}].end_date`}
                             label="End Date"
                         />
                     </Grid>
                     <Grid size={4}>
                         <SelectInput
                             control={control}
-                            name={`academicHistory[${index}].status`}
+                            name={`academic_history[${index}].status`}
                             options={[
                                 {
                                     value: AcademicEnum.ACADEMIC_STATUS_ENUM

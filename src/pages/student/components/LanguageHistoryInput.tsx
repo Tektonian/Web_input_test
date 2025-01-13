@@ -36,7 +36,7 @@ const LanguageHistoryInput: React.FC<LanguageHistoryInputProps> = ({
     const [exams, setExams] = useState<Exam[]>([]);
     const selectedExamId = useWatch({
         control,
-        name: `examHistory[${index}].exam_id`,
+        name: `exam_history[${index}].exam_id`,
     });
 
     const selectedExam = exams.find((exam) => exam.exam_id === selectedExamId);
@@ -99,7 +99,7 @@ const LanguageHistoryInput: React.FC<LanguageHistoryInputProps> = ({
                     <Grid size={12}>
                         <Controller
                             control={control}
-                            name={`examHistory[${index}].exam_id`}
+                            name={`exam_history[${index}].exam_id`}
                             render={({ field }) => {
                                 const { onChange, value } = field;
                                 const selectedExam =
@@ -139,7 +139,7 @@ const LanguageHistoryInput: React.FC<LanguageHistoryInputProps> = ({
                     <Grid size={12}>
                         <SelectInput
                             control={control}
-                            name={`examHistory[${index}].exam_result`}
+                            name={`exam_history[${index}].exam_result`}
                             options={examResults.map((result) => ({
                                 value: result.level,
                                 label: `${result.class}`,
