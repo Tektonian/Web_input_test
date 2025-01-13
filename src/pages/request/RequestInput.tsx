@@ -5,22 +5,17 @@ import {
     Container,
     Typography,
     Grid2 as Grid,
+    TextField,
+    Select,
+    MenuItem,
 } from "@mui/material";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
-import { useForm } from "react-hook-form";
-import {
-    ShortTextInput,
-    LongTextInput,
-    DateInput,
-    TimeInput,
-    SelectInput,
-} from "web_component";
+import { useForm, FormProvider } from "react-hook-form";
 import AddressInput from "./components/AddressInput";
 import { useNavigate } from "react-router-dom";
 import { useSession } from "../../hooks/Session";
 import type { APIType } from "api_spec";
 import dayjs from "dayjs";
+import { ChipInput } from "web_component";
 
 const RequestInput = () => {
     const { control, setValue, handleSubmit } =
@@ -49,14 +44,15 @@ const RequestInput = () => {
                     prep_material: [],
                 },
             },
-        });
+        },
+    });
 
-    const session = useSession();
-    const roles = session.data?.user?.roles;
+    const { handleSubmit, register, setValue } = methods;
 
     const navigate = useNavigate();
 
     const onSubmit = async (request: APIType.RequestType.ReqCreateRequest) => {
+        console.log("START fetching request:", request);
         try {
             const response = await fetch(
                 `${process.env.REACT_APP_SERVER_BASE_URL}/api/requests`,
@@ -169,22 +165,81 @@ const RequestInput = () => {
                         />
                     </Grid>
 
-                    <Grid size={12}>
-                        <AddressInput control={control} setValue={setValue} />
-                    </Grid>
+                        <Grid size={6}>
+                            <TextField
+                                label="End Date"
+                                type="date"
+                                fullWidth
+                                {...register("data.end_date")}
+                            />
+                        </Grid>
 
-                    <Grid size={12} display="flex" justifyContent="center">
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            type="submit"
-                        >
-                            Submit
-                        </Button>
+                        <Grid size={6}>
+                            <TextField
+                                label="Start Time"
+                                type="time"
+                                fullWidth
+                                {...register("data.start_time")}
+                            />
+                        </Grid>
+
+                        <Grid size={6}>
+                            <TextField
+                                label="End Time"
+                                type="time"
+                                fullWidth
+                                {...register("data.end_time")}
+                            />
+                        </Grid>
+
+                        <Grid size={12}>
+                            <TextField
+                                label="Content"
+                                multiline
+                                rows={4}
+                                fullWidth
+                                {...register("data.content")}
+                            />
+                        </Grid>
+
+                        <Grid size={12}>
+                            <ChipInput
+                                name="data.are_needed"
+                                label="Press enter to add skill needed"
+                            />
+                        </Grid>
+
+                        <Grid size={12}>
+                            <ChipInput
+                                name="data.are_required"
+                                label="Press enter to add skill required"
+                            />
+                        </Grid>
+
+                        <Grid size={12}>
+                            <ChipInput
+                                name="data.prep_material"
+                                label="Press enter to add preparation material"
+                            />
+                        </Grid>
+
+                        <Grid size={12}>
+                            <AddressInput />
+                        </Grid>
+
+                        <Grid size={12} display="flex" justifyContent="center">
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                type="submit"
+                            >
+                                Submit
+                            </Button>
+                        </Grid>
                     </Grid>
-                </Grid>
-            </Box>
-        </Container>
+                </Box>
+            </Container>
+        </FormProvider>
     );
 };
 

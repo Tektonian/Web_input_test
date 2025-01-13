@@ -49,12 +49,15 @@ const RequestListPage: React.FC = () => {
     return (
         <Container
             sx={{
-                py: 4,
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
                 justifyContent: "center",
+                alignItems: "center",
+                gap: "24px",
                 maxWidth: "1080px",
+                padding: "16px",
+                overflowX: "hidden",
+                overflowY: { xs: "scroll", md: "hidden" },
                 width: "100%",
                 minHeight: "100%",
             }}

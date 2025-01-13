@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import React, { useState, useEffect } from "react";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import usePlacesAutocomplete, {
     getGeocode,
@@ -13,6 +12,7 @@ import {
     ListItemText,
     Paper,
 } from "@mui/material";
+import { useFormContext } from "react-hook-form";
 
 const mapContainerStyle = {
     width: "100%",
@@ -24,20 +24,19 @@ const initialCenter = {
     lng: 126.978,
 };
 
-interface AddressInputProps {
-    control: any;
-    setValue: any;
-}
+const AddressInput: React.FC = () => {
+    // 상위 <FormProvider>로부터 useFormContext()를 통해 register, setValue, watch 등을 가져옴
+    const { register, setValue, watch } = useFormContext();
 
-const AddressInput: React.FC<AddressInputProps> = ({ control, setValue }) => {
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY!,
         libraries: ["places"],
     });
 
+    // Places Autocomplete 훅
     const {
         ready,
-        value,
+        value: autoCompleteVal,
         suggestions: { status, data },
         setValue: setAutoCompleteValue,
         clearSuggestions,
@@ -46,6 +45,13 @@ const AddressInput: React.FC<AddressInputProps> = ({ control, setValue }) => {
     const [mapCenter, setMapCenter] = useState(initialCenter);
     const [markerPosition, setMarkerPosition] = useState(initialCenter);
 
+    const addressWatch = watch("address", "");
+
+    useEffect(() => {
+        setAutoCompleteValue(addressWatch, false);
+    }, [addressWatch, setAutoCompleteValue]);
+
+    // 자동완성 리스트 중 하나를 선택했을 때
     const handleSelect = async (address: string) => {
         setValue("address", address);
         setAutoCompleteValue(address, false);
@@ -57,18 +63,16 @@ const AddressInput: React.FC<AddressInputProps> = ({ control, setValue }) => {
             setMapCenter({ lat, lng });
             setMarkerPosition({ lat, lng });
 
-            setValue("address_coordinate", {
-                type: "Point",
-                coordinates: [lat, lng],
-            });
+            setValue("data.address_coordinate.lat", lat);
+            setValue("data.address_coordinate.lng", lng);
         } catch (error) {
             console.error("Error fetching coordinates:", error);
         }
     };
 
     const handleMapClick = async (lat: number, lng: number) => {
-        setMarkerPosition({ lat, lng });
         setMapCenter({ lat, lng });
+        setMarkerPosition({ lat, lng });
 
         try {
             const results = await getGeocode({ location: { lat, lng } });
@@ -77,10 +81,8 @@ const AddressInput: React.FC<AddressInputProps> = ({ control, setValue }) => {
             setValue("address", address);
             setAutoCompleteValue(address, false);
 
-            setValue("address_coordinate", {
-                type: "Point",
-                coordinates: [lng, lat],
-            });
+            setValue("data.address_coordinate.lat", lat);
+            setValue("data.address_coordinate.lng", lng);
         } catch (error) {
             console.error("Error fetching address:", error);
         }
@@ -90,73 +92,65 @@ const AddressInput: React.FC<AddressInputProps> = ({ control, setValue }) => {
 
     return (
         <Box>
-            <Controller
-                name="address"
-                control={control}
-                defaultValue=""
-                render={({ field }) => (
-                    <>
-                        <TextField
-                            {...field}
-                            fullWidth
-                            label="Address"
-                            value={value}
-                            onChange={(e) => {
-                                field.onChange(e);
-                                setAutoCompleteValue(e.target.value);
-                            }}
-                            disabled={!ready}
-                        />
-                        {status === "OK" && (
-                            <Paper
-                                elevation={3}
-                                sx={{
-                                    maxHeight: 200,
-                                    overflowY: "auto",
-                                    marginTop: 1,
-                                }}
-                            >
-                                <List>
-                                    {data.map(({ place_id, description }) => (
-                                        <ListItemButton
-                                            key={place_id}
-                                            onClick={() =>
-                                                handleSelect(description)
-                                            }
-                                        >
-                                            <ListItemText
-                                                primary={description}
-                                            />
-                                        </ListItemButton>
-                                    ))}
-                                </List>
-                            </Paper>
-                        )}
-                    </>
-                )}
-            />
-            <Controller
-                name="address_coordinate"
-                control={control}
-                defaultValue={{
-                    type: "Point",
-                    coordinates: [0, 0],
+            {/* 주소 TextField */}
+            <TextField
+                label="Address"
+                fullWidth
+                value={autoCompleteVal}
+                onChange={(e) => {
+                    setAutoCompleteValue(e.target.value);
+                    setValue("address", e.target.value);
                 }}
-                render={({ field }) => (
-                    <GoogleMap
-                        mapContainerStyle={mapContainerStyle}
-                        center={mapCenter}
-                        zoom={15}
-                        onClick={(e) => {
-                            const lat = e.latLng?.lat() || 0;
-                            const lng = e.latLng?.lng() || 0;
-                            handleMapClick(lat, lng); //eslint-disable-line
-                        }}
-                    >
-                        <Marker position={markerPosition} />
-                    </GoogleMap>
-                )}
+                disabled={!ready}
             />
+            {status === "OK" && (
+                <Paper
+                    elevation={3}
+                    sx={{
+                        maxHeight: 200,
+                        overflowY: "auto",
+                        marginTop: 1,
+                    }}
+                >
+                    <List>
+                        {data.map(({ place_id, description }) => (
+                            <ListItemButton
+                                key={place_id}
+                                onClick={() => handleSelect(description)}
+                            >
+                                <ListItemText primary={description} />
+                            </ListItemButton>
+                        ))}
+                    </List>
+                </Paper>
+            )}
+
+            {/* data.address_coordinate: { lat, lng }를 각각 hidden input으로 register */}
+            <input
+                type="hidden"
+                {...register("data.address_coordinate.lat", {
+                    valueAsNumber: true,
+                })}
+            />
+            <input
+                type="hidden"
+                {...register("data.address_coordinate.lng", {
+                    valueAsNumber: true,
+                })}
+            />
+
+            <GoogleMap
+                mapContainerStyle={mapContainerStyle}
+                center={mapCenter}
+                zoom={15}
+                onClick={(e) => {
+                    const lat = e.latLng?.lat() || 0;
+                    const lng = e.latLng?.lng() || 0;
+                    handleMapClick(lat, lng); //eslint-disable-line
+                }}
+            >
+                <Marker position={markerPosition} />
+            </GoogleMap>
         </Box>
     );
 };

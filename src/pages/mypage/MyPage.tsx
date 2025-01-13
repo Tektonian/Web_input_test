@@ -1,13 +1,23 @@
 import React, { useState } from "react";
-import { Box, Container, Tab, Tabs } from "@mui/material";
+import {
+    Box,
+    Container,
+    Tab,
+    Tabs,
+    useMediaQuery,
+    useTheme,
+} from "@mui/material";
 import { StudentIndexCard } from "web_component";
 import MyPageRequestList from "./container/MyPageRequestList";
 import MyProfile from "./container/MyProfile";
 import { useParams } from "react-router-dom";
+import UserProfileContainer from "../../components/container/UserProfileContainer";
 
 const MyPage = () => {
     const [tabIndex, setTabIndex] = useState(0);
     const { student_id: student_id } = useParams();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabIndex(newValue);
@@ -31,7 +41,6 @@ const MyPage = () => {
                 padding: "16px",
                 minHeight: "100%",
             }}
-            id={sections[0]}
         >
             <Container
                 sx={{
@@ -60,7 +69,7 @@ const MyPage = () => {
                     order: { xs: -1, md: 1 },
                 }}
             >
-                <StudentIndexCard sections={sections} />
+                {!isMobile && <StudentIndexCard sections={sections} />}
             </Container>
         </Box>
     );

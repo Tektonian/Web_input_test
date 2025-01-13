@@ -1,12 +1,11 @@
 import React from "react";
-import { Box, Container, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Container, Stack, useMediaQuery, useTheme } from "@mui/material";
 import { useForm } from "react-hook-form";
 import {
     StudentInputCard,
     StudentStepperCard,
     BarNavigationCard,
 } from "web_component";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { APIType } from "api_spec";
 import { UserEnum } from "api_spec/enum";
 import type { Control } from "react-hook-form";

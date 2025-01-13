@@ -75,24 +75,25 @@ const LanguageHistoryInput: React.FC<LanguageHistoryInputProps> = ({
                 fontFamily: "Noto Sans KR",
             }}
         >
+            <IconButton
+                onClick={onRemove}
+                aria-label="Remove Language History"
+                sx={{
+                    position: "absolute",
+                    top: 24,
+                    right: 24,
+                    color: "#888",
+                }}
+            >
+                <RemoveCircleOutlineIcon />
+            </IconButton>
             <CardContent sx={{ padding: "0 !important" }}>
                 <Grid container spacing={2} alignItems="center">
                     {/* 제목 및 Remove 버튼 */}
-                    <Grid size={11.5}>
+                    <Grid size={12}>
                         <Typography variant="h6" gutterBottom>
                             Language History {index + 1}
                         </Typography>
-                    </Grid>
-                    <Grid size={0.5}>
-                        <IconButton
-                            onClick={onRemove}
-                            aria-label="Remove Language History"
-                            sx={{
-                                color: "#888",
-                            }}
-                        >
-                            <RemoveCircleOutlineIcon />
-                        </IconButton>
                     </Grid>
 
                     {/* Exam Name 필드 */}

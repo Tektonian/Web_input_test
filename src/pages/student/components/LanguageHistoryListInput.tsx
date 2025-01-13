@@ -19,8 +19,7 @@ const LanguageHistoryListInput: React.FC<LanguageHistoryListInputProps> = ({
     return (
         <Card
             sx={{
-                maxWidth: 1080,
-                margin: "auto",
+                minHeight: 300,
                 borderRadius: "16px",
                 fontFamily: "Noto Sans KR",
                 color: "rgba(0, 0, 0, 0.7)",

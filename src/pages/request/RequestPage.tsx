@@ -25,6 +25,21 @@ const RequestPage = () => {
 
     const { request_id: request_id } = useParams();
 
+    const handleApply = async () => {
+        try {
+            await fetch("http://localhost:8080/api/message/chatRoom", {
+                method: "POST",
+                body: JSON.stringify({ request_id: request_id }),
+                headers: {
+                    "content-Type": "Application/json",
+                },
+                credentials: "include",
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -69,11 +84,12 @@ const RequestPage = () => {
                 display: "flex",
                 flexDirection: { xs: "column", md: "row" },
                 justifyContent: "center",
-                alignItems: "flex-start",
+                alignItems: "center",
                 gap: "24px",
                 maxWidth: "1080px",
                 padding: "16px",
-                overflow: "hidden",
+                overflowX: "hidden",
+                overflowY: { xs: "scroll", md: "hidden" },
                 width: "100%",
                 height: "100%",
                 boxSizing: "border-box",
