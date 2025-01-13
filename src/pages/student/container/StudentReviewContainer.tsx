@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Grid2 as Grid, useMediaQuery, useTheme } from "@mui/material";
 import { ReviewOfStudentCard } from "web_component";
-import type { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 
 interface StudentReviewContainerProps {
     student_id: number;
@@ -19,7 +19,7 @@ const StudentReviewContainer: React.FC<StudentReviewContainerProps> = ({
         const fetchData = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:8080/api/student-reviews/${student_id}`,
+                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/student-reviews/list/${student_id}`,
                     {
                         method: "GET",
                         credentials: "include",

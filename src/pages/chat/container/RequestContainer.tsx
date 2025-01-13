@@ -9,7 +9,7 @@ export const RequestContainer = () => {
 
     useEffect(() => {
         console.log("Request", renderRequest);
-    }, [...renderRequest]);
+    }, [renderRequest]);
 
     return (
         <Box
@@ -28,16 +28,17 @@ export const RequestContainer = () => {
             }}
         >
             <List>
-                {renderRequest.map((req) => {
-                    return (
-                        <RequestRoom
-                            key={req.requestId}
-                            title={req.title}
-                            image={req.image}
-                            onClick={() => setActiveRequest(req.requestId)}
-                        />
-                    );
-                })}
+                {renderRequest &&
+                    renderRequest.map((req) => {
+                        return (
+                            <RequestRoom
+                                key={req.requestId}
+                                title={req.title}
+                                image={req.image}
+                                onClick={() => setActiveRequest(req.requestId)}
+                            />
+                        );
+                    })}
             </List>
         </Box>
     );

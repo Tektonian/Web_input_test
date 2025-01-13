@@ -2,9 +2,10 @@ import React from "react";
 import { useFieldArray } from "react-hook-form";
 import LanguageHistoryInput from "./LanguageHistoryInput";
 import { Box, Button, Card, CardContent } from "@mui/material";
-
+import type { APIType } from "api_spec";
+import type { Control } from "react-hook-form";
 interface LanguageHistoryListInputProps {
-    control: any;
+    control: Control<APIType.StudentType.ReqCreateStudentProfile>;
 }
 
 const LanguageHistoryListInput: React.FC<LanguageHistoryListInputProps> = ({
@@ -12,7 +13,7 @@ const LanguageHistoryListInput: React.FC<LanguageHistoryListInputProps> = ({
 }) => {
     const { fields, append, remove } = useFieldArray({
         control,
-        name: "examHistory",
+        name: "exam_history",
     });
 
     return (
@@ -24,6 +25,8 @@ const LanguageHistoryListInput: React.FC<LanguageHistoryListInputProps> = ({
                 color: "rgba(0, 0, 0, 0.7)",
                 backgroundColor: "#f5f5f5",
                 boxShadow: "none",
+                display: "flex",
+                flexDirection: "column",
                 position: "relative",
             }}
         >
@@ -45,10 +48,8 @@ const LanguageHistoryListInput: React.FC<LanguageHistoryListInputProps> = ({
                         color="primary"
                         onClick={() =>
                             append({
-                                language: "",
-                                exam_name: "",
-                                exam_result: "",
-                                level: 0,
+                                exam_id: 0,
+                                level: 1,
                             })
                         }
                     >

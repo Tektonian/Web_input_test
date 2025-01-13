@@ -44,7 +44,7 @@ const CorpMypage = () => {
                 overflowX: "hidden",
                 overflowY: { xs: "scroll", md: "hidden" },
                 width: "100%",
-                minHeight: "100vh",
+                height: "100%",
                 boxSizing: "border-box",
                 margin: "auto",
             }}
@@ -99,7 +99,7 @@ const CorpMypage = () => {
                         borderRadius: "16px",
                         backgroundColor: "#ff7961",
                     }}
-                    onClick={() => navigate(`/requestinput`)}
+                    onClick={() => navigate(`/request/write`)}
                 >
                     <CardContent
                         sx={{

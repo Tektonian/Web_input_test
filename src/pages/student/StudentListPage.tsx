@@ -6,43 +6,33 @@ import {
     Grid2 as Grid,
     Button,
     Divider,
+    Stack,
+    Paper,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
-import { StudentCard } from "web_component";
-
-const useStudentList = () => {
-    const { data, mutate, isSuccess } = useMutation({
-        mutationFn: async (request_id: number) => {
-            const res = await fetch("/api/recommend/students", {
-                method: "post",
-                credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ request_id: request_id }),
-            });
-            const json = await res.json();
-            return json.hits; // Assume `hits` contains the student list
-        },
-    });
-
-    const onLoading = (request_id: number) => {
-        mutate(request_id);
-    };
-
-    return { onLoading, data, isSuccess };
-};
+import { useQuery } from "@tanstack/react-query";
+import { StudentCard, StudentProfileCard } from "web_component";
 
 const StudentListPage = () => {
     const { request_id } = useParams<{ request_id: string }>();
-    const { onLoading, data, isSuccess } = useStudentList();
     const [bookmarkedIds, setBookmarkedIds] = useState<number[]>([]);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (request_id) {
-            onLoading(Number(request_id));
-        }
-    }, [request_id]);
+    const { data, isSuccess } = useQuery({
+        queryKey: [request_id],
+        queryFn: async () => {
+            const res = await fetch(
+                `${process.env.REACT_APP_SERVER_BASE_URL}/api/recommend/students`,
+                {
+                    method: "post",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ request_id: request_id }),
+                },
+            );
+            return res.json();
+        },
+    });
 
     const handleBookmarkToggle = (id: number, isBookmarked: boolean) => {
         setBookmarkedIds((prev) => {
@@ -60,13 +50,16 @@ const StudentListPage = () => {
         }
 
         try {
-            const response = await fetch("/api/send-alarm", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
+            const response = await fetch(
+                `${process.env.REACT_APP_SERVER_BASE_URL}/api/send-alarm`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ selectedStudentIds: bookmarkedIds }),
                 },
-                body: JSON.stringify({ selectedStudentIds: bookmarkedIds }),
-            });
+            );
 
             if (!response.ok) {
                 throw new Error("Failed to send alarm");
@@ -90,37 +83,51 @@ const StudentListPage = () => {
                     추천 학생 리스트
                 </Typography>
                 <Divider sx={{ my: 3 }} />
-
                 {isSuccess ? (
-                    <Grid container spacing={2}>
+                    <Stack gap={2}>
                         {data.map((card: any, idx: number) => (
-                            <Grid size={4} key={idx}>
-                                <StudentCard
-                                    student_id={card.student_id}
-                                    name={card.name_glb.kr}
-                                    nationality={card.nationality}
-                                    school={card.school_name}
-                                    major={card.faculty}
-                                    imageUrl=""
-                                    languageWithLevel={[
-                                        {
-                                            language: "jp",
-                                            level: 2,
-                                        },
-                                    ]}
-                                    isBookmarked={bookmarkedIds.includes(
-                                        card.student_id,
-                                    )}
-                                    onBookmarkClick={(newState) =>
-                                        handleBookmarkToggle(
+                            <Box
+                                component="a"
+                                onClick={() =>
+                                    navigate(`/student/${card.student_id}`)
+                                }
+                            >
+                                <StudentProfileCard {...card} />
+                            </Box>
+                            /*
+                                <Grid size={4} key={idx}>
+                                    <StudentCard
+                                        key={card.student_id}
+                                        student_id={card.student_id}
+                                        name={card.name_glb.KR}
+                                        nationality={"KR" }
+                                        school={card.school_name}
+                                        major={card.faculty}
+                                        imageUrl=""
+                                        languageWithLevel={[
+                                            {
+                                                language: "jp",
+                                                level: 2,
+                                            },
+                                        ]}
+                                        isBookmarked={bookmarkedIds.includes(
                                             card.student_id,
-                                            newState,
-                                        )
-                                    }
-                                />
-                            </Grid>
+                                        )}
+                                        onBookmarkClick={(newState) => {
+                                            handleBookmarkToggle(
+                                                card.student_id,
+                                                newState,
+                                            );
+                                            navigate(
+                                                `/student/${card.student_id}`,
+                                            );
+                                        }}
+                                    />
+                                    
+                                </Grid>
+                                    */
                         ))}
-                    </Grid>
+                    </Stack>
                 ) : (
                     <Box display="flex" justifyContent="center" py={4}>
                         <Typography variant="body1" color="error">

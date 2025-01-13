@@ -1,11 +1,9 @@
 import { create } from "zustand";
 import { io, Socket } from "socket.io-client";
-import { safeLocalStorage } from "@toss/storage";
 import { TypedStorage } from "@toss/storage/typed";
 
-import type { IMessageStorage } from "./MessageStore";
 import type { UseBoundStore, StoreApi } from "zustand";
-import type { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 
 type ResMessage = APIType.WebSocketType.ResMessage;
 type ResRefreshChatRoom = APIType.WebSocketType.ResRefreshChatRoom;
@@ -48,8 +46,8 @@ interface IChatRoomStorage {
 }
 
 interface ChatRoomStore {
-    renderRequest: Request[];
-    renderChatRoom: ChatRoom[];
+    renderRequest?: Request[];
+    renderChatRoom?: ChatRoom[];
     activeRoom?: ChatRoom;
     activeRequest?: Request;
     initOnLoad: () => void;
@@ -153,7 +151,7 @@ const __UpdateOnReceived = (
         return state;
     }
 
-    const msgInRenderChatRoom = state.renderChatRoom.find(
+    const msgInRenderChatRoom = state.renderChatRoom?.find(
         (room) => room.chatRoomId === message.chatRoomId,
     );
 
@@ -226,13 +224,13 @@ const UpdateOnRefresh = (
     const prevReqeusts = requestStorage.get();
     const prevChatRooms = chatRoomStorage.get();
 
-    const storedRequests: Request[] = requests.map((req: Request) => ({
+    const storedRequests: Request[] = requests.map((req) => ({
         ...req,
-        hasUnread: true,
+        hasUnread: false,
     }));
 
     const storedChatRooms: ChatRoom[] = chatRooms
-        .map((room: ChatRoom) => {
+        .map((room) => {
             const prevChatRoom = prevChatRooms?.chatRooms.find(
                 (prev) => prev.chatRoomId === room.chatRoomId,
             );
@@ -288,8 +286,8 @@ const GetChatRoom = (chatRoomId: string) => {
 
 export const useChatRoomStore: UseBoundStore<StoreApi<ChatRoomStore>> =
     create<ChatRoomStore>((set) => ({
-        renderRequest: [],
-        renderChatRoom: [],
+        renderRequest: undefined,
+        renderChatRoom: undefined,
         activeRoom: undefined,
         activeRequest: undefined,
         initOnLoad: () => set((state) => InitOnLoad(state)),
@@ -297,7 +295,7 @@ export const useChatRoomStore: UseBoundStore<StoreApi<ChatRoomStore>> =
             set((state) => SetActiveRequest(state, requestId)),
         tempId: undefined,
         setTempId: (id) => set((state) => ({ tempId: id })),
-        socket: io("ws://localhost:8080", {
+        socket: io(process.env.REACT_APP_SERVER_BASE_URL, {
             withCredentials: true,
             path: "/api/chat",
             autoConnect: false,

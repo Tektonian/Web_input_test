@@ -1,14 +1,15 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import type { Session } from "../../../hooks/Session";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import InputLabel from "@mui/material/InputLabel";
-import Link from "@mui/material/Link";
-import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
+import {
+    Box,
+    Button,
+    Container,
+    InputLabel,
+    Link,
+    Stack,
+    TextField,
+    Typography,
+} from "@mui/material";
 
 import { visuallyHidden } from "@mui/utils";
 
@@ -39,9 +40,6 @@ const ButtonDisplayed = ({
     } else if (userRole === "corp" || userRole === "orgn") {
         return (
             <>
-                <InputLabel htmlFor="email-hero" sx={visuallyHidden}>
-                    요청을 등록해보세요
-                </InputLabel>
                 <Button
                     variant="contained"
                     color="primary"
@@ -49,16 +47,13 @@ const ButtonDisplayed = ({
                     sx={{ minWidth: "fit-content" }}
                     onClick={onClick}
                 >
-                    요청 작성하기
+                    유학생에게 요청을 작성해보세요
                 </Button>
             </>
         );
     } else if (userRole === "student") {
         return (
             <>
-                <InputLabel htmlFor="email-hero" sx={visuallyHidden}>
-                    등록된 요청을 확인해보세요
-                </InputLabel>
                 <Button
                     variant="contained"
                     color="primary"
@@ -66,7 +61,7 @@ const ButtonDisplayed = ({
                     sx={{ minWidth: "fit-content" }}
                     onClick={onClick}
                 >
-                    등록된 요청 보기
+                    등록된 요청을 확인해보세요
                 </Button>
             </>
         );
@@ -74,7 +69,7 @@ const ButtonDisplayed = ({
         return (
             <>
                 <InputLabel htmlFor="email-hero" sx={visuallyHidden}>
-                    Email
+                    Email@mail.com
                 </InputLabel>
                 <TextField
                     id="email-hero"
@@ -98,7 +93,7 @@ const ButtonDisplayed = ({
                     sx={{ minWidth: "fit-content" }}
                     onClick={onClick}
                 >
-                    Start now
+                    메일로 가입하기
                 </Button>
             </>
         );
@@ -114,16 +109,12 @@ const Hero = ({
 
     const handleStartNow = () => {
         if (userRole === "normal") {
-            navigate("/profileinput");
+            navigate("/profile/write");
         } else if (userRole === "corp" || userRole === "orgn") {
-            navigate("/requestinput");
+            navigate("/request/write");
         } else if (userRole === "student") {
-            navigate("/request-list");
+            navigate("/request/recommend/list");
         }
-    };
-
-    const handleRequestNow = () => {
-        navigate("/requestinput");
     };
 
     return (
@@ -132,10 +123,9 @@ const Hero = ({
             sx={(theme) => ({
                 width: "100%",
                 backgroundRepeat: "no-repeat",
-                backgroundImage:
-                    "radial-gradient(ellipse 80% 50% at 50% -20%, hsl(210, 100%, 90%), transparent)",
+                background: `radial-gradient(ellipse 80% 50% at 50% -20%, hsl(210, 100%, 90%), transparent)`,
                 ...theme.applyStyles("dark", {
-                    backgroundImage:
+                    background:
                         "radial-gradient(ellipse 80% 50% at 50% -20%, hsl(210, 100%, 16%), transparent)",
                 }),
             })}
@@ -152,24 +142,23 @@ const Hero = ({
                 <Stack
                     spacing={2}
                     useFlexGap
+                    width="100%"
                     sx={{
                         alignItems: "center",
-                        width: { xs: "100%", sm: "70%" },
                     }}
                 >
                     <Typography
-                        variant="h1"
+                        variant="h2"
                         sx={{
                             display: "flex",
                             flexDirection: { xs: "column", sm: "row" },
                             alignItems: "center",
-                            fontSize: "clamp(3rem, 10vw, 3.5rem)",
                         }}
                     >
-                        Our&nbsp;latest&nbsp;
+                        기업과&nbsp;유학생을&nbsp;
                         <Typography
                             component="span"
-                            variant="h1"
+                            variant="h2"
                             sx={(theme) => ({
                                 fontSize: "inherit",
                                 color: "primary.main",
@@ -178,24 +167,25 @@ const Hero = ({
                                 }),
                             })}
                         >
-                            products
+                            잇습니다
                         </Typography>
                     </Typography>
                     <Typography
+                        variant="h4"
+                        align="center"
+                        whiteSpace="normal"
                         sx={{
-                            textAlign: "center",
                             color: "text.secondary",
-                            width: { sm: "100%", md: "80%" },
                         }}
                     >
-                        Explore our cutting-edge dashboard, delivering
-                        high-quality solutions tailored to your needs. Elevate
-                        your experience with top-tier features and services.
+                        세상 모든 유학생이 가교가 될 수 있도록 돕습니다.
                     </Typography>
                     <Stack
                         direction={{ xs: "column", sm: "row" }}
                         spacing={1}
                         useFlexGap
+                        alignContent="center"
+                        justifyContent="center"
                         sx={{ pt: 2, width: { xs: "100%", sm: "350px" } }}
                     >
                         <ButtonDisplayed
@@ -214,6 +204,11 @@ const Hero = ({
                         </Link>
                         .
                     </Typography>
+                    <Box
+                        component="img"
+                        src="image/homepage.jpg"
+                        sx={{ width: "100%" }}
+                    />
                 </Stack>
             </Container>
         </Box>

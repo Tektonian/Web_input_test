@@ -31,6 +31,7 @@
         "buffer": "^6.0.3",
         "date-fns": "^4.1.0",
         "dayjs": "^1.11.13",
+        "joi-extract-type": "^15.0.8",
         "overlay-kit": "^1.4.1",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
@@ -71,7 +72,7 @@
     },
     "devDependencies": {
         "@types/google.maps": "^3.58.1",
-        "eslint": "^8.57.1"
-    },
-    "proxy": "http://localhost:8080"
+        "eslint": "^8.57.1",
+        "zod": "^3.24.1"
+    }
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { RequestCard } from "web_component";
-import type { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 import { useNavigate } from "react-router-dom";
 
 interface OtherRequestContainerProps {
@@ -19,9 +19,9 @@ const OtherRequestContainer: React.FC<OtherRequestContainerProps> = (
         const fetchData = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:8080/api/requests/list/${
-                        corp_id ?? orgn_id
-                    }`,
+                    `${
+                        process.env.REACT_APP_SERVER_BASE_URL
+                    }/api/requests/list/${corp_id ?? orgn_id}`,
                     {
                         method: "GET",
                     },
@@ -55,7 +55,6 @@ const OtherRequestContainer: React.FC<OtherRequestContainerProps> = (
                             {...request}
                             address={request.address ?? ""}
                             request_status={request.request_status ?? 4}
-                            renderLogo={false}
                             onClick={() =>
                                 navigate(`/request/${request.request_id}`)
                             }

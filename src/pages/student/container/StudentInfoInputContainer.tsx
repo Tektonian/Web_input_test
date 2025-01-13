@@ -2,11 +2,14 @@ import React from "react";
 import { Box, Container, Stack, useMediaQuery, useTheme } from "@mui/material";
 import { useForm } from "react-hook-form";
 import {
-    StudentProfileInput,
+    StudentInputCard,
     StudentStepperCard,
     BarNavigationCard,
 } from "web_component";
-import type { APIType } from "api_spec/types";
+import { APIType } from "api_spec";
+import { UserEnum } from "api_spec/enum";
+import type { Control } from "react-hook-form";
+import { ReqCreateStudentProfileSchema } from "api_spec/dist/esm/zod/service/Student";
 import AcademicHistoryListInput from "../components/AcademicHistoryListInput";
 import LanguageHistoryListInput from "../components/LanguageHistoryListInput";
 
@@ -20,19 +23,35 @@ const StudentInfoInputContainer: React.FC<StudentInfoInputProps> = ({
 }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
     const { control, handleSubmit } =
-        useForm<APIType.StudentType.ReqCreateStudentProfile>();
+        useForm<APIType.StudentType.ReqCreateStudentProfile>({
+            defaultValues: {
+                name_glb: { KO: "", US: "", JP: "" },
+                gender: UserEnum.USER_GENDER_ENUM.MALE,
+                has_car: UserEnum.USER_GENDER_ENUM.MALE,
+                birth_date: "2000-01-01",
+                keyword_list: ["", "", ""],
+                phone_number: "",
+                emergency_contact: "",
+                exam_history: [],
+                academic_history: [],
+            },
+        });
 
     const onSubmit = async (
         studentInfo: APIType.StudentType.ReqCreateStudentProfile,
     ) => {
         try {
-            const response = await fetch("/api/students", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify(studentInfo),
-            });
+            const response = await fetch(
+                `${process.env.REACT_APP_SERVER_BASE_URL}/api/students`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify(studentInfo),
+                },
+            );
             if (response.ok) {
                 console.log("Student Data Submitted Successfully");
                 onNext();
@@ -53,10 +72,9 @@ const StudentInfoInputContainer: React.FC<StudentInfoInputProps> = ({
                     gap: "24px",
                     maxWidth: "1080px",
                     padding: "16px",
-                    overflowX: "hidden",
-                    overflowY: "scroll",
-                    width: "100%",
-                    height: "100vh",
+                    overflow: "hidden",
+                    minWidth: "100%",
+                    minHeight: "100%",
                     boxSizing: "border-box",
                     margin: "auto",
                 }}
@@ -67,11 +85,28 @@ const StudentInfoInputContainer: React.FC<StudentInfoInputProps> = ({
                         padding: "0 !important",
                     }}
                 >
-                    <Stack spacing={3}>
-                        <StudentProfileInput control={control} />
-                        <AcademicHistoryListInput control={control} />
-                        <LanguageHistoryListInput control={control} />
-                    </Stack>
+                    <StudentInputCard
+                        control={
+                            control as Control<APIType.StudentType.ReqCreateStudentProfile> &
+                                Control<
+                                    Omit<
+                                        APIType.StudentType.ReqCreateStudentProfile,
+                                        "academic_history" | "exam_history"
+                                    >
+                                >
+                        }
+                        // ERROR: Default values are Partial type
+                        // TODO: So we have to fix a type of defaultValues
+                        // See: https://github.com/react-hook-form/react-hook-form/issues/8510
+                        {...(control._defaultValues as Required<
+                            Omit<
+                                APIType.StudentType.ReqCreateStudentProfile,
+                                "academic_history" | "exam_history"
+                            >
+                        >)}
+                    />
+                    <AcademicHistoryListInput control={control} />
+                    <LanguageHistoryListInput control={control} />
                 </Container>
 
                 <Container

@@ -7,7 +7,7 @@ import {
 } from "./Stores/MessageStore";
 import { useChatRoomStore } from "./Stores/ChatRoomStore";
 import { Socket } from "socket.io-client";
-import type { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 
 type ReqSendMessage = APIType.WebSocketType.ReqSendMessage;
 type MessageContentType = APIType.ContentType.MessageContentType;
@@ -157,9 +157,6 @@ export const useSocket = () => {
 
         socket.on("refreshChatRooms", (res) => {
             const { requests } = res;
-            if (requests.length === 0) {
-                throw new Error("No request exist");
-            }
             console.log("Refresh chatrooms", res);
             updateOnRefresh(res);
         });
@@ -258,13 +255,17 @@ export const useSocketTextMutation = () => {
         },
     });
 
-    const onTextSending = (content: MessageContentType) => {
+    const onTextSending = (text: string) => {
+        const content: MessageContentType = {
+            contentType: "text",
+            content: text,
+        };
         if (activeRoom === undefined) {
             console.log("Sending on no activeRoom");
-            return undefined;
+            return { isError: true, isSuccess: false };
         }
         if (tempId === undefined) {
-            return undefined;
+            return { isError: true, isSuccess: false };
         }
         console.log("On sending", content);
         const req: ReqSendMessage = {

@@ -47,7 +47,10 @@ const RequestFinishDiagram = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>미동의</Button>
-                    <Button onClick={() => updateStatusFinish.mutate} autoFocus>
+                    <Button
+                        onClick={() => updateStatusFinish.mutate()}
+                        autoFocus
+                    >
                         동의
                     </Button>
                 </DialogActions>

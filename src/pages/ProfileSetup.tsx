@@ -12,15 +12,8 @@ const ProfileSetup: React.FC = () => {
     const { control, watch, reset } = useForm();
     const { Funnel, Step, setStep } = useFunnel("typeSelect");
     const userType = watch("userType");
-    const [consumerInfo, setConsumerInfo] = useState({
-        corpId: -1,
-        phoneNumber: "",
-    });
     const navigate = useNavigate();
 
-    const handleConsumerInfo = (corpId: number, phoneNumber: string) => {
-        setConsumerInfo({ corpId: corpId, phoneNumber: phoneNumber });
-    };
     const onNextStep = () => {
         if (userType === "student") {
             setStep("studentInfo");
@@ -49,7 +42,6 @@ const ProfileSetup: React.FC = () => {
             {/* 기업 Step 시작 */}
             <Step name="corpInfo">
                 <CorpInfoInputContainer
-                    handleConsumerInfo={handleConsumerInfo}
                     onNext={() => setStep("emailVerification")}
                     onPrevious={() => setStep("typeSelect")}
                 />

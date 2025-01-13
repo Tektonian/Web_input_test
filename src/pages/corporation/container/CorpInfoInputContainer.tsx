@@ -1,48 +1,50 @@
 import React, { useState } from "react";
-import { Box, Container, useMediaQuery, useTheme } from "@mui/material";
-import type { APIType } from "api_spec/types";
+import { Box, Button, Container, useMediaQuery, useTheme } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import type { APIType } from "api_spec";
 import CorpNumInput from "../components/CorpNumInput";
 import {
     BarNavigationCard,
-    CorpProfileInput,
+    CorpProfileInputCard,
     StudentStepperCard,
 } from "web_component";
-import { useForm, useWatch } from "react-hook-form";
-import ConsumerInfoInput from "../components/ConsumerInfoInput";
+import { useForm } from "react-hook-form";
 
 interface CorpInfoInputProps {
     onNext: () => void;
     onPrevious: () => void;
-    handleConsumerInfo: (corpId: number, phoneNumber: string) => void;
 }
 const CorpInfoInputContainer: React.FC<CorpInfoInputProps> = ({
     onNext,
     onPrevious,
-    handleConsumerInfo,
 }) => {
-    const { control, handleSubmit } = useForm();
+    const navigate = useNavigate();
+    /*
+    const { control, handleSubmit } =
+        useForm<APIType.CorporationType.ReqCreateCorpProfile>();
+
     const [corpData, setCorpData] =
         useState<APIType.CorporationType.ReqCreateCorpProfile>();
+
+    const [profileChecked, setProfileChecked] = useState(false);
+
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
-    const phoneNumber = useWatch({
-        control,
-        name: "phoneNumber",
-    });
 
     const onSubmit = async (
         corpInfo: APIType.CorporationType.ReqCreateCorpProfile,
     ) => {
         try {
-            const response = await fetch("/api/corporations", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify(corpInfo),
-            });
+            const response = await fetch(
+                `${process.env.REACT_APP_SERVER_BASE_URL}/api/corporations`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify(corpInfo),
+                },
+            );
             const corpId = await response.json();
-            handleConsumerInfo(corpId, phoneNumber);
             if (response.ok) {
                 console.log("Data Submitted Successfully");
                 onNext();
@@ -58,6 +60,7 @@ const CorpInfoInputContainer: React.FC<CorpInfoInputProps> = ({
         setCorpData(data);
         console.log("Received Data:", data);
     };
+    */
 
     return (
         <Box
@@ -71,7 +74,7 @@ const CorpInfoInputContainer: React.FC<CorpInfoInputProps> = ({
                 padding: "16px",
                 overflow: "hidden",
                 width: "100%",
-                height: "100vh",
+                height: "100%",
                 boxSizing: "border-box",
                 margin: "auto",
             }}
@@ -82,16 +85,22 @@ const CorpInfoInputContainer: React.FC<CorpInfoInputProps> = ({
                     padding: "0 !important",
                 }}
             >
+                아직 구현중이에요.
+                <Button onClick={() => navigate("/mypage")}>마이페이지</Button>
+            </Container>
+            {/*
+            <Container
+                sx={{
+                    width: { xs: "100%", md: "712px" },
+                    padding: "0 !important",
+                }}
+            >
                 <CorpNumInput onCorpNumSubmit={handleCorpNumSubmit} />
                 {corpData && (
-                    <CorpProfileInput
-                        control={control}
-                        initialData={corpData}
-                    />
+                    <CorpProfileInputCard control={control} {...corpData} />
                 )}
-                <ConsumerInfoInput control={control} />
             </Container>
-
+            
             <Container
                 sx={{
                     width: { xs: "100%", md: "344px" },
@@ -110,6 +119,7 @@ const CorpInfoInputContainer: React.FC<CorpInfoInputProps> = ({
                     onPrevious={onPrevious}
                 />
             </Container>
+            */}
         </Box>
     );
 };

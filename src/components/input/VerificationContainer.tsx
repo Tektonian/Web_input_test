@@ -5,6 +5,9 @@ import {
     EmailTokenInput,
     StudentStepperCard,
 } from "web_component";
+import { useSession } from "../../hooks/Session";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { useForm, useWatch } from "react-hook-form";
 import { handleSendVerificationEmail } from "../../hooks/useEmail";
 
@@ -21,6 +24,8 @@ const VerificationContainer: React.FC<CorpInfoInputProps> = ({
     consumerData,
 }) => {
     const { control, handleSubmit } = useForm();
+    const session = useSession({ required: false });
+    const navigate = useNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -40,27 +45,27 @@ const VerificationContainer: React.FC<CorpInfoInputProps> = ({
         ...consumerData,
     };
 
-    const onSubmit = async () => {
-        try {
-            const response = await fetch("/api/callback/identity-verify", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(submissionData),
-            });
-            if (response.ok) {
-                const result = await response.json();
-                console.log("Data successfully submitted:", result);
-            } else {
-                console.error(
-                    "Failed to submit data:",
-                    response.status,
-                    await response.text(),
-                );
-            }
-        } catch (error) {
-            console.error("Error submitting data:", error);
-        }
-    };
+    const {
+        mutate: onSubmit,
+        isError,
+        isSuccess,
+    } = useMutation({
+        mutationFn: async () => {
+            return await fetch(
+                `${process.env.REACT_APP_SERVER_BASE_URL}/api/verification/callback/identity-verify/${userType}`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify(submissionData),
+                },
+            );
+        },
+        onSuccess: async (data, variables, context) => {
+            await session.update();
+            navigate("/mypage");
+        },
+    });
 
     return (
         <Box
@@ -74,7 +79,7 @@ const VerificationContainer: React.FC<CorpInfoInputProps> = ({
                 padding: "16px",
                 overflow: "hidden",
                 width: "100%",
-                height: "100vh",
+                height: "100%",
                 boxSizing: "border-box",
                 margin: "auto",
             }}
@@ -106,7 +111,7 @@ const VerificationContainer: React.FC<CorpInfoInputProps> = ({
             >
                 {!isMobile && <StudentStepperCard currentStep={3} />}
                 <BarNavigationCard
-                    onNext={handleSubmit(onSubmit)}
+                    onNext={handleSubmit(() => onSubmit())}
                     onPrevious={onPrevious}
                 />
             </Container>

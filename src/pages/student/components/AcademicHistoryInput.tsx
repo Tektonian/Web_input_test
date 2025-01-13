@@ -1,28 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { Controller, useWatch } from "react-hook-form";
-import { ShortTextInput } from "web_component";
-import { YearMonthInput } from "web_component";
+import "@fontsource/noto-sans-kr";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import {
-    Box,
-    Typography,
-    Grid2 as Grid,
-    TextField,
-    IconButton,
     Autocomplete,
     Card,
     CardContent,
+    Grid2 as Grid,
+    IconButton,
+    TextField,
+    Typography,
 } from "@mui/material";
-import { SelectInput } from "web_component";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import type { APIType } from "api_spec/types";
+import { AcademicEnum } from "api_spec/enum";
+import React, { useEffect, useState } from "react";
+import { Controller, useWatch } from "react-hook-form";
+import { SelectInput, ShortTextInput, YearMonthInput } from "web_component";
 import NationalityInput from "../../../components/input/NationalityInput";
-import "@fontsource/noto-sans-kr";
 
 interface AcademicHistoryInputProps {
     control: any;
     index: number;
     onRemove: () => void;
-    locale?: "kr" | "us" | "jp" | "";
+    locale?: "ko" | "us" | "jp" | "";
 }
 
 interface School {
@@ -39,9 +36,10 @@ const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
     locale,
 }) => {
     const [schools, setSchools] = useState<School[]>([]);
+    const [search, setSearch] = useState("");
     const country_code = useWatch({
         control,
-        name: `academicHistory[${index}].country_code`,
+        name: `academic_history[${index}].country_code`,
     });
 
     useEffect(() => {
@@ -59,7 +57,7 @@ const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
             }
             try {
                 const response = await fetch(
-                    `http://localhost:8080/api/search/schools?country_code=${country_code}`,
+                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/search/schools?country_code=${country_code}&q=${search}`,
                     {
                         method: "GET",
                         headers: {
@@ -69,14 +67,14 @@ const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
                 );
                 const data = await response.json();
                 console.log("data:", data);
-                setSchools(data.ret);
+                setSchools(data);
             } catch (error) {
                 console.error("Error fetching school data:", error);
             }
         };
 
         fetchSchools(); // eslint-disable-line
-    }, [country_code]);
+    }, [country_code, search]);
 
     return (
         <Card
@@ -111,20 +109,21 @@ const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
                     </Grid>
 
                     {/* 입력 필드들 */}
-                    <Grid size={{ xs: 6, md: 2 }}>
+                    <Grid size={6}>
                         <NationalityInput
                             control={control}
-                            name={`academicHistory[${index}].country_code`}
+                            name={`academic_history[${index}].country_code`}
                             label="Country"
                         />
                     </Grid>
-                    <Grid size={{ xs: 6, md: 2 }}>
+                    <Grid size={6}>
                         <Controller
-                            name={`academicHistory[${index}].school_id`}
+                            name={`academic_history[${index}].school_id`}
                             control={control}
                             defaultValue=""
                             render={({ field }) => {
                                 const { onChange, value } = field;
+
                                 const selectedSchool =
                                     schools.find(
                                         (school) => school.school_id === value,
@@ -147,6 +146,12 @@ const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
                                         renderInput={(params) => (
                                             <TextField
                                                 {...params}
+                                                onChange={(e) => {
+                                                    console.log(e);
+                                                    setSearch(
+                                                        e.target.value ?? "",
+                                                    );
+                                                }}
                                                 label="School Name"
                                                 variant="outlined"
                                                 fullWidth
@@ -158,19 +163,34 @@ const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
                             }}
                         />
                     </Grid>
-                    <Grid size={{ xs: 12, md: 4 }}>
+                    <Grid size={6}>
                         <ShortTextInput
                             control={control}
-                            name={`academicHistory[${index}].faculty`}
+                            name={`academic_history[${index}].faculty`}
                             label="Faculty"
                         />
                     </Grid>
-                    <Grid size={{ xs: 6, md: 4 }}>
+                    <Grid size={6}>
                         <SelectInput
                             control={control}
-                            name={`academicHistory[${index}].degree`}
-                            label="Degree"
-                            options={["Bachelor", "Master", "Doctor"]}
+                            name={`academic_history[${index}].degree`}
+                            options={[
+                                {
+                                    value: AcademicEnum.ACADEMIC_DEGREE_ENUM
+                                        .BACHELOR,
+                                    label: "학사",
+                                },
+                                {
+                                    value: AcademicEnum.ACADEMIC_DEGREE_ENUM
+                                        .MASTER,
+                                    label: "석사",
+                                },
+                                {
+                                    value: AcademicEnum.ACADEMIC_DEGREE_ENUM
+                                        .DOCTOR,
+                                    label: "박사",
+                                },
+                            ]}
                         />
                     </Grid>
                     <Grid size={{ xs: 6, md: 4 }}>
@@ -184,15 +204,38 @@ const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
                     <Grid size={{ xs: 6, md: 4 }}>
                         <YearMonthInput
                             control={control}
-                            name={`academicHistory[${index}].start_date`}
+                            name={`academic_history[${index}].start_date`}
                             label="Start Date"
                         />
                     </Grid>
                     <Grid size={{ xs: 6, md: 4 }}>
                         <YearMonthInput
                             control={control}
-                            name={`academicHistory[${index}].end_date`}
+                            name={`academic_history[${index}].end_date`}
                             label="End Date"
+                        />
+                    </Grid>
+                    <Grid size={4}>
+                        <SelectInput
+                            control={control}
+                            name={`academic_history[${index}].status`}
+                            options={[
+                                {
+                                    value: AcademicEnum.ACADEMIC_STATUS_ENUM
+                                        .PROGRESSING,
+                                    label: "재학중",
+                                },
+                                {
+                                    value: AcademicEnum.ACADEMIC_STATUS_ENUM
+                                        .GRADUATED,
+                                    label: "졸업",
+                                },
+                                {
+                                    value: AcademicEnum.ACADEMIC_STATUS_ENUM
+                                        .ABSENCE,
+                                    label: "휴학",
+                                },
+                            ]}
                         />
                     </Grid>
                 </Grid>

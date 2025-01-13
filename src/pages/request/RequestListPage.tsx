@@ -9,26 +9,23 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { RequestCard } from "web_component";
 import { useNavigate } from "react-router-dom";
-import { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 
 const useRequestList = () => {
     const { mutate, data, isSuccess } = useMutation({
         mutationFn: async (student_id: number) => {
-            const res = await fetch("/api/recommend/requests", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
+            const res = await fetch(
+                `${process.env.REACT_APP_SERVER_BASE_URL}/api/recommend/requests`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ student_id }),
                 },
-                body: JSON.stringify({ student_id }),
-            });
+            );
 
-            if (!res.ok) {
-                throw new Error("Failed to fetch requests");
-            }
-
-            const json = await res.json();
-            console.log("json:", json);
-            return json.hits;
+            return res.json();
         },
     });
 
@@ -62,9 +59,7 @@ const RequestListPage: React.FC = () => {
                 overflowX: "hidden",
                 overflowY: { xs: "scroll", md: "hidden" },
                 width: "100%",
-                minHeight: "100vh",
-                boxSizing: "border-box",
-                margin: "auto",
+                minHeight: "100%",
             }}
         >
             {!isSuccess ? (
@@ -80,6 +75,7 @@ const RequestListPage: React.FC = () => {
                         ) => (
                             <Box flex={1}>
                                 <RequestCard
+                                    request_id={request.request_id}
                                     title={request.title}
                                     reward_price={request.reward_price}
                                     currency={request.currency}
@@ -91,7 +87,6 @@ const RequestListPage: React.FC = () => {
                                             `/request/${request.request_id}`,
                                         )
                                     }
-                                    renderLogo={true}
                                     request_status={1}
                                 />
                             </Box>

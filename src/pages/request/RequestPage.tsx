@@ -9,8 +9,9 @@ import {
     Tab,
 } from "@mui/material";
 import { RequestSideCard } from "web_component";
+import { useMutation } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 import RequestContentContainer from "./container/RequestContentContainer";
 import ConsumerContainer from "./container/ConsumerContainer";
 import OtherRequestContainer from "./container/OtherRequestContainer";
@@ -43,7 +44,7 @@ const RequestPage = () => {
         const fetchData = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:8080/api/requests/${request_id}`,
+                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/requests/${request_id}`,
                     {
                         method: "GET",
                     },
@@ -61,6 +62,22 @@ const RequestPage = () => {
         fetchData(); //eslint-disable-line
     }, [request_id]);
 
+    const { mutate } = useMutation({
+        mutationFn: async () => {
+            const res = await fetch(
+                `${process.env.REACT_APP_SERVER_BASE_URL}/api/message/chatroom`,
+                {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ request_id: request_id }),
+                },
+            );
+        },
+    });
+
     return (
         <Box
             sx={{
@@ -74,7 +91,7 @@ const RequestPage = () => {
                 overflowX: "hidden",
                 overflowY: { xs: "scroll", md: "hidden" },
                 width: "100%",
-                minHeight: "100vh",
+                height: "100%",
                 boxSizing: "border-box",
                 margin: "auto",
             }}
@@ -164,7 +181,7 @@ const RequestPage = () => {
             >
                 {data && <RequestSideCard request={data} />}
                 <Card
-                    onClick={handleApply}
+                    onClick={(e) => mutate()}
                     sx={{
                         borderRadius: "16px",
                         backgroundColor: "#ff7961",

@@ -44,7 +44,7 @@ const StudentReviewInput: React.FC<StudentReviewInputProps> = ({
 
         try {
             const response = await fetch(
-                "http://localhost:8080/api/student-reviews",
+                `${process.env.REACT_APP_SERVER_BASE_URL}/api/student-reviews`,
                 {
                     method: "POST",
                     headers: {

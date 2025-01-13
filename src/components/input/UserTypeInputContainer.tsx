@@ -29,7 +29,7 @@ const UserTypeInputContainer: React.FC<UserTypeInputProps> = ({
                 padding: "16px",
                 overflow: "hidden",
                 width: "100%",
-                height: "100vh",
+                height: "100%",
                 boxSizing: "border-box",
                 margin: "auto",
             }}

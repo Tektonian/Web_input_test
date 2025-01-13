@@ -18,7 +18,7 @@ const CorpNumInput: React.FC<CorpNumInputProps> = ({ onCorpNumSubmit }) => {
     const handleSubmit = async () => {
         try {
             const response = await fetch(
-                `/api/corporations/corpProfile?corpNum=${corpNum}`,
+                `${process.env.REACT_APP_SERVER_BASE_URL}/api/corporations/profile/check?corpNum=${corpNum}`,
                 {
                     method: "GET",
                 },
@@ -29,9 +29,7 @@ const CorpNumInput: React.FC<CorpNumInputProps> = ({ onCorpNumSubmit }) => {
             }
 
             const data = await response.json();
-            if (data.status === "exist" || data.status === "not exist") {
-                onCorpNumSubmit(data);
-            }
+            onCorpNumSubmit(data);
         } catch (err) {
             console.error("An error occurred", err);
         }

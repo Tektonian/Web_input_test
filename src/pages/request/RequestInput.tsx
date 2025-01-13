@@ -13,32 +13,35 @@ import { useForm, FormProvider } from "react-hook-form";
 import AddressInput from "./components/AddressInput";
 import { useNavigate } from "react-router-dom";
 import { useSession } from "../../hooks/Session";
-import { APIType } from "api_spec/types";
+import type { APIType } from "api_spec";
 import dayjs from "dayjs";
 import { ChipInput } from "web_component";
 
 const RequestInput = () => {
-    const methods = useForm<APIType.RequestType.ReqCreateRequest>({
-        defaultValues: {
-            role: "corp",
-            data: {
-                consumer_id: -1,
-                title: "",
-                head_count: 0,
-                reward_price: 0,
-                currency: "",
-                content: "",
-                are_needed: [],
-                are_required: [],
-                prep_material: [],
-                start_date: dayjs().format("YYYY-MM-DD"),
-                end_date: dayjs().format("YYYY-MM-DD"),
-                start_time: dayjs().format("HH:mm"),
-                end_time: dayjs().format("HH:mm"),
-                address: "",
-                address_coordinate: {
-                    lat: 0,
-                    lng: 0,
+    const { control, setValue, handleSubmit } =
+        useForm<APIType.RequestType.ReqCreateRequest>({
+            defaultValues: {
+                role: "normal",
+                data: {
+                    title: "",
+                    head_count: 0,
+                    reward_price: 0,
+                    currency: "KO",
+                    content: "",
+                    are_needed: [],
+                    are_required: [],
+                    start_date: new Date().toISOString().split("T")[0],
+                    end_date: new Date().toISOString().split("T")[0],
+                    provide_food: false,
+                    provide_trans_exp: false,
+                    start_time: dayjs().format("HH:MM"),
+                    end_time: dayjs().format("HH:MM"),
+                    address: "",
+                    address_coordinate: {
+                        lat: 0,
+                        lng: 0,
+                    },
+                    prep_material: [],
                 },
             },
         },
@@ -51,15 +54,19 @@ const RequestInput = () => {
     const onSubmit = async (request: APIType.RequestType.ReqCreateRequest) => {
         console.log("START fetching request:", request);
         try {
-            const response = await fetch("/api/requests", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                credentials: "include",
-                body: JSON.stringify({
-                    data: request.data,
-                    role: "corp",
-                }),
-            });
+            const response = await fetch(
+                `${process.env.REACT_APP_SERVER_BASE_URL}/api/requests`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    // TODO: change later of role
+                    body: JSON.stringify({
+                        data: request.data,
+                        role: request.role,
+                    }),
+                },
+            );
 
             if (response.ok) {
                 const result = await response.json();
@@ -76,82 +83,87 @@ const RequestInput = () => {
     };
 
     return (
-        <FormProvider {...methods}>
-            <Container
-                sx={{
-                    py: 4,
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    maxWidth: "1080px",
-                    width: "100%",
-                    height: "100vh",
-                }}
+        <Container
+            sx={{
+                py: 4,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                maxWidth: "1080px",
+                width: "100%",
+                height: "100%",
+            }}
+        >
+            <Typography variant="h4" gutterBottom>
+                Request Form
+            </Typography>
+
+            <Box
+                component="form"
+                noValidate
+                autoComplete="off"
+                onSubmit={handleSubmit(onSubmit)}
             >
-                <Typography variant="h4" gutterBottom>
-                    Request Form
-                </Typography>
+                <Grid container spacing={2}>
+                    <Grid size={12}>
+                        <ShortTextInput
+                            control={control}
+                            name="data.title"
+                            label="Title"
+                        />
+                    </Grid>
 
-                <Box
-                    component="form"
-                    noValidate
-                    autoComplete="off"
-                    onSubmit={handleSubmit(onSubmit)}
-                >
-                    <Grid container spacing={2}>
-                        <Grid size={12}>
-                            <TextField
-                                label="Title"
-                                fullWidth
-                                {...register("data.title")}
-                            />
-                        </Grid>
+                    <Grid size={4}>
+                        <ShortTextInput
+                            control={control}
+                            name="data.head_count"
+                            label="Head Count"
+                        />
+                    </Grid>
 
-                        <Grid size={4}>
-                            <TextField
-                                label="Head Count"
-                                type="number"
-                                fullWidth
-                                {...register("data.head_count", {
-                                    valueAsNumber: true,
-                                })}
-                            />
-                        </Grid>
+                    <Grid size={4}>
+                        <ShortTextInput
+                            control={control}
+                            name="data.reward_price"
+                            label="Reward Price"
+                        />
+                    </Grid>
+                    <Grid size={4}>
+                        <SelectInput
+                            control={control}
+                            name="data.currency"
+                            options={[
+                                { value: "KO", label: "원" },
+                                { value: "JP", label: "엔" },
+                                { value: "US", label: "달러" },
+                            ]}
+                        />
+                    </Grid>
 
-                        <Grid size={4}>
-                            <TextField
-                                label="Reward Price"
-                                type="number"
-                                fullWidth
-                                {...register("data.reward_price", {
-                                    valueAsNumber: true,
-                                })}
-                            />
-                        </Grid>
+                    <Grid size={6}>
+                        <DateInput
+                            control={control}
+                            name="data.start_date"
+                            label="Start Date"
+                        />
+                    </Grid>
 
-                        <Grid size={4}>
-                            <Select
-                                label="Currency"
-                                fullWidth
-                                defaultValue=""
-                                {...register("data.currency")}
-                            >
-                                <MenuItem value="">Select currency</MenuItem>
-                                <MenuItem value="jp">jp</MenuItem>
-                                <MenuItem value="kr">kr</MenuItem>
-                                <MenuItem value="us">us</MenuItem>
-                            </Select>
-                        </Grid>
+                    <Grid size={6}>
+                        <DateInput
+                            control={control}
+                            name="data.end_date"
+                            label="End Date"
+                        />
+                    </Grid>
 
-                        <Grid size={6}>
-                            <TextField
-                                label="Start Date"
-                                type="date"
-                                fullWidth
-                                {...register("data.start_date")}
-                            />
-                        </Grid>
+                    <Grid size={12}>
+                        <LongTextInput
+                            control={control}
+                            name="data.content"
+                            label="Content"
+                        />
+                    </Grid>
 
                         <Grid size={6}>
                             <TextField

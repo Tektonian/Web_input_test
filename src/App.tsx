@@ -12,10 +12,10 @@ import StudentMypage from "./pages/student/StudentMypage";
 import CorpMypage from "./pages/corporation/CorpMypage";
 import CorpProfilePage from "./pages/corporation/CorpProfilePage";
 import StudentListPage from "./pages/student/StudentListPage";
-import Header from "./pages/home/components/Header";
+import Header from "./components/Header";
 import HomePage from "./pages/home/HomePage";
 import RequestListPage from "./pages/request/RequestListPage";
-
+import MyPage from "./pages/mypage/MyPage";
 const queryClient = new QueryClient();
 
 function App() {
@@ -41,15 +41,15 @@ function App() {
                                 element={<RequestPage />}
                             />
                             <Route
-                                path="/request-list"
+                                path="/request/recommend/list"
                                 element={<RequestListPage />}
                             />
                             <Route
-                                path="/profileinput"
+                                path="/profile/setup"
                                 element={<ProfileSetup />}
                             />
                             <Route
-                                path="/requestinput"
+                                path="/request/write"
                                 element={<RequestInput />}
                             />
                             <Route path="/home" element={<HomePage />} />
@@ -58,14 +58,7 @@ function App() {
                                 path="/student/list/:request_id"
                                 element={<StudentListPage />}
                             />
-                            <Route
-                                path="/mypage/student/:student_id"
-                                element={<StudentMypage />}
-                            />
-                            <Route
-                                path="/mypage/corporation/:corp_id"
-                                element={<CorpMypage />}
-                            />
+                            <Route path="/mypage" element={<MyPage />} />
                         </Routes>
                     </main>
                 </BrowserRouter>

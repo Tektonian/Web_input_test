@@ -22,7 +22,7 @@ interface LanguageHistoryInputProps {
 
 interface Exam {
     exam_id: number;
-    exam_name_glb: { en: string; kr: string; jp: string };
+    exam_name_glb: { KO: string; US: string; JP: string };
     exam_result_type: string;
     exam_results: { class: string; level: number }[];
     lang_country_code: string;
@@ -36,7 +36,7 @@ const LanguageHistoryInput: React.FC<LanguageHistoryInputProps> = ({
     const [exams, setExams] = useState<Exam[]>([]);
     const selectedExamId = useWatch({
         control,
-        name: `examHistory[${index}].exam_id`,
+        name: `exam_history[${index}].exam_id`,
     });
 
     const selectedExam = exams.find((exam) => exam.exam_id === selectedExamId);
@@ -46,7 +46,7 @@ const LanguageHistoryInput: React.FC<LanguageHistoryInputProps> = ({
         const fetchExams = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:8080/api/search/exams",
+                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/search/exams`,
                     {
                         method: "GET",
                         headers: {
@@ -56,7 +56,7 @@ const LanguageHistoryInput: React.FC<LanguageHistoryInputProps> = ({
                 );
                 const data = await response.json();
                 console.log("data:", data);
-                setExams(data.ret);
+                setExams(data);
             } catch (error) {
                 console.error("Error fetching exam data:", error);
             }
@@ -100,7 +100,7 @@ const LanguageHistoryInput: React.FC<LanguageHistoryInputProps> = ({
                     <Grid size={12}>
                         <Controller
                             control={control}
-                            name={`examHistory[${index}].exam_id`}
+                            name={`exam_history[${index}].exam_id`}
                             render={({ field }) => {
                                 const { onChange, value } = field;
                                 const selectedExam =
@@ -111,7 +111,7 @@ const LanguageHistoryInput: React.FC<LanguageHistoryInputProps> = ({
                                     <Autocomplete
                                         options={exams}
                                         getOptionLabel={(option) =>
-                                            option.exam_name_glb.jp
+                                            option.exam_name_glb.KO
                                         }
                                         value={selectedExam}
                                         onChange={(_, newValue) => {
@@ -140,11 +140,11 @@ const LanguageHistoryInput: React.FC<LanguageHistoryInputProps> = ({
                     <Grid size={12}>
                         <SelectInput
                             control={control}
-                            name={`examHistory[${index}].exam_result`}
-                            label="Exam Results"
-                            options={examResults.map(
-                                (result) => `${result.class}`,
-                            )}
+                            name={`exam_history[${index}].exam_result`}
+                            options={examResults.map((result) => ({
+                                value: result.level,
+                                label: `${result.class}`,
+                            }))}
                         />
                     </Grid>
                 </Grid>

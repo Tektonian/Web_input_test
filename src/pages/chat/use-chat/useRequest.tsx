@@ -27,7 +27,8 @@ export const useRequest = () => {
     }, [checkBoxMode, activeRoom]);
 
     useEffect(() => {
-        const chatRoomIds = renderChatRoom.map((room) => room.chatRoomId);
+        const chatRoomIds =
+            renderChatRoom?.map((room) => room.chatRoomId) ?? [];
 
         const checkBoxItems = chatRoomIds.map((id) => {
             return {
@@ -47,7 +48,8 @@ export const useRequest = () => {
             return;
         }
 
-        const chatRoomIds = renderChatRoom.map((room) => room.chatRoomId);
+        const chatRoomIds =
+            renderChatRoom?.map((room) => room.chatRoomId) ?? [];
 
         const checkBoxItems = chatRoomIds.map((id) => {
             return {
@@ -73,17 +75,20 @@ export const useRequestQuery = () => {
                 .filter((item) => item.checked === true)
                 .map((item) => item.chatRoomId);
 
-            const res = await fetch("/api/requests/provider", {
-                method: "post",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
+            const res = await fetch(
+                `${process.env.REACT_APP_SERVER_BASE_URL}/api/requests/provider`,
+                {
+                    method: "post",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        chatroom_ids: checkedItems,
+                        request_id: activeRequest?.requestId,
+                    }),
                 },
-                body: JSON.stringify({
-                    chatroom_ids: checkedItems,
-                    request_id: activeRequest?.requestId,
-                }),
-            });
+            );
 
             return res;
         },
@@ -91,14 +96,19 @@ export const useRequestQuery = () => {
 
     const updateStatusContract = useMutation({
         mutationFn: async () => {
-            const res = await fetch("/api/requests/status/contract", {
-                method: "post",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
+            const res = await fetch(
+                `${process.env.REACT_APP_SERVER_BASE_URL}/api/requests/status/contract`,
+                {
+                    method: "post",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        request_id: activeRequest?.requestId,
+                    }),
                 },
-                body: JSON.stringify({ request_id: activeRequest?.requestId }),
-            });
+            );
 
             return res;
         },
@@ -106,14 +116,19 @@ export const useRequestQuery = () => {
 
     const updateStatusFinish = useMutation({
         mutationFn: async () => {
-            const res = await fetch("/api/requests/status/finish", {
-                method: "post",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
+            const res = await fetch(
+                `${process.env.REACT_APP_SERVER_BASE_URL}/api/requests/status/finish`,
+                {
+                    method: "post",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        request_id: activeRequest?.requestId,
+                    }),
                 },
-                body: JSON.stringify({ request_id: activeRequest?.requestId }),
-            });
+            );
 
             return res;
         },

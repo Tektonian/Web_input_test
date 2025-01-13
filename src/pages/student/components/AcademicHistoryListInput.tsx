@@ -2,9 +2,11 @@ import React from "react";
 import { useFieldArray } from "react-hook-form";
 import AcademicHistoryInput from "./AcademicHistoryInput";
 import { Box, Button, Card, CardContent } from "@mui/material";
+import type { Control, FieldValues } from "react-hook-form";
+import type { APIType } from "api_spec";
 
 interface AcademicHistoryListInputProps {
-    control: any;
+    control: Control<APIType.StudentType.ReqCreateStudentProfile>;
 }
 
 const AcademicHistoryListInput: React.FC<AcademicHistoryListInputProps> = ({
@@ -12,7 +14,7 @@ const AcademicHistoryListInput: React.FC<AcademicHistoryListInputProps> = ({
 }) => {
     const { fields, append, remove } = useFieldArray({
         control,
-        name: "academicHistory",
+        name: "academic_history",
     });
 
     return (
@@ -24,6 +26,8 @@ const AcademicHistoryListInput: React.FC<AcademicHistoryListInputProps> = ({
                 color: "rgba(0, 0, 0, 0.7)",
                 backgroundColor: "#f5f5f5",
                 boxShadow: "none",
+                display: "flex",
+                flexDirection: "column",
                 position: "relative",
             }}
         >
@@ -45,12 +49,12 @@ const AcademicHistoryListInput: React.FC<AcademicHistoryListInputProps> = ({
                         color="primary"
                         onClick={() =>
                             append({
-                                degree: "",
+                                degree: 0,
                                 faculty: "",
                                 school_id: 1,
                                 start_date: "",
                                 end_date: "",
-                                status: "In Progress",
+                                status: 0,
                             })
                         }
                     >
