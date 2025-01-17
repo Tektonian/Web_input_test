@@ -15,6 +15,6 @@ WORKDIR /mesh
 
 RUN npm update --force
 RUN npm install --include prod
- 
+
 # 실행 명령어
 CMD ["npm", "run", "build"]

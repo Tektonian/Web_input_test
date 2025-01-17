@@ -99,7 +99,7 @@ const CorpInfoInputContainer: React.FC<CorpInfoInputProps> = ({
                 {corpData && (
                     <CorpProfileInputCard control={control} {...corpData} />
                 )}
-            </Container>            
+            </Container>
             <Container
                 sx={{
                     width: { xs: "100%", md: "344px" },
