@@ -7,15 +7,15 @@ import {
     CircularProgress,
 } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
-import { RequestCard } from "web_component";
+import { RequestCard } from "@mesh/web_component";
 import { useNavigate } from "react-router-dom";
-import type { APIType } from "api_spec";
+import type { APIType } from "@mesh/api_spec";
 
 const useRequestList = () => {
     const { mutate, data, isSuccess } = useMutation({
         mutationFn: async (student_id: number) => {
             const res = await fetch(
-                `${process.env.REACT_APP_SERVER_BASE_URL}/api/recommend/requests`,
+                `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/recommend/requests`,
                 {
                     method: "POST",
                     headers: {

@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { StudentCard, StudentProfileCard } from "web_component";
+import { StudentCard, StudentProfileCard } from "@mesh/web_component";
 
 const StudentListPage = () => {
     const { request_id } = useParams<{ request_id: string }>();
@@ -22,7 +22,7 @@ const StudentListPage = () => {
         queryKey: [request_id],
         queryFn: async () => {
             const res = await fetch(
-                `${process.env.REACT_APP_SERVER_BASE_URL}/api/recommend/students`,
+                `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/recommend/students`,
                 {
                     method: "post",
                     credentials: "include",
@@ -51,7 +51,7 @@ const StudentListPage = () => {
 
         try {
             const response = await fetch(
-                `${process.env.REACT_APP_SERVER_BASE_URL}/api/send-alarm`,
+                `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/send-alarm`,
                 {
                     method: "POST",
                     headers: {

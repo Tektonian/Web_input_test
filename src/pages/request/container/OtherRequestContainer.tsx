@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
-import { RequestCard } from "web_component";
-import type { APIType } from "api_spec";
+import { RequestCard } from "@mesh/web_component";
+import type { APIType } from "@mesh/api_spec";
 import { useNavigate } from "react-router-dom";
 
 interface OtherRequestContainerProps {
@@ -20,7 +20,7 @@ const OtherRequestContainer: React.FC<OtherRequestContainerProps> = (
             try {
                 const response = await fetch(
                     `${
-                        process.env.REACT_APP_SERVER_BASE_URL
+                        import.meta.env.VITE_APP_SERVER_BASE_URL
                     }/api/requests/list/${corp_id ?? orgn_id}`,
                     {
                         method: "GET",

@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { RatingInput } from "web_component";
-import { ShortTextInput } from "web_component";
+import { RatingInput } from "@mesh/web_component";
+import { ShortTextInput } from "@mesh/web_component";
 import Button from "@mui/material/Button";
 
 export interface ReviewProps {
@@ -44,7 +44,7 @@ const StudentReviewInput: React.FC<StudentReviewInputProps> = ({
 
         try {
             const response = await fetch(
-                `${process.env.REACT_APP_SERVER_BASE_URL}/api/student-reviews`,
+                `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/student-reviews`,
                 {
                     method: "POST",
                     headers: {

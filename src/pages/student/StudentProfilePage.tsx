@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Container, Tab, Tabs } from "@mui/material";
-import { StudentIndexCard } from "web_component";
+import { StudentIndexCard } from "@mesh/web_component";
 import StudentProfileContainer from "./container/StudentProfileContainer";
 import StudentRequestListContainer from "./container/StudentRequestLIstContainer";
 import StudentReviewContainer from "./container/StudentReviewContainer";

@@ -3,7 +3,7 @@ import { useFieldArray } from "react-hook-form";
 import AcademicHistoryInput from "./AcademicHistoryInput";
 import { Box, Button, Card, CardContent } from "@mui/material";
 import type { Control, FieldValues } from "react-hook-form";
-import type { APIType } from "api_spec";
+import type { APIType } from "@mesh/api_spec";
 
 interface AcademicHistoryListInputProps {
     control: Control<APIType.StudentType.ReqCreateStudentProfile>;

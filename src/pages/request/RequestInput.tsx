@@ -6,7 +6,7 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import type { APIType } from "api_spec";
+import type { APIType } from "@mesh/api_spec";
 import dayjs from "dayjs";
 import { useForm, FormProvider } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +17,7 @@ import {
     SelectInput,
     TimeInput,
     DateInput,
-} from "web_component";
+} from "@mesh/web_component";
 
 const RequestInput = () => {
     const methods = useForm<APIType.RequestType.ReqCreateRequest>({
@@ -53,7 +53,7 @@ const RequestInput = () => {
         console.log("START fetching request:", request);
         try {
             const response = await fetch(
-                `${process.env.REACT_APP_SERVER_BASE_URL}/api/requests`,
+                `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/requests`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

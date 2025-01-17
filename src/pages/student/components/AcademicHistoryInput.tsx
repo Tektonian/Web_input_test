@@ -9,10 +9,10 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import { AcademicEnum } from "api_spec/enum";
+import { AcademicEnum } from "@mesh/api_spec/enum";
 import React, { useEffect, useState } from "react";
 import { Controller, useWatch } from "react-hook-form";
-import { SelectInput, ShortTextInput, YearMonthInput } from "web_component";
+import { SelectInput, ShortTextInput, YearMonthInput } from "@mesh/web_component";
 import NationalityInput from "../../../components/input/NationalityInput";
 
 interface AcademicHistoryInputProps {
@@ -57,7 +57,7 @@ const AcademicHistoryInput: React.FC<AcademicHistoryInputProps> = ({
             }
             try {
                 const response = await fetch(
-                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/search/schools?country_code=${country_code}&q=${search}`,
+                    `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/search/schools?country_code=${country_code}&q=${search}`,
                     {
                         method: "GET",
                         headers: {

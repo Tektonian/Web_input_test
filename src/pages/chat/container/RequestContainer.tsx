@@ -1,4 +1,4 @@
-import { RequestRoom } from "web_component";
+import { RequestRoom } from "@mesh/web_component";
 import { useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";
 import { useEffect } from "react";
 import { List, Box } from "@mui/material";

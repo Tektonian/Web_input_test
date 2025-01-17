@@ -4,7 +4,7 @@ import { TextField, Box, Button, Typography, IconButton } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import { useSocketTextMutation } from "../use-chat/useSocket";
 import { useController, useForm } from "react-hook-form";
-import type { APIType } from "api_spec";
+import type { APIType } from "@mesh/api_spec";
 type MessageContent = APIType.ContentType.MessageContent;
 type MessageContentType = APIType.ContentType.MessageContentType;
 

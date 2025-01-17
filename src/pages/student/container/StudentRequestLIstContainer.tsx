@@ -2,9 +2,9 @@ import { Box, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
-import { RequestCard } from "web_component";
+import { RequestCard } from "@mesh/web_component";
 
-import { APIType } from "api_spec";
+import { APIType } from "@mesh/api_spec";
 
 interface Props {
     student_id: number;
@@ -17,7 +17,7 @@ const StudentRequestListContainer = ({ student_id }: Props) => {
             queryKey: [student_id],
             queryFn: async () => {
                 const res = await fetch(
-                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/requests/list/student`,
+                    `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/requests/list/student`,
                     {
                         method: "POST",
                         credentials: "include",

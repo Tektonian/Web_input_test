@@ -1,7 +1,7 @@
 import { Box, Container, useMediaQuery, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { StudentIndexCard } from "web_component";
+import { StudentIndexCard } from "@mesh/web_component";
 import MyPageRequestList from "./container/MyPageRequestList";
 import MyProfile from "./container/MyProfile";
 

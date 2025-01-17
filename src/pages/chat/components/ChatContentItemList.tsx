@@ -3,9 +3,9 @@ import { useSentMessages } from "../use-chat/Stores/MessageStore";
 
 import { Box } from "@mui/material";
 import type { ChatRoom } from "../use-chat/Stores/ChatRoomStore";
-import { Message } from "web_component";
+import { Message } from "@mesh/web_component";
 
-import type { APIType } from "api_spec";
+import type { APIType } from "@mesh/api_spec";
 type MessageContent = APIType.ContentType.MessageContent;
 
 const MessageRender = ({

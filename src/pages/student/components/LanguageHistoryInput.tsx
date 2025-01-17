@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { SelectInput, ShortTextInput } from "web_component";
+import { SelectInput, ShortTextInput } from "@mesh/web_component";
 import {
     Box,
     Typography,
@@ -46,7 +46,7 @@ const LanguageHistoryInput: React.FC<LanguageHistoryInputProps> = ({
         const fetchExams = async () => {
             try {
                 const response = await fetch(
-                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/search/exams`,
+                    `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/search/exams`,
                     {
                         method: "GET",
                         headers: {

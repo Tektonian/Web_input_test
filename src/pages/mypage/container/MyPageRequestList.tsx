@@ -2,9 +2,9 @@ import { Box } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
-import { CorpProfileCard, RequestCard, StudentMyPageCard } from "web_component";
+import { CorpProfileCard, RequestCard, StudentMyPageCard } from "@mesh/web_component";
 
-import { APIType } from "api_spec";
+import { APIType } from "@mesh/api_spec";
 import { useEffect } from "react";
 
 const MyPageRequestList = () => {
@@ -14,7 +14,7 @@ const MyPageRequestList = () => {
             queryKey: ["mypage"],
             queryFn: async () => {
                 const res = await fetch(
-                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/users/mypage`,
+                    `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/users/mypage`,
                     {
                         method: "GET",
                         credentials: "include",

@@ -5,7 +5,7 @@ import {
     BarNavigationCard,
     StudentStepperCard,
     UserTypeInput,
-} from "web_component";
+} from "@mesh/web_component";
 
 interface UserTypeInputProps {
     onNext: () => void;

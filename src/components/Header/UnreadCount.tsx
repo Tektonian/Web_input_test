@@ -23,7 +23,7 @@ const UnreadCount = () => {
 
     useEffect(() => {
         const eventSource = new EventSource(
-            `${process.env.REACT_APP_SERVER_BASE_URL}/api/sse`,
+            `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/sse`,
             {
                 withCredentials: true,
             },

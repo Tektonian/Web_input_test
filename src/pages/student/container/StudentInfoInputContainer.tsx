@@ -1,6 +1,6 @@
 import { Box, Container, useMediaQuery, useTheme } from "@mui/material";
-import { APIType } from "api_spec";
-import { UserEnum } from "api_spec/enum";
+import { APIType } from "@mesh/api_spec";
+import { UserEnum } from "@mesh/api_spec/enum"
 import React from "react";
 import type { Control } from "react-hook-form";
 import { useForm } from "react-hook-form";
@@ -8,7 +8,7 @@ import {
     BarNavigationCard,
     StudentInputCard,
     StudentStepperCard,
-} from "web_component";
+} from "@mesh/web_component";
 import AcademicHistoryListInput from "../components/AcademicHistoryListInput";
 import LanguageHistoryListInput from "../components/LanguageHistoryListInput";
 
@@ -43,7 +43,7 @@ const StudentInfoInputContainer: React.FC<StudentInfoInputProps> = ({
     ) => {
         try {
             const response = await fetch(
-                `${process.env.REACT_APP_SERVER_BASE_URL}/api/students`,
+                `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/students`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

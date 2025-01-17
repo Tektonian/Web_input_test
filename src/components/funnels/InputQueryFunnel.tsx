@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Input, Stack, Button } from "@mui/joy";
+import { Input, Stack, Button } from "@mui/material";
 import { UseMutationResult } from "@tanstack/react-query";
 
 interface inputQueryProps {

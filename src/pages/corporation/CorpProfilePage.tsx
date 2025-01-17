@@ -10,7 +10,7 @@ import {
     useMediaQuery,
     useTheme,
 } from "@mui/material";
-import { CorpIndexCard } from "web_component";
+import { CorpIndexCard } from "@mesh/web_component";
 
 import RequestListContainer from "../request/container/RequestListContainer";
 import CorporationReviewContainer from "./container/CorporationReviewContainer";

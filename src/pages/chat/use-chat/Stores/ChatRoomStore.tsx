@@ -3,7 +3,7 @@ import { io, Socket } from "socket.io-client";
 import { TypedStorage } from "@toss/storage/typed";
 
 import type { UseBoundStore, StoreApi } from "zustand";
-import type { APIType } from "api_spec";
+import type { APIType } from "@mesh/api_spec";
 
 type ResMessage = APIType.WebSocketType.ResMessage;
 type ResRefreshChatRoom = APIType.WebSocketType.ResRefreshChatRoom;
@@ -295,7 +295,7 @@ export const useChatRoomStore: UseBoundStore<StoreApi<ChatRoomStore>> =
             set((state) => SetActiveRequest(state, requestId)),
         tempId: undefined,
         setTempId: (id) => set((state) => ({ tempId: id })),
-        socket: io(process.env.REACT_APP_SERVER_BASE_URL, {
+        socket: io(import.meta.env.VITE_APP_SERVER_BASE_URL, {
             withCredentials: true,
             path: "/api/chat",
             autoConnect: false,

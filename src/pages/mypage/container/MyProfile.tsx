@@ -1,14 +1,14 @@
-import { MyProfileCard } from "web_component";
+import { MyProfileCard } from "@mesh/web_component";
 
 import { useQuery } from "@tanstack/react-query";
-import { APIType } from "api_spec";
+import { APIType } from "@mesh/api_spec";
 const MyProfile = () => {
     const { data, isError, isLoading } =
         useQuery<APIType.UserType.ResGetUserData>({
             queryKey: [],
             queryFn: async () => {
                 const res = await fetch(
-                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/users`,
+                    `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/users`,
                     {
                         method: "GET",
                         credentials: "include",

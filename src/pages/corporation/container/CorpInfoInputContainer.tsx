@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Box, Button, Container, useMediaQuery, useTheme } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import type { APIType } from "api_spec";
+import type { APIType } from "@mesh/api_spec";
 import CorpNumInput from "../components/CorpNumInput";
 import {
     BarNavigationCard,
     CorpProfileInputCard,
     StudentStepperCard,
-} from "web_component";
+} from "@mesh/web_component";
 import { useForm } from "react-hook-form";
 
 interface CorpInfoInputProps {
@@ -36,7 +36,7 @@ const CorpInfoInputContainer: React.FC<CorpInfoInputProps> = ({
     ) => {
         try {
             const response = await fetch(
-                `${process.env.REACT_APP_SERVER_BASE_URL}/api/corporations`,
+                `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/corporations`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

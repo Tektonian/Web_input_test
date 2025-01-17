@@ -18,7 +18,7 @@ const CorpNumInput: React.FC<CorpNumInputProps> = ({ onCorpNumSubmit }) => {
     const handleSubmit = async () => {
         try {
             const response = await fetch(
-                `${process.env.REACT_APP_SERVER_BASE_URL}/api/corporations/profile/check?corpNum=${corpNum}`,
+                `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/corporations/profile/check?corpNum=${corpNum}`,
                 {
                     method: "GET",
                 },

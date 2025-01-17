@@ -5,11 +5,11 @@ import { Button, Box } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseButton from "./ChatRoomHeader/CloseButton";
 import DeleteButton from "./ChatRoomHeader/DeleteButton";
-import { ChatRoomHeader as ChatRoomHeaderComponent } from "web_component";
-import { MenuButton } from "web_component";
+import { ChatRoomHeader as ChatRoomHeaderComponent } from "@mesh/web_component";
+import { MenuButton } from "@mesh/web_component";
 import RequestApproveDiagram from "./ChatRoomHeader/RequestApprove";
 import RequestFinishDiagram from "./ChatRoomHeader/RequestFinish";
-import { RequestEnum } from "api_spec/enum";
+import { RequestEnum } from "@mesh/api_spec/enum";
 export const ChatRoomHeader = () => {
     const activeRequest = useChatRoomStore((state) => state.activeRequest);
     const checkBoxMode = useCheckBoxStore((state) => state.checkBoxMode);

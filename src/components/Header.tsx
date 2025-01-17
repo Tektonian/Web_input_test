@@ -21,7 +21,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useSession } from "../hooks/Session";
 import UnreadCount from "./Header/UnreadCount";
 
-import { RoleBasedBlocker } from "web_component";
+import { RoleBasedBlocker } from "@mesh/web_component";
 
 const StyledToolbar = styled(Toolbar)(({ theme }: any) => ({
     display: "flex",
@@ -415,7 +415,7 @@ const NoSessionProfile = () => {
                 variant="contained"
                 size="small"
                 onClick={() => {
-                    window.location.href = `${process.env.REACT_APP_SERVER_BASE_URL}/api/auth/signin`;
+                    window.location.href = `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/auth/signin`;
                 }}
             >
                 회원가입

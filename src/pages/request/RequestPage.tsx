@@ -8,10 +8,10 @@ import {
     Tabs,
     Tab,
 } from "@mui/material";
-import { RequestSideCard } from "web_component";
+import { RequestSideCard } from "@mesh/web_component";
 import { useMutation } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
-import type { APIType } from "api_spec";
+import type { APIType } from "@mesh/api_spec";
 import RequestContentContainer from "./container/RequestContentContainer";
 import ConsumerContainer from "./container/ConsumerContainer";
 import OtherRequestContainer from "./container/OtherRequestContainer";
@@ -44,7 +44,7 @@ const RequestPage = () => {
         const fetchData = async () => {
             try {
                 const response = await fetch(
-                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/requests/${request_id}`,
+                    `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/requests/${request_id}`,
                     {
                         method: "GET",
                     },
@@ -65,7 +65,7 @@ const RequestPage = () => {
     const { mutate } = useMutation({
         mutationFn: async () => {
             const res = await fetch(
-                `${process.env.REACT_APP_SERVER_BASE_URL}/api/message/chatroom`,
+                `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/message/chatroom`,
                 {
                     method: "POST",
                     credentials: "include",

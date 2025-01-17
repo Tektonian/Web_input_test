@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { RequestListSection } from "../../../components/RequestListSection";
-import type { APIType } from "api_spec";
+import type { APIType } from "@mesh/api_spec";
 import { useNavigate } from "react-router-dom";
 import { StudentReviewModal } from "../../../components/ReviewModal";
 
@@ -32,7 +32,7 @@ const RequestListContainer: React.FC<RequestListContainerProps> = ({
             console.log(body);
             try {
                 const response = await fetch(
-                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/requests/list`,
+                    `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/requests/list`,
                     {
                         method: "POST",
                         credentials: "include",

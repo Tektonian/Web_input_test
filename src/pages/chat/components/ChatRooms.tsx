@@ -1,4 +1,4 @@
-import { ChatRoom } from "web_component";
+import { ChatRoom } from "@mesh/web_component";
 import { List } from "@mui/material";
 import { useCheckBoxStore } from "../use-chat/Stores/CheckBoxStore";
 import { useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";

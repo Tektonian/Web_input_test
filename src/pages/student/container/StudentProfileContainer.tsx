@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { StudentProfileCard } from "web_component";
-import type { APIType } from "api_spec";
+import { StudentProfileCard } from "@mesh/web_component";
+import type { APIType } from "@mesh/api_spec";
 
 interface StudentProfileContainerProps {
     student_id: number;
@@ -16,7 +16,7 @@ const StudentProfileContainer: React.FC<StudentProfileContainerProps> = ({
         const fetchData = async () => {
             try {
                 const response = await fetch(
-                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/students/${student_id}`,
+                    `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/students/${student_id}`,
                     {
                         method: "GET",
                         credentials: "include",

@@ -11,7 +11,6 @@ import {
     Typography,
 } from "@mui/material";
 
-import { visuallyHidden } from "@mui/utils";
 
 const ButtonDisplayed = ({
     onClick,
@@ -23,7 +22,7 @@ const ButtonDisplayed = ({
     if (userRole === "normal") {
         return (
             <>
-                <InputLabel htmlFor="email-hero" sx={visuallyHidden}>
+                <InputLabel htmlFor="email-hero" sx={{display:{xs: 'none', md: 'block'}}}>
                     혹시 학생 / 기업인 이신가요?
                 </InputLabel>
                 <Button
@@ -68,7 +67,7 @@ const ButtonDisplayed = ({
     } else {
         return (
             <>
-                <InputLabel htmlFor="email-hero" sx={visuallyHidden}>
+                <InputLabel htmlFor="email-hero" sx={{display:{xs: 'none', md: 'block'}}}>
                     Email@mail.com
                 </InputLabel>
                 <TextField

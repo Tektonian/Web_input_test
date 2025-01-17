@@ -2,7 +2,7 @@ import React from "react";
 import { useFieldArray } from "react-hook-form";
 import LanguageHistoryInput from "./LanguageHistoryInput";
 import { Box, Button, Card, CardContent } from "@mui/material";
-import type { APIType } from "api_spec";
+import type { APIType } from "@mesh/api_spec";
 import type { Control } from "react-hook-form";
 interface LanguageHistoryListInputProps {
     control: Control<APIType.StudentType.ReqCreateStudentProfile>;

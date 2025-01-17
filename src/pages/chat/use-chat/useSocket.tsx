@@ -7,7 +7,7 @@ import {
 } from "./Stores/MessageStore";
 import { useChatRoomStore } from "./Stores/ChatRoomStore";
 import { Socket } from "socket.io-client";
-import type { APIType } from "api_spec";
+import type { APIType } from "@mesh/api_spec";
 
 type ReqSendMessage = APIType.WebSocketType.ReqSendMessage;
 type MessageContentType = APIType.ContentType.MessageContentType;

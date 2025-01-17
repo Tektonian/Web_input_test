@@ -2,7 +2,7 @@ import { TypedStorage } from "@toss/storage/typed";
 import { create, StoreApi, UseBoundStore } from "zustand";
 import { openDB } from "idb";
 import type { DBSchema, IDBPDatabase } from "idb";
-import type { APIType } from "api_spec";
+import type { APIType } from "@mesh/api_spec";
 // Big TODO: move to indexedDB later
 
 type MessageContent = APIType.ContentType.MessageContent;

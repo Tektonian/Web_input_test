@@ -1,7 +1,7 @@
 import { Box, Grid2 as Grid, useMediaQuery, useTheme } from "@mui/material";
-import type { APIType } from "api_spec";
+import type { APIType } from "@mesh/api_spec";
 import React, { useEffect, useState } from "react";
-import { ReviewOfStudentCard } from "web_component";
+import { ReviewOfStudentCard } from "@mesh/web_component";
 
 interface StudentReviewContainerProps {
     student_id: number;
@@ -19,7 +19,7 @@ const StudentReviewContainer: React.FC<StudentReviewContainerProps> = ({
         const fetchData = async () => {
             try {
                 const response = await fetch(
-                    `${process.env.REACT_APP_SERVER_BASE_URL}/api/student-reviews/list/${student_id}`,
+                    `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/student-reviews/list/${student_id}`,
                     {
                         method: "GET",
                         credentials: "include",

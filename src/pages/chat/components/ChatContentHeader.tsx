@@ -7,7 +7,7 @@ import React, {
 import { useChatRoomStore } from "../use-chat/Stores/ChatRoomStore";
 import type { Request, ChatRoom } from "../use-chat/Stores/ChatRoomStore";
 import { Box } from "@mui/material";
-import { MessageHeader } from "web_component";
+import { MessageHeader } from "@mesh/web_component";
 /**
  * For modal component
  */
@@ -18,7 +18,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import { RequestCard } from "web_component";
+import { RequestCard } from "@mesh/web_component";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 

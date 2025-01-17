@@ -4,7 +4,7 @@ import {
     BarNavigationCard,
     EmailTokenInput,
     StudentStepperCard,
-} from "web_component";
+} from "@mesh/web_component";
 import { useSession } from "../../hooks/Session";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -52,7 +52,7 @@ const VerificationContainer: React.FC<CorpInfoInputProps> = ({
     } = useMutation({
         mutationFn: async () => {
             return await fetch(
-                `${process.env.REACT_APP_SERVER_BASE_URL}/api/verification/callback/identity-verify/${userType}`,
+                `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/verification/callback/identity-verify/${userType}`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

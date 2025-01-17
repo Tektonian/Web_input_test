@@ -76,7 +76,7 @@ export const useRequestQuery = () => {
                 .map((item) => item.chatRoomId);
 
             const res = await fetch(
-                `${process.env.REACT_APP_SERVER_BASE_URL}/api/requests/provider`,
+                `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/requests/provider`,
                 {
                     method: "post",
                     credentials: "include",
@@ -97,7 +97,7 @@ export const useRequestQuery = () => {
     const updateStatusContract = useMutation({
         mutationFn: async () => {
             const res = await fetch(
-                `${process.env.REACT_APP_SERVER_BASE_URL}/api/requests/status/contract`,
+                `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/requests/status/contract`,
                 {
                     method: "post",
                     credentials: "include",
@@ -117,7 +117,7 @@ export const useRequestQuery = () => {
     const updateStatusFinish = useMutation({
         mutationFn: async () => {
             const res = await fetch(
-                `${process.env.REACT_APP_SERVER_BASE_URL}/api/requests/status/finish`,
+                `${import.meta.env.VITE_APP_SERVER_BASE_URL}/api/requests/status/finish`,
                 {
                     method: "post",
                     credentials: "include",
