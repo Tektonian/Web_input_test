@@ -122,8 +122,7 @@ const StudentListPage = () => {
                                                 `/student/${card.student_id}`,
                                             );
                                         }}
-                                    />
-                                    
+                                    />                                    
                                 </Grid>
                                     */
                         ))}
