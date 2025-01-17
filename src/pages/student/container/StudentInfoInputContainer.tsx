@@ -1,15 +1,14 @@
-import React from "react";
-import { Box, Container, Stack, useMediaQuery, useTheme } from "@mui/material";
-import { useForm } from "react-hook-form";
-import {
-    StudentInputCard,
-    StudentStepperCard,
-    BarNavigationCard,
-} from "web_component";
+import { Box, Container, useMediaQuery, useTheme } from "@mui/material";
 import { APIType } from "api_spec";
 import { UserEnum } from "api_spec/enum";
+import React from "react";
 import type { Control } from "react-hook-form";
-import { ReqCreateStudentProfileSchema } from "api_spec/dist/esm/zod/service/Student";
+import { useForm } from "react-hook-form";
+import {
+    BarNavigationCard,
+    StudentInputCard,
+    StudentStepperCard,
+} from "web_component";
 import AcademicHistoryListInput from "../components/AcademicHistoryListInput";
 import LanguageHistoryListInput from "../components/LanguageHistoryListInput";
 

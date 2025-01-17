@@ -49,7 +49,7 @@ const ProfileSetup: React.FC = () => {
 
             <Step name="emailVerification">
                 <VerificationContainer
-                    onNext={() => navigate("/home")}
+                    onNext={() => navigate("/")}
                     onPrevious={
                         userType === "student"
                             ? () => setStep("studentInfo")

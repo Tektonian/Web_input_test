@@ -109,7 +109,7 @@ const Hero = ({
 
     const handleStartNow = () => {
         if (userRole === "normal") {
-            navigate("/profile/write");
+            navigate("/profile/setup");
         } else if (userRole === "corp" || userRole === "orgn") {
             navigate("/request/write");
         } else if (userRole === "student") {

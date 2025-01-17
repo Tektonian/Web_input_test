@@ -1,26 +1,25 @@
-import React, { useState } from "react";
-import { styled, alpha } from "@mui/material/styles";
 import {
-    Box,
     AppBar,
-    Toolbar,
-    IconButton,
-    Button,
     Badge,
+    Box,
+    Button,
+    IconButton,
     Menu,
     MenuItem,
+    Toolbar,
 } from "@mui/material";
+import { alpha, styled } from "@mui/material/styles";
+import React from "react";
 
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
-import UnreadCount from "./Header/UnreadCount";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Container, useMediaQuery, useTheme } from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useSession } from "../hooks/Session";
-import { Container } from "@mui/material";
-import { useMediaQuery, useTheme } from "@mui/material";
+import UnreadCount from "./Header/UnreadCount";
 
 import { RoleBasedBlocker } from "web_component";
 
@@ -466,7 +465,7 @@ const Header = () => {
                             height: "40px",
                             cursor: "pointer",
                         }}
-                        onClick={() => navigate("/home")}
+                        onClick={() => navigate("/")}
                     />
 
                     {/* Right Aligned Content */}
