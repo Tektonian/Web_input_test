@@ -62,7 +62,7 @@ const VerificationContainer: React.FC<CorpInfoInputProps> = ({
             );
         },
         onSuccess: async (data, variables, context) => {
-            await session.update();
+            await session.update({});
             navigate("/mypage");
         },
     });

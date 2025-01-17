@@ -26,7 +26,7 @@ const MessageRender = ({
                     return (
                         <Message
                             key={val._id}
-                            content={"sent: " + val.content}
+                            content={val.content}
                             contentType="text"
                             direction={val.direction}
                             senderName={

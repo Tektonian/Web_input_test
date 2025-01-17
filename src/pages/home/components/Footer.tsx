@@ -14,7 +14,6 @@ import {
 import FacebookIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import TwitterIcon from "@mui/icons-material/X";
-import { DiscordLogoIcon } from "@radix-ui/react-icons";
 
 const Copyright = () => {
     return (
@@ -58,7 +57,7 @@ const Footer = () => {
                     }}
                 >
                     <Box sx={{ width: { xs: "100%", sm: "60%" } }}>
-                        <DiscordLogoIcon />
+                        <FacebookIcon />
                         <Typography
                             variant="body2"
                             gutterBottom
